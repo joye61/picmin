@@ -1,0 +1,9 @@
+.container {
+  height: 100%;
+  :global(.ant-table) {
+    height: 100%;
+  }
+  :global(.ant-table-tbody) > tr:last-child td {
+    border-bottom: none;
+  }
+}

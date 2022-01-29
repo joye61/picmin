@@ -1,0 +1,47 @@
+div.container {
+  height: 100vh;
+  align-items: stretch;
+  background-color: #fff;
+}
+.header,
+.footer {
+  padding: 8px;
+  background-color: #fafafa;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+.header {
+  border-bottom: 1px solid #f0f0f0;
+}
+.footer {
+  border-top: 1px solid #f0f0f0;
+}
+
+.content {
+  flex: 1;
+  position: relative;
+}
+
+.logo {
+  font-size: 0;
+  img {
+    width: 20px;
+    margin-right: 8px;
+  }
+  h5 {
+    font-size: 14px;
+    // font-weight: bold;
+    line-height: 1;
+    margin-bottom: 0;
+  }
+}
+
+.action {
+  > button {
+    margin-right: 18px;
+  }
+  > a {
+    // font-size: 20px;
+  }
+}

@@ -23,7 +23,7 @@ const columns: ColumnsType<RowType> = [
 export function Content() {
   return (
     <div className={style.container}>
-      <Table size="small" columns={columns} />
+      <Table size="small" columns={columns} scroll={{ y: 500 }} />
     </div>
   );
 }

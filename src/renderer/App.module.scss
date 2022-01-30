@@ -5,7 +5,8 @@ div.container {
 }
 .header,
 .footer {
-  padding: 8px;
+  height: 50px;
+  padding: 0 10px;
   background-color: #fafafa;
   user-select: none;
   -webkit-user-select: none;
@@ -26,7 +27,7 @@ div.container {
 .logo {
   font-size: 0;
   img {
-    width: 20px;
+    width: 18px;
     margin-right: 8px;
   }
   h5 {
@@ -37,11 +38,34 @@ div.container {
   }
 }
 
-.action {
-  > button {
-    margin-right: 18px;
+.mini,
+.close {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: #ccc;
+  svg {
+    width: 12px;
+    // transform: scale(0.9);
+    visibility: hidden;
+    path {
+      fill: #343434;
+    }
   }
-  > a {
-    // font-size: 20px;
+}
+
+.action:hover {
+  .mini,
+  .close {
+    svg {
+      visibility: visible;
+    }
+  }
+  .mini {
+    background-color: #ffc107;
+  }
+  .close {
+    background-color: #dc3545;
   }
 }

@@ -1,8 +1,7 @@
-// import 'core-js/stable';
-// import 'regenerator-runtime/runtime';
 import path from 'path';
 import { app, BrowserWindow, shell, Menu } from 'electron';
 import { getEntryUrl, isDev, getAssetPath } from './util';
+import { IPC } from './ipc';
 
 // 当前主窗口的引用
 let mainWindow: BrowserWindow | null = null;
@@ -10,7 +9,7 @@ let mainWindow: BrowserWindow | null = null;
 /**
  * 创建一个应用程序窗口
  */
-function createWindow() {
+async function createWindow() {
   // 创建一个窗口实例
   mainWindow = new BrowserWindow({
     show: false,
@@ -20,7 +19,7 @@ function createWindow() {
     // 窗口不可缩放
     resizable: false,
     // 无边框
-    frame: true,
+    frame: false,
     maximizable: false,
     roundedCorners: false,
     titleBarStyle: 'hidden',
@@ -31,9 +30,9 @@ function createWindow() {
       preload: path.join(__dirname, './preload.js'),
     },
   });
-
-  // 加载窗口入口文件
-  mainWindow.loadURL(getEntryUrl());
+  // 伴随着window而创建的ipc通信逻辑
+  const ipc = new IPC(mainWindow);
+  ipc.bind();
 
   // 窗口准备好了，显示窗口
   mainWindow.on('ready-to-show', () => {
@@ -50,7 +49,11 @@ function createWindow() {
   // 窗口被关闭，清理资源
   mainWindow.on('closed', () => {
     mainWindow = null;
+    ipc.unbind();
   });
+
+  // 加载窗口入口文件
+  await mainWindow.loadURL(getEntryUrl());
 
   // 在本地浏览器窗口中打开链接请求
   mainWindow.webContents.setWindowOpenHandler((details) => {

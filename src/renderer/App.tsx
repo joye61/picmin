@@ -1,12 +1,13 @@
 import style from './App.module.scss';
-import { ColBetween, RowBetween, RowStart } from './Flex';
+import { ColBetween, RowBetween, RowCenter, RowStart } from './Flex';
 import logo from '../../assets/icon.svg';
-import { Button, Typography, Space } from 'antd';
+import { Button, Typography, Space, Dropdown, Menu } from 'antd';
 import {
   PlusOutlined,
   SettingOutlined,
   ClearOutlined,
   SaveOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { Content } from './Content';
 
@@ -19,14 +20,24 @@ export function App() {
         <Space>
           <RowStart className={style.logo}>
             <img alt="" src={logo} />
-            <Typography.Title level={5}>免费且强大的图片压缩工具</Typography.Title>
+            <Typography.Title level={5}>
+              免费且强大的图片压缩工具
+            </Typography.Title>
           </RowStart>
         </Space>
 
         {/* 退出逻辑 */}
-        <Space>
-          <Typography.Link>最小化</Typography.Link>
-          <Typography.Link>退出</Typography.Link>
+        <Space className={style.action}>
+          <RowCenter className={style.mini}>
+            <svg viewBox="0 0 24 24">
+              <path d="M19,13H5V11H19V13Z" />
+            </svg>
+          </RowCenter>
+          <RowCenter className={style.close}>
+            <svg viewBox="0 0 24 24">
+              <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+          </RowCenter>
         </Space>
       </RowBetween>
 
@@ -49,9 +60,19 @@ export function App() {
         <Space>
           <Button icon={<ClearOutlined />}>清空列表</Button>
           <Button icon={<SettingOutlined />}>压缩选项</Button>
-          <Button type="primary" icon={<SaveOutlined />}>
-            打包下载
-          </Button>
+          <Dropdown.Button
+            type="primary"
+            icon={<DownOutlined />}
+            overlay={
+              <Menu>
+                <Menu.Item>覆盖保存</Menu.Item>
+                <Menu.Item>别名保存</Menu.Item>
+                <Menu.Item>打包另存</Menu.Item>
+              </Menu>
+            }
+          >
+            覆盖保存
+          </Dropdown.Button>
           <Button type="primary" icon={<PlusOutlined />}>
             添加图片
           </Button>

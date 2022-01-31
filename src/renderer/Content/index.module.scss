@@ -1,9 +1,63 @@
 .container {
   height: 100%;
-  :global(.ant-table) {
-    height: 100%;
+  align-items: stretch;
+  table {
+    width: 100vw;
+    border-collapse: collapse;
+    th {
+      background-color: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+      white-space: nowrap;
+    }
+    th,
+    td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    tr:hover td {
+      background-color: #fafafa;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
   }
-  :global(.ant-table-tbody) > tr:last-child td {
-    border-bottom: none;
+}
+
+.ttitle {
+  flex-shrink: 0;
+}
+.list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 8px;
   }
+  &::-webkit-scrollbar-thumb {
+    width: 4px;
+    background-color: #c0c0c0;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// 列属性
+._status {
+  width: 40px;
+}
+._name {
+}
+._oldSize {
+  width: 100px;
+}
+._newSize {
+  width: 100px;
+}
+._rate {
+  width: 100px;
+}
+._action {
+  width: 100px;
 }

@@ -1,5 +1,4 @@
 import { ipcMain, app, BrowserWindow, IpcMainEvent } from 'electron';
-import { IPCChannel } from './const';
 
 export type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;
 
@@ -19,11 +18,11 @@ export class IPC {
   }
 
   public bind() {
-    ipcMain.on(IPCChannel.QuitApp, this._quitApp);
-    ipcMain.on(IPCChannel.minimizeApp, this._minimize);
+    ipcMain.on('quitApp', this._quitApp);
+    ipcMain.on('minimizeApp', this._minimize);
   }
   public unbind() {
-    ipcMain.off(IPCChannel.QuitApp, this._quitApp);
-    ipcMain.off(IPCChannel.minimizeApp, this._minimize);
+    ipcMain.off('quitApp', this._quitApp);
+    ipcMain.off('minimizeApp', this._minimize);
   }
 }

@@ -1,13 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const { path } = require('path');
-const constPath = path.resolve('./const');
-const { IPCChannel, ExposeName } = require(constPath);
 
 contextBridge.exposeInMainWorld('TxxCompressApp', {
   closeApp() {
-    ipcRenderer.send(IPCChannel.QuitApp);
+    ipcRenderer.send('quitApp');
   },
-  minimize() {
-    ipcRenderer.send(IPCChannel.minimizeApp);
+  minimizeApp() {
+    ipcRenderer.send('minimizeApp');
   },
 });

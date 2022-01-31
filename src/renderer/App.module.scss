@@ -7,10 +7,15 @@ div.container {
 .footer {
   height: 50px;
   padding: 0 10px;
+  box-sizing: border-box;
   background-color: #fafafa;
   user-select: none;
   -webkit-user-select: none;
+  position: relative;
   -webkit-app-region: drag;
+  .noDrag {
+    -webkit-app-region: no-drag;
+  }
 }
 .header {
   border-bottom: 1px solid #f0f0f0;
@@ -20,7 +25,7 @@ div.container {
 }
 
 .content {
-  flex: 1;
+  height: calc(100vh - 50px - 50px);
   position: relative;
 }
 
@@ -31,8 +36,7 @@ div.container {
     margin-right: 8px;
   }
   h5 {
-    font-size: 14px;
-    // font-weight: bold;
+    font-size: 15px;
     line-height: 1;
     margin-bottom: 0;
   }
@@ -40,32 +44,23 @@ div.container {
 
 .mini,
 .close {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  // border-radius: 50%;
   cursor: pointer;
-  background-color: #ccc;
+  // background-color: #f0f0f0;
   svg {
-    width: 12px;
-    // transform: scale(0.9);
-    visibility: hidden;
+    width: 18px;
     path {
-      fill: #343434;
+      fill: #999;
     }
   }
-}
-
-.action:hover {
-  .mini,
-  .close {
+  &:hover {
+    background-color: #f0f0f0;
     svg {
-      visibility: visible;
+      path {
+        fill: #333;
+      }
     }
-  }
-  .mini {
-    background-color: #ffc107;
-  }
-  .close {
-    background-color: #dc3545;
   }
 }

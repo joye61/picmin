@@ -10,10 +10,11 @@ import {
   DownOutlined,
 } from '@ant-design/icons';
 import { Content } from './Content';
+import clsx from 'clsx';
 
 export function App() {
   return (
-    <ColBetween className={style.container}>
+    <div className={style.container}>
       {/* 头部 */}
       <RowBetween className={style.header}>
         {/* logo */}
@@ -27,13 +28,23 @@ export function App() {
         </Space>
 
         {/* 退出逻辑 */}
-        <Space className={style.action}>
-          <RowCenter className={style.mini}>
+        <Space className={clsx(style.action, style.noDrag)}>
+          <RowCenter
+            className={style.mini}
+            onClick={() => {
+              window.TxxCompressApp.minimizeApp();
+            }}
+          >
             <svg viewBox="0 0 24 24">
               <path d="M19,13H5V11H19V13Z" />
             </svg>
           </RowCenter>
-          <RowCenter className={style.close}>
+          <RowCenter
+            className={style.close}
+            onClick={() => {
+              window.TxxCompressApp.closeApp();
+            }}
+          >
             <svg viewBox="0 0 24 24">
               <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
             </svg>
@@ -57,12 +68,12 @@ export function App() {
         </Typography.Text>
 
         {/* 操作按钮 */}
-        <Space>
+        <Space className={style.noDrag}>
           <Button icon={<ClearOutlined />}>清空列表</Button>
           <Button icon={<SettingOutlined />}>压缩选项</Button>
           <Dropdown.Button
             type="primary"
-            icon={<DownOutlined />}
+            icon={<SaveOutlined />}
             overlay={
               <Menu>
                 <Menu.Item>覆盖保存</Menu.Item>
@@ -78,6 +89,6 @@ export function App() {
           </Button>
         </Space>
       </RowBetween>
-    </ColBetween>
+    </div>
   );
 }

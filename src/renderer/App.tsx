@@ -1,5 +1,5 @@
 import style from './App.module.scss';
-import { ColBetween, RowBetween, RowCenter, RowStart } from './Flex';
+import { RowBetween, RowCenter, RowStart } from './Flex';
 import logo from '../../assets/icon.svg';
 import { Button, Typography, Space, Dropdown, Menu } from 'antd';
 import {
@@ -7,12 +7,13 @@ import {
   SettingOutlined,
   ClearOutlined,
   SaveOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
 import { Content } from './Content';
 import clsx from 'clsx';
+import { observer } from 'mobx-react-lite';
+import { saveMenus, SaveType, state } from './state';
 
-export function App() {
+export const App = observer(() => {
   return (
     <div className={style.container}>
       {/* 头部 */}
@@ -75,14 +76,18 @@ export function App() {
             type="primary"
             icon={<SaveOutlined />}
             overlay={
-              <Menu>
-                <Menu.Item>覆盖保存</Menu.Item>
-                <Menu.Item>别名保存</Menu.Item>
-                <Menu.Item>打包另存</Menu.Item>
+              <Menu
+                onClick={({ key }) => {
+                  state.saveType = key as SaveType;
+                }}
+              >
+                {saveMenus.map((menu) => {
+                  return <Menu.Item key={menu.value}>{menu.name}</Menu.Item>;
+                })}
               </Menu>
             }
           >
-            覆盖保存
+            {saveMenus.find((menu) => menu.value === state.saveType)?.name}
           </Dropdown.Button>
           <Button type="primary" icon={<PlusOutlined />}>
             添加图片
@@ -91,4 +96,4 @@ export function App() {
       </RowBetween>
     </div>
   );
-}
+});

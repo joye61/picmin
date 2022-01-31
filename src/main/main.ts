@@ -13,7 +13,7 @@ async function createWindow() {
   // 创建一个窗口实例
   mainWindow = new BrowserWindow({
     show: false,
-    width: 960,
+    width: 800,
     height: 600,
     icon: getAssetPath('icon.png'),
     // 窗口不可缩放

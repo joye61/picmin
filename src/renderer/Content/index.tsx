@@ -1,18 +1,14 @@
 import style from './index.module.scss';
 import { observer } from 'mobx-react-lite';
-import { Key } from 'react';
-import { ColStart } from '../Flex';
-import { LoadingOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { ColCenter, ColStart, RowCenter } from '../Flex';
+import {
+  LoadingOutlined,
+  CheckCircleOutlined,
+  FileImageOutlined,
+} from '@ant-design/icons';
+import { RowType, state } from '../state';
+import { Typography } from 'antd';
 
-interface RowType {
-  key: Key;
-  status: 0 | 1; // 0,正在压缩，1压缩完成
-  name: React.ReactNode;
-  oldSize: React.ReactNode;
-  newSize: React.ReactNode;
-  rate: React.ReactNode;
-  action?: React.ReactNode;
-}
 interface ColType {
   key: keyof RowType;
   title: string;
@@ -40,42 +36,6 @@ const columns: ColType[] = [
   { key: 'action', title: '操作', className: style._action },
 ];
 
-// 测试数据
-const dataSrouce: RowType[] = [
-  {
-    key: 1,
-    status: 1,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 2,
-    status: 1,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 3,
-    status: 0,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 4,
-    status: 0,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-];
-
 function createColGroupByColumns() {
   return (
     <colgroup>
@@ -91,7 +51,7 @@ function createColGroupByColumns() {
  * @returns
  */
 function createListByDataSource() {
-  return dataSrouce.map((row) => {
+  return state.list.map((row) => {
     const cols = columns.map((col) => {
       let value: React.ReactNode = row[col.key];
       if (typeof col.render === 'function') {
@@ -118,10 +78,19 @@ export const Content = observer(() => {
         </thead>
       </table>
       <div className={style.list}>
-        <table>
+        {/* <table>
           {createColGroupByColumns()}
           <tbody>{createListByDataSource()}</tbody>
-        </table>
+        </table> */}
+
+        {/* 没有数据时显示的逻辑 */}
+        <ColCenter className={style.dragZone}>
+          <FileImageOutlined className={style.icon}/>
+          <Typography.Title level={2}>
+            拖拽或选取要压缩的图片到这里
+          </Typography.Title>
+          <p>支持JPG/JPEG/PNG/GIF/WEBP/SVG格式</p>
+        </ColCenter>
       </div>
     </ColStart>
   );

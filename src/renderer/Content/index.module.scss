@@ -1,3 +1,5 @@
+@import '../var';
+
 .container {
   height: 100%;
   align-items: stretch;
@@ -63,7 +65,33 @@
 }
 
 .statusDone {
-  color: #20c997;
+  color: $primary-color;
 }
 .statusActive {
+}
+
+// 可拖拽区域
+.dragZone {
+  height: 100%;
+  .icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+    svg {
+      path {
+        fill: $primary-color;
+      }
+    }
+  }
+  h2,p {
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    color: $primary-color;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #999;
+    font-size: 14px;
+  }
 }

@@ -1,5 +1,5 @@
 import style from './index.module.scss';
-import { Form, Input, Modal, Radio, Slider } from 'antd';
+import { Alert, Form, Input, Modal, Radio, Slider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { state } from '../state';
 
@@ -18,7 +18,11 @@ export const Setting = observer(() => {
       }}
     >
       <Form layout="vertical">
-        <Form.Item label="缩放模式" name="scaleMode">
+        <Form.Item
+          label="缩放模式"
+          name="scaleMode"
+          extra={<Alert message="为防止变形，任意模式都会保持原始宽高比" type="info" showIcon/>}
+        >
           <Radio.Group>
             <Radio value={1}>缩放到比例</Radio>
             <Radio value={2}>缩放到宽度</Radio>

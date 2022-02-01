@@ -89,7 +89,7 @@ export const Content = observer(() => {
           <Typography.Title level={2}>
             拖拽或选取要压缩的图片到这里
           </Typography.Title>
-          <p>支持JPG/JPEG/PNG/GIF/WEBP/SVG格式</p>
+          <p>支持JPG/JPEG/PNG/APNG/GIF/WEBP/SVG格式</p>
         </ColCenter>
       </div>
     </ColStart>

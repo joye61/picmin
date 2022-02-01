@@ -16,6 +16,7 @@ export type SaveType = 'cover' | 'alias' | 'bundle';
 export type State = {
   saveType: SaveType;
   list: RowType[];
+  showSetting: boolean;
 };
 
 export type SaveMenuItem = {
@@ -31,36 +32,39 @@ export const saveMenus: SaveMenuItem[] = [
 
 export const state = observable.object<State>({
   saveType: 'cover',
-  list: [{
-    key: 1,
-    status: 1,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 2,
-    status: 1,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 3,
-    status: 0,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },
-  {
-    key: 4,
-    status: 0,
-    name: 'a.png',
-    oldSize: 1234,
-    newSize: 234,
-    rate: '75%',
-  },],
+  showSetting: false,
+  list: [
+    {
+      key: 1,
+      status: 1,
+      name: 'a.png',
+      oldSize: 1234,
+      newSize: 234,
+      rate: '75%',
+    },
+    {
+      key: 2,
+      status: 1,
+      name: 'a.png',
+      oldSize: 1234,
+      newSize: 234,
+      rate: '75%',
+    },
+    {
+      key: 3,
+      status: 0,
+      name: 'a.png',
+      oldSize: 1234,
+      newSize: 234,
+      rate: '75%',
+    },
+    {
+      key: 4,
+      status: 0,
+      name: 'a.png',
+      oldSize: 1234,
+      newSize: 234,
+      rate: '75%',
+    },
+  ],
 });

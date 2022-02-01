@@ -12,6 +12,7 @@ import { Content } from './Content';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import { saveMenus, SaveType, state } from './state';
+import { Setting } from './Setting';
 
 export const App = observer(() => {
   return (
@@ -30,6 +31,15 @@ export const App = observer(() => {
 
         {/* 退出逻辑 */}
         <Space className={clsx(style.action, style.noDrag)}>
+          <Button
+            className={style.setting}
+            icon={<SettingOutlined />}
+            size="small"
+            type="link"
+            onClick={() => (state.showSetting = true)}
+          >
+            压缩选项
+          </Button>
           <RowCenter
             className={style.mini}
             onClick={() => {
@@ -71,7 +81,6 @@ export const App = observer(() => {
         {/* 操作按钮 */}
         <Space className={style.noDrag}>
           <Button icon={<ClearOutlined />}>清空列表</Button>
-          <Button icon={<SettingOutlined />}>压缩选项</Button>
           <Dropdown.Button
             type="primary"
             icon={<SaveOutlined />}
@@ -94,6 +103,9 @@ export const App = observer(() => {
           </Button>
         </Space>
       </RowBetween>
+
+      {/* 设置框 */}
+      <Setting />
     </div>
   );
 });

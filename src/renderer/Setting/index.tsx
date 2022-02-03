@@ -1,9 +1,55 @@
-import style from './index.module.scss';
-import { Alert, Form, Input, Modal, Radio, Slider } from 'antd';
+// import style from './index.module.scss';
+import { Form, Input, Modal, Radio, Slider } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import { state } from '../state';
 
+interface FormValues {
+  scaleMode: 'percent' | 'width' | 'height';
+  scalePercent?: number;
+  scaleWidth?: number;
+  scaleHeight?: number;
+  qualityPercent: number;
+}
+
 export const Setting = observer(() => {
+  const [form] = Form.useForm<FormValues>();
+
+  useEffect(() => {
+    if (form) {
+      form.setFieldsValue({
+        scaleMode: state.scaleMode,
+        scalePercent: state.scalePercent,
+        scaleWidth: state.scaleWidth,
+        scaleHeight: state.scaleWidth,
+        qualityPercent: state.qualityPercent,
+      });
+    }
+  }, [form]);
+
+  const showScale = () => {
+    console.log(state.scaleMode);
+    if (state.scaleMode === 'percent') {
+      return (
+        <Form.Item label="缩放到比例" name="scalePercent">
+          <Slider />
+        </Form.Item>
+      );
+    } else if (state.scaleMode === 'width') {
+      return (
+        <Form.Item label="缩放到宽度" name="ScalaeWidth">
+          <Input placeholder="设置固定宽度，高度自适应" allowClear suffix="px"/>
+        </Form.Item>
+      );
+    } else if (state.scaleMode === 'height') {
+      return (
+        <Form.Item label="缩放到高度" name="scaleHeight">
+          <Input placeholder="设置固定高度，宽度度自适应" allowClear suffix="px"/>
+        </Form.Item>
+      );
+    }
+  };
+
   return (
     <Modal
       maskClosable
@@ -17,31 +63,35 @@ export const Setting = observer(() => {
         state.showSetting = false;
       }}
     >
-      <Form layout="vertical">
+      <Form
+        layout="vertical"
+        form={form}
+        onValuesChange={(changed) => {
+          if (changed.scaleMode) {
+            state.scaleMode = changed.scaleMode;
+          }
+        }}
+      >
         <Form.Item
           label="缩放模式"
           name="scaleMode"
-          extra={<Alert message="为防止变形，任意模式都会保持原始宽高比" type="info" showIcon/>}
+          extra="为防止变形，任意模式都会保持原始宽高比"
         >
           <Radio.Group>
-            <Radio value={1}>缩放到比例</Radio>
-            <Radio value={2}>缩放到宽度</Radio>
-            <Radio value={3}>缩放到高度</Radio>
+            <Radio value="percent">缩放到比例</Radio>
+            <Radio value="width">缩放到宽度</Radio>
+            <Radio value="height">缩放到高度</Radio>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="缩放到比例" name="percent">
-          <Slider defaultValue={30} />
-        </Form.Item>
-        {/* <Form.Item label="缩放到宽度" name="width">
-          <Input placeholder="设置固定宽度，高度自适应" allowClear/>
-        </Form.Item>
-        <Form.Item label="缩放到高度" name="height">
-          <Input placeholder="设置固定高度，宽度度自适应" allowClear/>
-        </Form.Item> */}
+        {showScale()}
 
-        <Form.Item label="压缩质量" name="quality">
-          <Slider defaultValue={30} />
+        <Form.Item
+          label="压缩质量"
+          name="qualityPercent"
+          extra="质量值越大，文件体积越大，压缩率越低"
+        >
+          <Slider />
         </Form.Item>
       </Form>
     </Modal>

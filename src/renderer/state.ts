@@ -17,6 +17,11 @@ export type State = {
   saveType: SaveType;
   list: RowType[];
   showSetting: boolean;
+  scaleMode: 'percent' | 'width' | 'height';
+  scalePercent?: number;
+  scaleWidth?: number;
+  scaleHeight?: number;
+  qualityPercent: number;
 };
 
 export type SaveMenuItem = {
@@ -33,6 +38,11 @@ export const saveMenus: SaveMenuItem[] = [
 export const state = observable.object<State>({
   saveType: 'cover',
   showSetting: false,
+  scaleMode: 'percent',
+  scalePercent: 100,
+  scaleWidth: undefined,
+  scaleHeight: undefined,
+  qualityPercent: 70,
   list: [
     {
       key: 1,

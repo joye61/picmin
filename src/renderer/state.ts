@@ -22,6 +22,7 @@ export type State = {
   scaleWidth?: number;
   scaleHeight?: number;
   qualityPercent: number;
+  dragActive: boolean;
 };
 
 export type SaveMenuItem = {
@@ -43,6 +44,7 @@ export const state = observable.object<State>({
   scaleWidth: undefined,
   scaleHeight: undefined,
   qualityPercent: 70,
+  dragActive: false,
   list: [
     {
       key: 1,

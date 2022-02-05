@@ -1,4 +1,4 @@
-@import '../var';
+@import "../var";
 
 .container {
   height: 100%;
@@ -73,6 +73,15 @@
 // 可拖拽区域
 .dragZone {
   height: 100%;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    background-color: lighten($warning-color, 45);
+  }
+  &:active {
+    background-color: lighten($warning-color, 44);
+  }
   .icon {
     font-size: 40px;
     margin-bottom: 20px;
@@ -82,7 +91,8 @@
       }
     }
   }
-  h2,p {
+  h2,
+  p {
     letter-spacing: 1px;
   }
 
@@ -93,5 +103,20 @@
   p {
     color: #999;
     font-size: 14px;
+  }
+  .mask {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  &.dragActive {
+    .mask {
+      border: 2px dashed $warning-color;
+      background-color: #ffffff99;
+    }
   }
 }

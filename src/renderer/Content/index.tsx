@@ -1,13 +1,14 @@
-import style from './index.module.scss';
-import { observer } from 'mobx-react-lite';
-import { ColCenter, ColStart, RowCenter } from '../Flex';
+import style from "./index.module.scss";
+import { observer } from "mobx-react-lite";
+import { ColCenter, ColStart, RowCenter } from "../Flex";
 import {
   LoadingOutlined,
   CheckCircleOutlined,
   FileImageOutlined,
-} from '@ant-design/icons';
-import { RowType, state } from '../state';
-import { Typography } from 'antd';
+} from "@ant-design/icons";
+import { RowType, state } from "../state";
+import { Typography } from "antd";
+import clsx from "clsx";
 
 interface ColType {
   key: keyof RowType;
@@ -18,8 +19,8 @@ interface ColType {
 
 const columns: ColType[] = [
   {
-    key: 'status',
-    title: '状态',
+    key: "status",
+    title: "状态",
     className: style._status,
     render(item) {
       let icon = <CheckCircleOutlined className={style.statusDone} />;
@@ -29,11 +30,11 @@ const columns: ColType[] = [
       return icon;
     },
   },
-  { key: 'name', title: '名称', className: style._name },
-  { key: 'oldSize', title: '原大小', className: style._oldSize },
-  { key: 'newSize', title: '新大小', className: style._newSize },
-  { key: 'rate', title: '压缩率', className: style._rate },
-  { key: 'action', title: '操作', className: style._action },
+  { key: "name", title: "名称", className: style._name },
+  { key: "oldSize", title: "原大小", className: style._oldSize },
+  { key: "newSize", title: "新大小", className: style._newSize },
+  { key: "rate", title: "压缩率", className: style._rate },
+  { key: "action", title: "操作", className: style._action },
 ];
 
 function createColGroupByColumns() {
@@ -54,7 +55,7 @@ function createListByDataSource() {
   return state.list.map((row) => {
     const cols = columns.map((col) => {
       let value: React.ReactNode = row[col.key];
-      if (typeof col.render === 'function') {
+      if (typeof col.render === "function") {
         value = col.render(row);
       }
       return <td key={col.key}>{value}</td>;
@@ -84,12 +85,35 @@ export const Content = observer(() => {
         </table> */}
 
         {/* 没有数据时显示的逻辑 */}
-        <ColCenter className={style.dragZone}>
-          <FileImageOutlined className={style.icon}/>
+        <ColCenter
+          className={clsx(style.dragZone, state.dragActive && style.dragActive)}
+        >
+          <FileImageOutlined className={style.icon} />
           <Typography.Title level={2}>
             拖拽或选取要压缩的图片到这里
           </Typography.Title>
           <p>支持JPG/JPEG/PNG/APNG/GIF/WEBP/SVG格式</p>
+          <div
+            className={style.mask}
+            onDragOver={(event) => {
+              event.preventDefault();
+              if (!state.dragActive) {
+                state.dragActive = true;
+              }
+            }}
+            onDragLeave={() => {
+              state.dragActive = false;
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              state.dragActive = false;
+              // const list = getFilesByImageDropEvent(event);
+              // if (list.length > 0) {
+              //   // 不允许批量的情况下只选择第一个文件
+              //   onReceiveImages?.(multiple ? list : [list[0]]);
+              // }
+            }}
+          ></div>
         </ColCenter>
       </div>
     </ColStart>

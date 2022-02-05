@@ -1,11 +1,11 @@
-// import style from './index.module.scss';
-import { Form, Input, Modal, Radio, Slider } from 'antd';
-import { observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
-import { state } from '../state';
+import style from "./index.module.scss";
+import { Form, Input, Modal, Radio, Slider } from "antd";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import { state } from "../state";
 
 interface FormValues {
-  scaleMode: 'percent' | 'width' | 'height';
+  scaleMode: "percent" | "width" | "height";
   scalePercent?: number;
   scaleWidth?: number;
   scaleHeight?: number;
@@ -29,22 +29,30 @@ export const Setting = observer(() => {
 
   const showScale = () => {
     console.log(state.scaleMode);
-    if (state.scaleMode === 'percent') {
+    if (state.scaleMode === "percent") {
       return (
         <Form.Item label="缩放到比例" name="scalePercent">
           <Slider />
         </Form.Item>
       );
-    } else if (state.scaleMode === 'width') {
+    } else if (state.scaleMode === "width") {
       return (
         <Form.Item label="缩放到宽度" name="ScalaeWidth">
-          <Input placeholder="设置固定宽度，高度自适应" allowClear suffix="px"/>
+          <Input
+            placeholder="设置固定宽度，高度自适应"
+            allowClear
+            suffix="px"
+          />
         </Form.Item>
       );
-    } else if (state.scaleMode === 'height') {
+    } else if (state.scaleMode === "height") {
       return (
         <Form.Item label="缩放到高度" name="scaleHeight">
-          <Input placeholder="设置固定高度，宽度度自适应" allowClear suffix="px"/>
+          <Input
+            placeholder="设置固定高度，宽度度自适应"
+            allowClear
+            suffix="px"
+          />
         </Form.Item>
       );
     }
@@ -59,6 +67,12 @@ export const Setting = observer(() => {
       title="压缩选项设置"
       okText="立即应用"
       cancelText="重置选项"
+      forceRender
+      closeIcon={
+        <svg viewBox="0 0 24 24" className={style.close}>
+          <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+        </svg>
+      }
       onCancel={() => {
         state.showSetting = false;
       }}

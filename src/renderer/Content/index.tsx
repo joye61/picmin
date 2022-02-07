@@ -1,6 +1,6 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
-import { ColCenter, ColStart, RowCenter } from "../Flex";
+import { ColCenter, ColStart } from "../Flex";
 import {
   LoadingOutlined,
   CheckCircleOutlined,
@@ -9,6 +9,7 @@ import {
 import { RowType, state } from "../state";
 import { Typography } from "antd";
 import clsx from "clsx";
+import { getSupportExtensionsAsString } from "../image";
 
 interface ColType {
   key: keyof RowType;
@@ -48,20 +49,71 @@ function createColGroupByColumns() {
 }
 
 /**
- * 从数据源创建列表
+ * 显示内容区域的内容
  * @returns
  */
-function createListByDataSource() {
-  return state.list.map((row) => {
-    const cols = columns.map((col) => {
-      let value: React.ReactNode = row[col.key];
-      if (typeof col.render === "function") {
-        value = col.render(row);
-      }
-      return <td key={col.key}>{value}</td>;
+function showContent() {
+  // 当数据存在时，创建列表
+  if (state.list && state.list.length > 0) {
+    const list = state.list.map((row) => {
+      const cols = columns.map((col) => {
+        let value: React.ReactNode = row[col.key];
+        if (typeof col.render === "function") {
+          value = col.render(row);
+        }
+        return <td key={col.key}>{value}</td>;
+      });
+      return <tr key={row.key}>{cols}</tr>;
     });
-    return <tr key={row.key}>{cols}</tr>;
-  });
+    return (
+      <table>
+        {createColGroupByColumns()}
+        <tbody>{list}</tbody>
+      </table>
+    );
+  }
+
+  // 当数据不存在时，显示拖拽框
+  return (
+    <ColCenter
+      className={clsx(style.dragZone, state.dragActive && style.dragActive)}
+    >
+      <FileImageOutlined className={style.icon} />
+      <Typography.Title level={2}>
+        拖拽或选取要压缩的图片到这里
+      </Typography.Title>
+      <p>支持{getSupportExtensionsAsString()}格式</p>
+      <div
+        className={style.mask}
+        onDragOver={(event) => {
+          event.preventDefault();
+          if (!state.dragActive) {
+            state.dragActive = true;
+          }
+        }}
+        onDragLeave={() => {
+          state.dragActive = false;
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          state.dragActive = false;
+          // const list = getFilesByImageDropEvent(event);
+          // if (list.length > 0) {
+          //   // 不允许批量的情况下只选择第一个文件
+          //   onReceiveImages?.(multiple ? list : [list[0]]);
+          // }
+          let files: ImageItem[] = [];
+          for (let i = 0; i < event.dataTransfer.items.length; i++) {
+            if (event.dataTransfer.items[i].kind === "file") {
+              const file = event.dataTransfer.items[i].getAsFile()!;
+              files.push({ path: file.path, status: 1 });
+            }
+          }
+          window.TxxCompressApp.addImageList(files);
+        }}
+      ></div>
+    </ColCenter>
+  );
 }
 
 export const Content = observer(() => {
@@ -78,44 +130,7 @@ export const Content = observer(() => {
           </tr>
         </thead>
       </table>
-      <div className={style.list}>
-        {/* <table>
-          {createColGroupByColumns()}
-          <tbody>{createListByDataSource()}</tbody>
-        </table> */}
-
-        {/* 没有数据时显示的逻辑 */}
-        <ColCenter
-          className={clsx(style.dragZone, state.dragActive && style.dragActive)}
-        >
-          <FileImageOutlined className={style.icon} />
-          <Typography.Title level={2}>
-            拖拽或选取要压缩的图片到这里
-          </Typography.Title>
-          <p>支持JPG/JPEG/PNG/APNG/GIF/WEBP/SVG格式</p>
-          <div
-            className={style.mask}
-            onDragOver={(event) => {
-              event.preventDefault();
-              if (!state.dragActive) {
-                state.dragActive = true;
-              }
-            }}
-            onDragLeave={() => {
-              state.dragActive = false;
-            }}
-            onDrop={(event) => {
-              event.preventDefault();
-              state.dragActive = false;
-              // const list = getFilesByImageDropEvent(event);
-              // if (list.length > 0) {
-              //   // 不允许批量的情况下只选择第一个文件
-              //   onReceiveImages?.(multiple ? list : [list[0]]);
-              // }
-            }}
-          ></div>
-        </ColCenter>
-      </div>
+      <div className={style.list}>{showContent()}</div>
     </ColStart>
   );
 });

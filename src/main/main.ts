@@ -1,7 +1,9 @@
 import path from 'path';
-import { app, BrowserWindow, shell, Menu } from 'electron';
+
+import { app, BrowserWindow, shell } from 'electron';
 import { getEntryUrl, isDev, getAssetPath } from './util';
 import { IPC } from './ipc';
+import { createMenu } from './menu';
 
 // 当前主窗口的引用
 let mainWindow: BrowserWindow | null = null;
@@ -66,7 +68,7 @@ async function createWindow() {
  * 启动应用程序
  */
 (async () => {
-  // Menu.setApplicationMenu(null);
+  createMenu();
   // 当所有窗口都关闭时，退出app
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -76,7 +78,6 @@ async function createWindow() {
 
   // 等待app就绪
   await app.whenReady();
-  // Menu.setApplicationMenu(null);
   createWindow();
 
   // 应用被激活时触发

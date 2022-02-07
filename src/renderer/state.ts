@@ -1,5 +1,5 @@
-import { observable } from 'mobx';
-import { Key } from 'react';
+import { observable } from "mobx";
+import { Key } from "react";
 
 export interface RowType {
   key: Key;
@@ -11,13 +11,13 @@ export interface RowType {
   action?: React.ReactNode;
 }
 
-export type SaveType = 'cover' | 'alias' | 'bundle';
+export type SaveType = "cover" | "alias" | "bundle";
 
 export type State = {
   saveType: SaveType;
   list: RowType[];
   showSetting: boolean;
-  scaleMode: 'percent' | 'width' | 'height';
+  scaleMode: "percent" | "width" | "height";
   scalePercent?: number;
   scaleWidth?: number;
   scaleHeight?: number;
@@ -31,52 +31,52 @@ export type SaveMenuItem = {
 };
 
 export const saveMenus: SaveMenuItem[] = [
-  { name: '覆盖保存', value: 'cover' },
-  { name: '别名保存', value: 'alias' },
-  { name: '打包另存', value: 'bundle' },
+  { name: "覆盖保存", value: "cover" },
+  { name: "别名保存", value: "alias" },
+  { name: "打包另存", value: "bundle" },
 ];
 
 export const state = observable.object<State>({
-  saveType: 'cover',
+  saveType: "cover",
   showSetting: false,
-  scaleMode: 'percent',
+  scaleMode: "percent",
   scalePercent: 100,
   scaleWidth: undefined,
   scaleHeight: undefined,
   qualityPercent: 70,
   dragActive: false,
   list: [
-    {
-      key: 1,
-      status: 1,
-      name: 'a.png',
-      oldSize: 1234,
-      newSize: 234,
-      rate: '75%',
-    },
-    {
-      key: 2,
-      status: 1,
-      name: 'a.png',
-      oldSize: 1234,
-      newSize: 234,
-      rate: '75%',
-    },
-    {
-      key: 3,
-      status: 0,
-      name: 'a.png',
-      oldSize: 1234,
-      newSize: 234,
-      rate: '75%',
-    },
-    {
-      key: 4,
-      status: 0,
-      name: 'a.png',
-      oldSize: 1234,
-      newSize: 234,
-      rate: '75%',
-    },
+    // {
+    //   key: 1,
+    //   status: 1,
+    //   name: 'a.png',
+    //   oldSize: 1234,
+    //   newSize: 234,
+    //   rate: '75%',
+    // },
+    // {
+    //   key: 2,
+    //   status: 1,
+    //   name: 'a.png',
+    //   oldSize: 1234,
+    //   newSize: 234,
+    //   rate: '75%',
+    // },
+    // {
+    //   key: 3,
+    //   status: 0,
+    //   name: 'a.png',
+    //   oldSize: 1234,
+    //   newSize: 234,
+    //   rate: '75%',
+    // },
+    // {
+    //   key: 4,
+    //   status: 0,
+    //   name: 'a.png',
+    //   oldSize: 1234,
+    //   newSize: 234,
+    //   rate: '75%',
+    // },
   ],
 });

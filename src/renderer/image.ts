@@ -1,10 +1,5 @@
-export enum AllowTypes {
-  JPG = "image/jpeg",
-  JPEG = "image/jpeg",
-  PNG = "image/png",
-  APNG = "image/apng",
-  WEBP = "image/webp",
-  GIF = "image/gif",
-  AVIF = "image/avif",
-  SVG = "image/svg+xml",
+import { AllowTypes } from "@/functions";
+
+export function getSupportExtensionsAsString() {
+  return Object.keys(AllowTypes).join("/");
 }

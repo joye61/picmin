@@ -1,18 +1,18 @@
-import style from './App.module.scss';
-import { RowBetween, RowCenter, RowStart } from './Flex';
-import logo from '../../assets/icon.svg';
-import { Button, Typography, Space, Dropdown, Menu } from 'antd';
+import style from "./App.module.scss";
+import { RowBetween, RowCenter, RowStart } from "./Flex";
+import logo from "../../assets/icon.svg";
+import { Button, Typography, Space, Dropdown, Menu } from "antd";
 import {
   PlusOutlined,
   SettingOutlined,
   ClearOutlined,
   SaveOutlined,
-} from '@ant-design/icons';
-import { Content } from './Content';
-import clsx from 'clsx';
-import { observer } from 'mobx-react-lite';
-import { saveMenus, SaveType, state } from './state';
-import { Setting } from './Setting';
+} from "@ant-design/icons";
+import { Content } from "./Content";
+import clsx from "clsx";
+import { observer } from "mobx-react-lite";
+import { saveMenus, SaveType, state } from "./state";
+import { Setting } from "./Setting";
 
 export const App = observer(() => {
   return (
@@ -23,9 +23,7 @@ export const App = observer(() => {
         <Space>
           <RowStart className={style.logo}>
             <img alt="" src={logo} />
-            <Typography.Title level={5}>
-              免费且强大的图片压缩工具
-            </Typography.Title>
+            <Typography.Title level={5}>图小小</Typography.Title>
           </RowStart>
         </Space>
 

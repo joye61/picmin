@@ -1,16 +1,15 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.5.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "txx-compress-app",
+  "version": "0.0.1",
+  "description": "An image compress app build with electron",
   "main": "./dist/main/main.js",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "joye",
+    "email": "89065495@qq.com"
   },
   "scripts": {
-    "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
+    "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir .",
+    "link-modules": "ts-node ../../scripts/linkModules.ts",
     "postinstall": "npm run electron-rebuild && npm run link-modules"
   },
   "dependencies": {},

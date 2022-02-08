@@ -15,7 +15,6 @@ import { observer } from "mobx-react-lite";
 import { saveMenus, SaveType, state } from "./state";
 import { Setting } from "./Setting";
 
-
 export const App = observer(() => {
   return (
     <div className={style.container}>
@@ -43,7 +42,7 @@ export const App = observer(() => {
           <RowCenter
             className={style.mini}
             onClick={() => {
-              window.TxxCompressApp.minimizeApp();
+              window.PicMin.miniApp();
             }}
           >
             <svg viewBox="0 0 24 24">
@@ -53,7 +52,7 @@ export const App = observer(() => {
           <RowCenter
             className={style.close}
             onClick={() => {
-              window.TxxCompressApp.closeApp();
+              window.PicMin.closeApp();
             }}
           >
             <svg viewBox="0 0 24 24">

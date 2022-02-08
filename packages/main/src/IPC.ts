@@ -1,6 +1,7 @@
 import { ipcMain, app, BrowserWindow, IpcMainEvent } from "electron";
 import { ImageList } from "./image";
 import { getAllImagesFromPathList } from "./util";
+import {type ImageItem, IPCEvents} from "../../common/const"
 
 export type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;
 
@@ -40,15 +41,15 @@ export class IPC {
   }
 
   public bind() {
-    ipcMain.on("quitApp", this._quitApp);
-    ipcMain.on("minimizeApp", this._minimize);
-    ipcMain.on("addImageList", this._addImageList);
-    ipcMain.on("clearImageList", this._clearImageList);
+    ipcMain.on(IPCEvents.QuitApp, this._quitApp);
+    ipcMain.on(IPCEvents.MiniApp, this._minimize);
+    ipcMain.on(IPCEvents.AddImages, this._addImageList);
+    ipcMain.on(IPCEvents.EmptyImages, this._clearImageList);
   }
   public unbind() {
-    ipcMain.off("quitApp", this._quitApp);
-    ipcMain.off("minimizeApp", this._minimize);
-    ipcMain.off("addImageList", this._addImageList);
-    ipcMain.off("clearImageList", this._clearImageList);
+    ipcMain.off(IPCEvents.QuitApp, this._quitApp);
+    ipcMain.off(IPCEvents.MiniApp, this._minimize);
+    ipcMain.off(IPCEvents.AddImages, this._addImageList);
+    ipcMain.off(IPCEvents.EmptyImages, this._clearImageList);
   }
 }

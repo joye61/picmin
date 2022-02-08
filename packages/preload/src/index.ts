@@ -1,20 +1,21 @@
 import { contextBridge, ipcRenderer } from "electron";
+import {type ImageItem, IPCEvents} from "../../common/const"
 
-contextBridge.exposeInMainWorld("TxxCompressApp", {
+contextBridge.exposeInMainWorld("PicMin", {
   // 关闭app
   closeApp() {
-    ipcRenderer.send("quitApp");
+    ipcRenderer.send(IPCEvents.QuitApp);
   },
   // 最小化app
-  minimizeApp() {
-    ipcRenderer.send("minimizeApp");
+  miniApp() {
+    ipcRenderer.send(IPCEvents.MiniApp);
   },
   // 向图片列表中添加图片
-  addImageList(imageList: Array<ImageItem>) {
-    ipcRenderer.send("addImageList", imageList);
+  addImages(imageList: Array<ImageItem>) {
+    ipcRenderer.send(IPCEvents.AddImages, imageList);
   },
   // 清空图片列表
-  clearImageList() {
-    ipcRenderer.send("clearImageList");
+  emptyImages() {
+    ipcRenderer.send(IPCEvents.EmptyImages);
   },
 });

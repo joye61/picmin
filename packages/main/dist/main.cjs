@@ -1684,6 +1684,13 @@ var AllowTypes;
   AllowTypes2["AVIF"] = "image/avif";
   AllowTypes2["SVG"] = "image/svg+xml";
 })(AllowTypes || (AllowTypes = {}));
+var IPCEvents;
+(function(IPCEvents2) {
+  IPCEvents2["QuitApp"] = "QuitApp";
+  IPCEvents2["MiniApp"] = "MiniApp";
+  IPCEvents2["AddImages"] = "AddImages";
+  IPCEvents2["EmptyImages"] = "EmptyImages";
+})(IPCEvents || (IPCEvents = {}));
 function isDev() {
   return true;
 }
@@ -1757,16 +1764,16 @@ class IPC {
   clearImageList() {
   }
   bind() {
-    electron.ipcMain.on("quitApp", this._quitApp);
-    electron.ipcMain.on("minimizeApp", this._minimize);
-    electron.ipcMain.on("addImageList", this._addImageList);
-    electron.ipcMain.on("clearImageList", this._clearImageList);
+    electron.ipcMain.on(IPCEvents.QuitApp, this._quitApp);
+    electron.ipcMain.on(IPCEvents.MiniApp, this._minimize);
+    electron.ipcMain.on(IPCEvents.AddImages, this._addImageList);
+    electron.ipcMain.on(IPCEvents.EmptyImages, this._clearImageList);
   }
   unbind() {
-    electron.ipcMain.off("quitApp", this._quitApp);
-    electron.ipcMain.off("minimizeApp", this._minimize);
-    electron.ipcMain.off("addImageList", this._addImageList);
-    electron.ipcMain.off("clearImageList", this._clearImageList);
+    electron.ipcMain.off(IPCEvents.QuitApp, this._quitApp);
+    electron.ipcMain.off(IPCEvents.MiniApp, this._minimize);
+    electron.ipcMain.off(IPCEvents.AddImages, this._addImageList);
+    electron.ipcMain.off(IPCEvents.EmptyImages, this._clearImageList);
   }
 }
 function createMenu() {

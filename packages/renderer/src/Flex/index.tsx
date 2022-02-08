@@ -1,6 +1,7 @@
 import style from './index.module.scss';
 import clsx from 'clsx';
 import { HTMLProps } from 'react';
+import React from 'react';
 
 interface FlexProps extends HTMLProps<HTMLDivElement> {
   children?: React.ReactNode;

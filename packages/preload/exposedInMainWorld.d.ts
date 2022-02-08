@@ -1,3 +1,3 @@
 interface Window {
-    readonly TxxCompressApp: { closeApp(): void; minimizeApp(): void; addImageList(imageList: ImageItem[]): void; clearImageList(): void; };
+    readonly PicMin: { closeApp(): void; miniApp(): void; addImages(imageList: import("/Users/zhoujing/github.com/picmin/packages/common/const").ImageItem[]): void; emptyImages(): void; };
 }

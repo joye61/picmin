@@ -10,6 +10,8 @@ import { RowType, state } from "../state";
 import { Typography } from "antd";
 import clsx from "clsx";
 import { getSupportExtensionsAsString } from "../image";
+import React from "react";
+import { type ImageItem } from "../../../common/const";
 
 interface ColType {
   key: keyof RowType;
@@ -97,11 +99,6 @@ function showContent() {
         onDrop={(event) => {
           event.preventDefault();
           state.dragActive = false;
-          // const list = getFilesByImageDropEvent(event);
-          // if (list.length > 0) {
-          //   // 不允许批量的情况下只选择第一个文件
-          //   onReceiveImages?.(multiple ? list : [list[0]]);
-          // }
           let files: ImageItem[] = [];
           for (let i = 0; i < event.dataTransfer.items.length; i++) {
             if (event.dataTransfer.items[i].kind === "file") {
@@ -109,7 +106,7 @@ function showContent() {
               files.push({ path: file.path, status: 1 });
             }
           }
-          window.TxxCompressApp.addImageList(files);
+          window.PicMin.addImages(files);
         }}
       ></div>
     </ColCenter>

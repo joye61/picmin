@@ -3,6 +3,7 @@ import { Form, Input, Modal, Radio, Slider } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { state } from "../state";
+import React from "react";
 
 interface FormValues {
   scaleMode: "percent" | "width" | "height";

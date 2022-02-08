@@ -31,6 +31,16 @@ var path__default = /* @__PURE__ */ _interopDefaultLegacy(path$2);
 var fs__default = /* @__PURE__ */ _interopDefaultLegacy(fs$1);
 var require$$1__default = /* @__PURE__ */ _interopDefaultLegacy(require$$1);
 var require$$3__default = /* @__PURE__ */ _interopDefaultLegacy(require$$3);
+function getEntryUrl() {
+  const devServerUrl = "http://localhost:3000/";
+  {
+    return devServerUrl;
+  }
+}
+function getAssetPath(...paths) {
+  const RESOURCES_PATH = electron.app.isPackaged ? path__default["default"].join(process.resourcesPath, "resources") : path__default["default"].join(__dirname, "../../resources");
+  return path__default["default"].join(RESOURCES_PATH, ...paths);
+}
 var utils$3 = {};
 const path$1 = path__default["default"];
 const WIN_SLASH = "\\\\/";
@@ -1690,21 +1700,13 @@ var IPCEvents;
   IPCEvents2["MiniApp"] = "MiniApp";
   IPCEvents2["AddImages"] = "AddImages";
   IPCEvents2["EmptyImages"] = "EmptyImages";
+  IPCEvents2["EmptyOver"] = "EmptyOver";
+  IPCEvents2["PickImages"] = "PickImages";
+  IPCEvents2["StatusUpdate"] = "StatusUpdate";
 })(IPCEvents || (IPCEvents = {}));
-function isDev() {
-  return true;
+async function emptyImageList(event) {
 }
-function getEntryUrl() {
-  const devServerUrl = "http://localhost:3000/";
-  {
-    return devServerUrl;
-  }
-}
-function getAssetPath(...paths) {
-  const RESOURCES_PATH = electron.app.isPackaged ? path__default["default"].join(process.resourcesPath, "assets") : path__default["default"].join(__dirname, "../../assets");
-  return path__default["default"].join(RESOURCES_PATH, ...paths);
-}
-async function getAllImagesFromPathList(pathList) {
+async function addImagesFromList(event, pathList) {
   const output = [];
   const types = Object.keys(AllowTypes);
   const ensureImageLegal = (image) => {
@@ -1740,40 +1742,77 @@ async function getAllImagesFromPathList(pathList) {
   }
   return output;
 }
+function isMac() {
+  return process.platform === "darwin";
+}
 class IPC {
   constructor(win) {
     this.win = win;
     this._quitApp = this.quitApp.bind(this);
-    this._minimize = this.minimize.bind(this);
-    this._addImageList = this.addImageList.bind(this);
-    this._clearImageList = this.clearImageList.bind(this);
+    this._miniApp = this.miniApp.bind(this);
+    this._addImages = this.addImages.bind(this);
+    this._emptyImages = this.emptyImages.bind(this);
+    this._pickImages = this.pickImages.bind(this);
   }
   _quitApp;
-  _minimize;
-  _addImageList;
-  _clearImageList;
+  _miniApp;
+  _addImages;
+  _emptyImages;
+  _pickImages;
   quitApp() {
     electron.app.quit();
   }
-  minimize() {
+  miniApp() {
     this.win.minimize();
   }
-  addImageList(event, list) {
-    getAllImagesFromPathList(list);
+  pickImages(event) {
+    const extensions = Object.keys(AllowTypes).map((ext) => ext.toLowerCase());
+    const openProps = ["openFile"];
+    if (isMac()) {
+      openProps.push("openDirectory");
+    }
+    const result = electron.dialog.showOpenDialogSync({
+      title: "\u8BF7\u9009\u62E9\u5F85\u538B\u7F29\u7684\u56FE\u7247",
+      filters: [{ name: "\u56FE\u7247\u7C7B\u578B", extensions }],
+      properties: [
+        ...openProps,
+        "multiSelections",
+        "showHiddenFiles",
+        "promptToCreate"
+      ]
+    });
+    if (Array.isArray(result)) {
+      const list = result.map((item) => {
+        return {
+          status: 1,
+          path: item
+        };
+      });
+      addImagesFromList(event, list);
+    }
   }
-  clearImageList() {
+  addImages(event, list) {
+    addImagesFromList(event, list);
+  }
+  emptyImages(event) {
+    emptyImageList();
+    event.reply(IPCEvents.EmptyOver);
+    event.reply(IPCEvents.EmptyOver);
+    event.reply(IPCEvents.EmptyOver);
   }
   bind() {
     electron.ipcMain.on(IPCEvents.QuitApp, this._quitApp);
-    electron.ipcMain.on(IPCEvents.MiniApp, this._minimize);
-    electron.ipcMain.on(IPCEvents.AddImages, this._addImageList);
-    electron.ipcMain.on(IPCEvents.EmptyImages, this._clearImageList);
+    electron.ipcMain.on(IPCEvents.MiniApp, this._miniApp);
+    electron.ipcMain.on(IPCEvents.AddImages, this._addImages);
+    electron.ipcMain.on(IPCEvents.EmptyImages, this._emptyImages);
+    electron.ipcMain.on(IPCEvents.PickImages, this._pickImages);
   }
   unbind() {
     electron.ipcMain.off(IPCEvents.QuitApp, this._quitApp);
-    electron.ipcMain.off(IPCEvents.MiniApp, this._minimize);
-    electron.ipcMain.off(IPCEvents.AddImages, this._addImageList);
-    electron.ipcMain.off(IPCEvents.EmptyImages, this._clearImageList);
+    electron.ipcMain.off(IPCEvents.MiniApp, this._miniApp);
+    electron.ipcMain.off(IPCEvents.AddImages, this._addImages);
+    electron.ipcMain.off(IPCEvents.EmptyImages, this._emptyImages);
+    electron.ipcMain.off(IPCEvents.PickImages, this._pickImages);
   }
 }
 function createMenu() {
@@ -1816,7 +1855,7 @@ async function createWindow() {
     roundedCorners: false,
     titleBarStyle: "hidden",
     webPreferences: {
-      devTools: isDev(),
+      devTools: true,
       preload: path__default["default"].join(__dirname, "../../preload/dist/index.cjs")
     }
   });

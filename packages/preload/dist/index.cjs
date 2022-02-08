@@ -17,6 +17,9 @@ var IPCEvents;
   IPCEvents2["MiniApp"] = "MiniApp";
   IPCEvents2["AddImages"] = "AddImages";
   IPCEvents2["EmptyImages"] = "EmptyImages";
+  IPCEvents2["EmptyOver"] = "EmptyOver";
+  IPCEvents2["PickImages"] = "PickImages";
+  IPCEvents2["StatusUpdate"] = "StatusUpdate";
 })(IPCEvents || (IPCEvents = {}));
 electron.contextBridge.exposeInMainWorld("PicMin", {
   closeApp() {
@@ -25,11 +28,26 @@ electron.contextBridge.exposeInMainWorld("PicMin", {
   miniApp() {
     electron.ipcRenderer.send(IPCEvents.MiniApp);
   },
+  pickImages() {
+    electron.ipcRenderer.send(IPCEvents.PickImages);
+  },
   addImages(imageList) {
     electron.ipcRenderer.send(IPCEvents.AddImages, imageList);
   },
   emptyImages() {
     electron.ipcRenderer.send(IPCEvents.EmptyImages);
+  }
+});
+electron.contextBridge.exposeInMainWorld("PicMinMessage", {
+  onEmptyOver(callback) {
+    electron.ipcRenderer.on(IPCEvents.EmptyOver, callback);
+  },
+  onStatusUpdate(callback) {
+    electron.ipcRenderer.on(IPCEvents.StatusUpdate, (_, ...data) => callback(...data));
+  },
+  unListenAll() {
+    electron.ipcRenderer.removeAllListeners(IPCEvents.EmptyOver);
+    electron.ipcRenderer.removeAllListeners(IPCEvents.StatusUpdate);
   }
 });
 //# sourceMappingURL=index.cjs.map

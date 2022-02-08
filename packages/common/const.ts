@@ -18,6 +18,12 @@ export enum IPCEvents {
   AddImages = "AddImages",
   // 清空图片列表
   EmptyImages = "EmptyImages",
+  // 清空完成
+  EmptyOver = "EmptyOver",
+  // 选取图片
+  PickImages = "PickImages",
+  // 状态更新
+  StatusUpdate = "StatusUpdate"
 }
 
 export interface ImageItem {

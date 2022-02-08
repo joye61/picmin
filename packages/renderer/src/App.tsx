@@ -14,8 +14,12 @@ import clsx from "clsx";
 import { observer } from "mobx-react-lite";
 import { saveMenus, SaveType, state } from "./state";
 import { Setting } from "./Setting";
+import { useMessage } from "./useMessage";
 
 export const App = observer(() => {
+  // 监听进程间消息传递逻辑
+  useMessage();
+
   return (
     <div className={style.container}>
       {/* 头部 */}
@@ -79,7 +83,14 @@ export const App = observer(() => {
 
         {/* 操作按钮 */}
         <Space className={style.noDrag}>
-          <Button icon={<ClearOutlined />}>清空列表</Button>
+          <Button
+            icon={<ClearOutlined />}
+            onClick={() => {
+              window.PicMin.emptyImages();
+            }}
+          >
+            清空列表
+          </Button>
           <Dropdown.Button
             type="primary"
             icon={<SaveOutlined />}
@@ -97,7 +108,13 @@ export const App = observer(() => {
           >
             {saveMenus.find((menu) => menu.value === state.saveType)?.name}
           </Dropdown.Button>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              window.PicMin.pickImages();
+            }}
+          >
             添加图片
           </Button>
         </Space>

@@ -11,7 +11,7 @@ import { Typography } from "antd";
 import clsx from "clsx";
 import { getSupportExtensionsAsString } from "../image";
 import React from "react";
-import { type ImageItem } from "../../../common/const";
+import { type ImageItem } from "@common/const";
 
 interface ColType {
   key: keyof RowType;
@@ -87,6 +87,9 @@ function showContent() {
       <p>支持{getSupportExtensionsAsString()}格式</p>
       <div
         className={style.mask}
+        onClick={() => {
+          window.PicMin.pickImages();
+        }}
         onDragOver={(event) => {
           event.preventDefault();
           if (!state.dragActive) {

@@ -7,3 +7,5 @@
 interface File {
   path: string;
 }
+
+type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;

@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { app, BrowserWindow, shell } from 'electron';
-import { getEntryUrl, isDev, getAssetPath } from './util';
+import { getEntryUrl,  getAssetPath } from './util';
 import { IPC } from './IPC';
 import { createMenu } from './menu';
 
@@ -27,7 +27,7 @@ async function createWindow() {
     titleBarStyle: 'hidden',
     webPreferences: {
       // 只有开发环境允许使用devtools
-      devTools: isDev(),
+      devTools: import.meta.env.DEV,
       // 窗口预加载的资源文件
       preload: path.join(__dirname, '../../preload/dist/index.cjs'),
     },

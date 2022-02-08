@@ -1,5 +1,4 @@
 import { Menu, MenuItemConstructorOptions } from "electron";
-import { isDev } from "./util";
 
 export function createMenu() {
   const submenu: MenuItemConstructorOptions[] = [
@@ -13,7 +12,7 @@ export function createMenu() {
       accelerator: "CommandOrControl+Q",
     },
   ];
-  if (isDev()) {
+  if (import.meta.env.DEV) {
     submenu.push({
       label: "开发者工具",
       role: "toggleDevTools",

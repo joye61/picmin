@@ -1,13 +1,9 @@
 import { observable } from "mobx";
 import { Key } from "react";
 
-export interface RowType {
+export interface RowType extends ImageItem {
   key: Key;
-  status: 0 | 1; // 0,正在压缩，1压缩完成
-  name: React.ReactNode;
-  oldSize: React.ReactNode;
-  newSize: React.ReactNode;
-  rate: React.ReactNode;
+  rate?: React.ReactNode;
   action?: React.ReactNode;
 }
 
@@ -23,6 +19,8 @@ export type State = {
   scaleHeight?: number;
   qualityPercent: number;
   dragActive: boolean;
+  // 是否正在读取列表，用来显示loading状态
+  isReadList: boolean;
 };
 
 export type SaveMenuItem = {
@@ -45,38 +43,6 @@ export const state = observable.object<State>({
   scaleHeight: undefined,
   qualityPercent: 70,
   dragActive: false,
-  list: [
-    // {
-    //   key: 1,
-    //   status: 1,
-    //   name: 'a.png',
-    //   oldSize: 1234,
-    //   newSize: 234,
-    //   rate: '75%',
-    // },
-    // {
-    //   key: 2,
-    //   status: 1,
-    //   name: 'a.png',
-    //   oldSize: 1234,
-    //   newSize: 234,
-    //   rate: '75%',
-    // },
-    // {
-    //   key: 3,
-    //   status: 0,
-    //   name: 'a.png',
-    //   oldSize: 1234,
-    //   newSize: 234,
-    //   rate: '75%',
-    // },
-    // {
-    //   key: 4,
-    //   status: 0,
-    //   name: 'a.png',
-    //   oldSize: 1234,
-    //   newSize: 234,
-    //   rate: '75%',
-    // },
-  ],
+  isReadList: false,
+  list: [],
 });

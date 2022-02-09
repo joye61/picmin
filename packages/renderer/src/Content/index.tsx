@@ -1,23 +1,21 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
 import { ColCenter, ColStart } from "../Flex";
-import {
-  LoadingOutlined,
-  CheckCircleOutlined,
-  FileImageOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined, FileImageOutlined } from "@ant-design/icons";
 import { RowType, state } from "../state";
 import { Typography } from "antd";
 import clsx from "clsx";
 import { getSupportExtensionsAsString } from "../image";
 import React from "react";
-import { type ImageItem } from "@common/const";
+import { fsize } from "@/util";
+import { Indicator } from "@/Indicator";
+import { LoadingMask } from "@/LoadingMask";
 
 interface ColType {
   key: keyof RowType;
   title: string;
   className?: string;
-  render?(row?: RowType): React.ReactNode;
+  render?(row: RowType): React.ReactNode;
 }
 
 const columns: ColType[] = [
@@ -27,14 +25,24 @@ const columns: ColType[] = [
     className: style._status,
     render(item) {
       let icon = <CheckCircleOutlined className={style.statusDone} />;
-      if (item!.status === 0) {
-        icon = <LoadingOutlined className={style.statusActive} />;
+      if (item.status === 1) {
+        icon = <Indicator />;
       }
       return icon;
     },
   },
   { key: "name", title: "名称", className: style._name },
-  { key: "oldSize", title: "原大小", className: style._oldSize },
+  {
+    key: "oldSize",
+    title: "原大小",
+    className: style._oldSize,
+    render(item) {
+      if (typeof item.oldSize === "number") {
+        return fsize(item.oldSize);
+      }
+      return "-";
+    },
+  },
   { key: "newSize", title: "新大小", className: style._newSize },
   { key: "rate", title: "压缩率", className: style._rate },
   { key: "action", title: "操作", className: style._action },
@@ -110,12 +118,16 @@ function showContent() {
             }
           }
           window.PicMin.addImages(files);
+          state.isReadList = true;
         }}
       ></div>
     </ColCenter>
   );
 }
 
+/**
+ * 内容组件
+ */
 export const Content = observer(() => {
   return (
     <ColStart className={style.container}>
@@ -130,7 +142,10 @@ export const Content = observer(() => {
           </tr>
         </thead>
       </table>
-      <div className={style.list}>{showContent()}</div>
+      <div className={style.list}>
+        {showContent()}
+        <LoadingMask />
+      </div>
     </ColStart>
   );
 });

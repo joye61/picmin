@@ -7,8 +7,8 @@ import {
   OpenDialogSyncOptions,
 } from "electron";
 import { addImagesFromList, emptyImageList } from "./image";
-import { type ImageItem, AllowTypes, IPCEvents } from "@common/const";
-import { isMac } from "@common/functions";
+import { AllowTypes, IPCEvents } from "@c/const";
+import { isMac } from "@c/functions";
 
 export class IPC {
   private _quitApp: IPCEventHandler;
@@ -53,7 +53,9 @@ export class IPC {
       ],
     });
 
-    if (Array.isArray(result)) {
+    if (Array.isArray(result) && result.length > 0) {
+      // 回复渲染进程选取完成
+      event.reply(IPCEvents.PickOver);
       const list: ImageItem[] = result.map((item) => {
         return {
           status: 1,
@@ -76,9 +78,7 @@ export class IPC {
    * 清空图片列表
    */
   private emptyImages(event: IpcMainEvent) {
-    emptyImageList(event);
-    event.reply(IPCEvents.EmptyOver);
-    event.reply(IPCEvents.EmptyOver);
+    emptyImageList();
     event.reply(IPCEvents.EmptyOver);
   }
 

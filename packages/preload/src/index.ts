@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { type ImageItem, IPCEvents } from "@common/const";
+import { IPCEvents } from "@c/const";
 // import { IPC } from "./IPC";
 
 export type Callback = (...data: any[]) => void;
@@ -30,10 +30,15 @@ contextBridge.exposeInMainWorld("PicMin", {
   },
 });
 
+
 /**
  * 处理渲主进程发送给渲染进程的消息
  */
 contextBridge.exposeInMainWorld("PicMinMessage", {
+  // 文件选择结束时触发
+  onPickOver(callback: Callback) {
+    ipcRenderer.on(IPCEvents.PickOver, () => callback());
+  },
   // 清空完成触发
   onEmptyOver(callback: Callback) {
     ipcRenderer.on(IPCEvents.EmptyOver, callback);

@@ -19,6 +19,7 @@ var IPCEvents;
   IPCEvents2["EmptyImages"] = "EmptyImages";
   IPCEvents2["EmptyOver"] = "EmptyOver";
   IPCEvents2["PickImages"] = "PickImages";
+  IPCEvents2["PickOver"] = "PickOver";
   IPCEvents2["StatusUpdate"] = "StatusUpdate";
 })(IPCEvents || (IPCEvents = {}));
 electron.contextBridge.exposeInMainWorld("PicMin", {
@@ -39,6 +40,9 @@ electron.contextBridge.exposeInMainWorld("PicMin", {
   }
 });
 electron.contextBridge.exposeInMainWorld("PicMinMessage", {
+  onPickOver(callback) {
+    electron.ipcRenderer.on(IPCEvents.PickOver, () => callback());
+  },
   onEmptyOver(callback) {
     electron.ipcRenderer.on(IPCEvents.EmptyOver, callback);
   },

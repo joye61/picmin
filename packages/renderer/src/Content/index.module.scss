@@ -16,6 +16,7 @@
       text-align: left;
       padding: 10px;
       border-bottom: 1px solid #f0f0f0;
+      // font-size: 13px;
     }
     tr:hover td {
       background-color: #fafafa;
@@ -33,6 +34,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -118,5 +120,23 @@
       border: 2px dashed $warning-color;
       background-color: #ffffff99;
     }
+  }
+}
+
+.loading {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffffcc;
+  user-select: none;
+  > span {
+    font-size: 24px;
+  }
+  > p {
+    margin-top: 15px;
+    font-size: 12px;
   }
 }

@@ -22,16 +22,8 @@ export enum IPCEvents {
   EmptyOver = "EmptyOver",
   // 选取图片
   PickImages = "PickImages",
+  // 选取图片完成，但是还没有开始处理
+  PickOver = "PickOver",
   // 状态更新
-  StatusUpdate = "StatusUpdate"
+  StatusUpdate = "StatusUpdate",
 }
-
-export interface ImageItem {
-  // 0：完成压缩，1：正在压缩
-  status: 0 | 1;
-  path: string;
-  name?: string;
-  oldSize?: number;
-  newSize?: number;
-}
-

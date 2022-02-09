@@ -15,10 +15,16 @@ import { observer } from "mobx-react-lite";
 import { saveMenus, SaveType, state } from "./state";
 import { Setting } from "./Setting";
 import { useMessage } from "./useMessage";
+import { isAddDisabled, isClearDisabled, isSaveDisabled } from "./util";
 
 export const App = observer(() => {
   // 监听进程间消息传递逻辑
   useMessage();
+
+  // 按钮的禁用状态
+  const clearDisabled = isClearDisabled();
+  const saveDisabled = isSaveDisabled();
+  const addDisabled = isAddDisabled();
 
   return (
     <div className={style.container}>
@@ -85,7 +91,9 @@ export const App = observer(() => {
         <Space className={style.noDrag}>
           <Button
             icon={<ClearOutlined />}
+            disabled={clearDisabled}
             onClick={() => {
+              if (clearDisabled) return;
               window.PicMin.emptyImages();
             }}
           >
@@ -94,6 +102,11 @@ export const App = observer(() => {
           <Dropdown.Button
             type="primary"
             icon={<SaveOutlined />}
+            disabled={saveDisabled}
+            onClick={() => {
+              if (saveDisabled) return;
+              // TODO
+            }}
             overlay={
               <Menu
                 onClick={({ key }) => {
@@ -111,7 +124,9 @@ export const App = observer(() => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
+            disabled={addDisabled}
             onClick={() => {
+              if (addDisabled) return;
               window.PicMin.pickImages();
             }}
           >

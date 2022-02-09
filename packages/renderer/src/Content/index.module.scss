@@ -6,6 +6,7 @@
   table {
     width: 100vw;
     border-collapse: collapse;
+    user-select: none;
     th {
       background-color: #fafafa;
       border-bottom: 1px solid #f0f0f0;
@@ -47,29 +48,81 @@
   }
 }
 
+$statusWidth: 50px;
+$oldSizeWidth: 120px;
+$newSizeWidth: 120px;
+$rateWidth: 120px;
+$actionWidth: 100px;
+// $nameWidth: calc(
+//   100vw - $statusWidth - $oldSizeWidth - $newSizeWidth - $rateWidth -
+//     $actionWidth
+// );
+
 // 列属性
 ._status {
-  width: 40px;
+  width: $statusWidth;
 }
-._name {
-}
+// ._name {
+//   width: $nameWidth;
+// }
 ._oldSize {
-  width: 100px;
+  width: $oldSizeWidth;
 }
 ._newSize {
-  width: 100px;
+  width: $newSizeWidth;
 }
 ._rate {
-  width: 100px;
+  width: $rateWidth;
 }
 ._action {
-  width: 100px;
+  width: $actionWidth;
 }
 
-.statusDone {
-  color: $primary-color;
+.status {
+  padding-left: 4px;
+  .statusDone {
+    color: $primary-color;
+  }
 }
-.statusActive {
+
+.name {
+  width: 100%;
+  position: relative;
+  > div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    > span,
+    > div {
+      flex-shrink: 0;
+    }
+    > span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    > div {
+      margin:0 10px;
+      font-size: 0;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      color: $primary-color;
+      // color: #666;
+      &:hover {
+        background-color: #f0f0f0;
+      }
+      &:active {
+        color: darken($primary-color, 10);
+      }
+      svg {
+        width: 16px;
+      }
+    }
+  }
 }
 
 // 可拖拽区域

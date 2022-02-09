@@ -24,6 +24,9 @@ export default {
       entry: "src/main.ts",
       formats: ["cjs"],
     },
+    commonjsOptions: {
+      ignoreDynamicRequires: true
+    },
     rollupOptions: {
       external: [
         "electron",

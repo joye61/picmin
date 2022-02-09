@@ -38,13 +38,26 @@ export function isAddDisabled() {
 }
 
 /**
+ * 配置项是否禁用
+ * @returns 
+ */
+export function isConfigDisabled() {
+  if (state.isReadList || hasImageInProcessing()) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * 获取一个格式化之后的大小
  * @param num
  */
-export function fsize(
-  num: number,
-  output: "string" | "array" = "string"
-): string | [number, string] {
-  // let option
-  return fileSize(num, { spacer: "", output: <any>output });
+export function fsize(num: number, array = false): string | [number, string] {
+  const result = fileSize(num, { output: "array" });
+  result[1] = result[1].toUpperCase();
+  if (array) {
+    return result;
+  } else {
+    return result[0] + result[1];
+  }
 }

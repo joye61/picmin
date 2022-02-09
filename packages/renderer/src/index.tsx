@@ -8,7 +8,7 @@ import React from 'react';
 
 configure({
   enforceActions: 'never',
-  useProxies: 'ifavailable',
+  useProxies: "always",
 });
 
 render(

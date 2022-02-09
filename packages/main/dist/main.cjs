@@ -20,7 +20,7 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var path$2 = require("path");
 var electron = require("electron");
-require("url");
+var url = require("url");
 var require$$0 = require("fs");
 var require$$1 = require("stream");
 var require$$3 = require("util");
@@ -34,10 +34,8 @@ var require$$1__default = /* @__PURE__ */ _interopDefaultLegacy(require$$1);
 var require$$3__default = /* @__PURE__ */ _interopDefaultLegacy(require$$3);
 var require$$1__default$1 = /* @__PURE__ */ _interopDefaultLegacy(require$$1$1);
 function getEntryUrl() {
-  const devServerUrl = "http://localhost:3000/";
-  {
-    return devServerUrl;
-  }
+  const url$1 = new url.URL("../renderer/dist/index.html", "file://" + __dirname);
+  return url$1.toString();
 }
 function getAssetPath(...paths) {
   const RESOURCES_PATH = electron.app.isPackaged ? path__default["default"].join(process.resourcesPath, "resources") : path__default["default"].join(__dirname, "../../resources");
@@ -727,7 +725,8 @@ const parse$1 = (input, options) => {
         output = token.close = `)$))${extglobStar}`;
       }
       if (token.inner.includes("*") && (rest = remaining()) && /^\.[^\\/.]+$/.test(rest)) {
-        output = token.close = `)${rest})${extglobStar})`;
+        const expression = parse$1(rest, __spreadProps(__spreadValues({}, options), { fastpaths: false })).output;
+        output = token.close = `)${expression})${extglobStar})`;
       }
       if (token.prev.type === "bos") {
         state.negatedExtglob = true;
@@ -1710,6 +1709,7 @@ var IPCEvents;
   IPCEvents2["PickImages"] = "PickImages";
   IPCEvents2["PickOver"] = "PickOver";
   IPCEvents2["StatusUpdate"] = "StatusUpdate";
+  IPCEvents2["LocateImage"] = "LocateImage";
 })(IPCEvents || (IPCEvents = {}));
 var dist = { exports: {} };
 var queue = { exports: {} };
@@ -2817,17 +2817,16 @@ async function addImagesFromList(event, pathList) {
   const ensureImageLegal = (image) => {
     if (imageKeyMap.has(image.path))
       return;
-    const extension = path__default["default"].extname(image.path).toUpperCase().replace(/^\./, "");
-    if (types2.includes(extension)) {
+    const extension = path__default["default"].extname(image.path).replace(/^\./, "");
+    if (types2.includes(extension.toUpperCase())) {
       let item = {
-        status: image.status,
+        status: 1,
         path: image.path,
         name: image.name,
         extension
       };
-      if (!item.name) {
-        item.name = path__default["default"].basename(image.path);
-      }
+      item.nameWithoutExt = path__default["default"].basename(image.path, "." + extension);
+      item.name = item.nameWithoutExt + "." + extension;
       const stat2 = require$$0__default["default"].lstatSync(item.path);
       item.oldSize = stat2.size;
       if (extension !== "AVIF") {
@@ -2858,6 +2857,7 @@ async function addImagesFromList(event, pathList) {
   event.reply(IPCEvents.StatusUpdate, {
     list: imageList,
     readListOver: true,
+    type: "add",
     keyMap: imageKeyMap
   });
   return list;
@@ -2873,12 +2873,14 @@ class IPC {
     this._addImages = this.addImages.bind(this);
     this._emptyImages = this.emptyImages.bind(this);
     this._pickImages = this.pickImages.bind(this);
+    this._locateImage = this.locateImage.bind(this);
   }
   _quitApp;
   _miniApp;
   _addImages;
   _emptyImages;
   _pickImages;
+  _locateImage;
   quitApp() {
     electron.app.quit();
   }
@@ -2919,12 +2921,16 @@ class IPC {
     emptyImageList();
     event.reply(IPCEvents.EmptyOver);
   }
+  locateImage(_, imagePath) {
+    electron.shell.showItemInFolder(imagePath);
+  }
   bind() {
     electron.ipcMain.on(IPCEvents.QuitApp, this._quitApp);
     electron.ipcMain.on(IPCEvents.MiniApp, this._miniApp);
     electron.ipcMain.on(IPCEvents.AddImages, this._addImages);
     electron.ipcMain.on(IPCEvents.EmptyImages, this._emptyImages);
     electron.ipcMain.on(IPCEvents.PickImages, this._pickImages);
+    electron.ipcMain.on(IPCEvents.LocateImage, this._locateImage);
   }
   unbind() {
     electron.ipcMain.off(IPCEvents.QuitApp, this._quitApp);
@@ -2932,6 +2938,7 @@ class IPC {
     electron.ipcMain.off(IPCEvents.AddImages, this._addImages);
     electron.ipcMain.off(IPCEvents.EmptyImages, this._emptyImages);
     electron.ipcMain.off(IPCEvents.PickImages, this._pickImages);
+    electron.ipcMain.off(IPCEvents.LocateImage, this._locateImage);
   }
 }
 function createMenu() {
@@ -2951,13 +2958,6 @@ function createMenu() {
       accelerator: "CommandOrControl+Q"
     }
   ];
-  {
-    submenu.push({
-      label: "\u5F00\u53D1\u8005\u5DE5\u5177",
-      role: "toggleDevTools",
-      accelerator: "CommandOrControl+Alt+I"
-    });
-  }
   const menu = electron.Menu.buildFromTemplate([
     {
       label: "\u56FE\u5C0F\u5C0F",
@@ -2979,7 +2979,7 @@ async function createWindow() {
     roundedCorners: false,
     titleBarStyle: "hidden",
     webPreferences: {
-      devTools: true,
+      devTools: false,
       preload: path__default["default"].join(__dirname, "../../preload/dist/index.cjs")
     }
   });
@@ -3018,4 +3018,3 @@ async function createWindow() {
     }
   });
 })();
-//# sourceMappingURL=main.cjs.map

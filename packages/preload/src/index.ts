@@ -1,6 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { IPCEvents } from "@c/const";
-// import { IPC } from "./IPC";
 
 export type Callback = (...data: any[]) => void;
 
@@ -28,6 +27,10 @@ contextBridge.exposeInMainWorld("PicMin", {
   emptyImages() {
     ipcRenderer.send(IPCEvents.EmptyImages);
   },
+  // 定位图片
+  locateImage(imagePath: string){
+    ipcRenderer.send(IPCEvents.LocateImage, imagePath);
+  }
 });
 
 

@@ -5,6 +5,7 @@ import {
   IpcMainEvent,
   dialog,
   OpenDialogSyncOptions,
+  shell,
 } from "electron";
 import { addImagesFromList, emptyImageList } from "./image";
 import { AllowTypes, IPCEvents } from "@c/const";
@@ -16,6 +17,7 @@ export class IPC {
   private _addImages: IPCEventHandler;
   private _emptyImages: IPCEventHandler;
   private _pickImages: IPCEventHandler;
+  private _locateImage: IPCEventHandler;
 
   /**
    * 关闭App
@@ -82,12 +84,22 @@ export class IPC {
     event.reply(IPCEvents.EmptyOver);
   }
 
+  /**
+   * 定位图片，打开图片所在文件夹
+   * @param event
+   * @param imagePath
+   */
+  private locateImage(_: IpcMainEvent, imagePath: string) {
+    shell.showItemInFolder(imagePath);
+  }
+
   constructor(public win: BrowserWindow) {
     this._quitApp = this.quitApp.bind(this);
     this._miniApp = this.miniApp.bind(this);
     this._addImages = this.addImages.bind(this);
     this._emptyImages = this.emptyImages.bind(this);
     this._pickImages = this.pickImages.bind(this);
+    this._locateImage = this.locateImage.bind(this);
   }
 
   public bind() {
@@ -96,6 +108,7 @@ export class IPC {
     ipcMain.on(IPCEvents.AddImages, this._addImages);
     ipcMain.on(IPCEvents.EmptyImages, this._emptyImages);
     ipcMain.on(IPCEvents.PickImages, this._pickImages);
+    ipcMain.on(IPCEvents.LocateImage, this._locateImage);
   }
 
   public unbind() {
@@ -104,5 +117,6 @@ export class IPC {
     ipcMain.off(IPCEvents.AddImages, this._addImages);
     ipcMain.off(IPCEvents.EmptyImages, this._emptyImages);
     ipcMain.off(IPCEvents.PickImages, this._pickImages);
+    ipcMain.off(IPCEvents.LocateImage, this._locateImage);
   }
 }

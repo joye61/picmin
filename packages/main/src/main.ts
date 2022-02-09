@@ -1,9 +1,9 @@
-import path from 'path';
+import path from "path";
 
-import { app, BrowserWindow, shell } from 'electron';
-import { getEntryUrl,  getAssetPath } from './util';
-import { IPC } from './IPC';
-import { createMenu } from './menu';
+import { app, BrowserWindow, shell } from "electron";
+import { getEntryUrl, getAssetPath } from "./util";
+import { IPC } from "./IPC";
+import { createMenu } from "./menu";
 
 // 当前主窗口的引用
 let mainWindow: BrowserWindow | null = null;
@@ -17,19 +17,19 @@ async function createWindow() {
     show: false,
     width: 800,
     height: 600,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath("icon.png"),
     // 窗口不可缩放
     resizable: false,
     // 无边框
     frame: false,
     maximizable: false,
     roundedCorners: false,
-    titleBarStyle: 'hidden',
+    titleBarStyle: "hidden",
     webPreferences: {
       // 只有开发环境允许使用devtools
       devTools: import.meta.env.DEV,
       // 窗口预加载的资源文件
-      preload: path.join(__dirname, '../../preload/dist/index.cjs'),
+      preload: path.join(__dirname, "../../preload/dist/index.cjs"),
     },
   });
   // 伴随着window而创建的ipc通信逻辑
@@ -37,7 +37,7 @@ async function createWindow() {
   ipc.bind();
 
   // 窗口准备好了，显示窗口
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on("ready-to-show", () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
@@ -49,7 +49,7 @@ async function createWindow() {
   });
 
   // 窗口被关闭，清理资源
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     mainWindow = null;
     ipc.unbind();
   });
@@ -60,7 +60,7 @@ async function createWindow() {
   // 在本地浏览器窗口中打开链接请求
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
-    return { action: 'deny' };
+    return { action: "deny" };
   });
 }
 
@@ -70,8 +70,8 @@ async function createWindow() {
 (async () => {
   createMenu();
   // 当所有窗口都关闭时，退出app
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
       app.quit();
     }
   });
@@ -81,7 +81,7 @@ async function createWindow() {
   createWindow();
 
   // 应用被激活时触发
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (mainWindow === null) {
       createWindow();
     }

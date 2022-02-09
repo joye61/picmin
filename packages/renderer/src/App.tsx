@@ -15,7 +15,12 @@ import { observer } from "mobx-react-lite";
 import { saveMenus, SaveType, state } from "./state";
 import { Setting } from "./Setting";
 import { useMessage } from "./useMessage";
-import { isAddDisabled, isClearDisabled, isSaveDisabled } from "./util";
+import {
+  isAddDisabled,
+  isClearDisabled,
+  isConfigDisabled,
+  isSaveDisabled,
+} from "./util";
 
 export const App = observer(() => {
   // 监听进程间消息传递逻辑
@@ -25,6 +30,7 @@ export const App = observer(() => {
   const clearDisabled = isClearDisabled();
   const saveDisabled = isSaveDisabled();
   const addDisabled = isAddDisabled();
+  const configDisabled = isConfigDisabled();
 
   return (
     <div className={style.container}>
@@ -45,7 +51,11 @@ export const App = observer(() => {
             icon={<SettingOutlined />}
             size="small"
             type="link"
-            onClick={() => (state.showSetting = true)}
+            disabled={configDisabled}
+            onClick={() => {
+              if (configDisabled) return;
+              state.showSetting = true;
+            }}
           >
             压缩选项
           </Button>

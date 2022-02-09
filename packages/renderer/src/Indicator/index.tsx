@@ -9,7 +9,7 @@ export interface IndicatorProps {
 
 export function Indicator(props: IndicatorProps) {
   const bars = [];
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 8; i++) {
     bars.push(<div key={i} />);
   }
   return (

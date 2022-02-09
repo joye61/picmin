@@ -20,7 +20,6 @@ export function useMessage() {
     });
     // 列表状态更新事件
     window.PicMinMessage.onStatusUpdate((data: DataType) => {
-      console.log(data); // TODO
       // 初始化读取列表完成
       if (data.readListOver === true) {
         state.isReadList = false;

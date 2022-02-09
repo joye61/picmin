@@ -2941,6 +2941,11 @@ function createMenu() {
       role: "about"
     },
     {
+      label: "\u91CD\u8F7D",
+      role: "reload",
+      accelerator: "CommandOrControl+R"
+    },
+    {
       label: "\u9000\u51FA",
       role: "quit",
       accelerator: "CommandOrControl+Q"

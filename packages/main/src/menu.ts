@@ -7,6 +7,11 @@ export function createMenu() {
       role: "about",
     },
     {
+      label: "重载",
+      role: "reload",
+      accelerator: "CommandOrControl+R",
+    },
+    {
       label: "退出",
       role: "quit",
       accelerator: "CommandOrControl+Q",

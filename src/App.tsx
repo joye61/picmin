@@ -138,7 +138,7 @@ export const App = observer(() => {
             disabled={addDisabled}
             onClick={() => {
               if (addDisabled) return;
-              // window.PicMin.pickImages();
+              ipcRenderer.send(IPCEvents.PickImages);
             }}
           >
             添加图片

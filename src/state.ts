@@ -28,6 +28,9 @@ export type SaveMenuItem = {
   name: string;
 };
 
+// 用来缓存图片的索引，键是路径，值是imageList索引
+export const indexes: Map<string, number> = new Map();
+
 export const saveMenus: SaveMenuItem[] = [
   { name: "覆盖保存", value: "cover" },
   { name: "别名保存", value: "alias" },

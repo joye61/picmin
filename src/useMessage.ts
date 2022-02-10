@@ -1,4 +1,7 @@
+import { ipcRenderer } from "electron";
 import { useEffect } from "react";
+import { IPCEvents } from "./const";
+import { readImagesFromPathList } from "./image";
 import { type RowType, state } from "./state";
 
 type DataType = {
@@ -31,10 +34,12 @@ function createRowByImageItem(item: ImageItem): RowType {
  */
 export function useMessage() {
   useEffect(() => {
-    // // 选取结束事件
-    // window.PicMinMessage.onPickOver(() => {
-    //   state.isReadList = true;
-    // });
+    // 获取选取结果
+    ipcRenderer.on(IPCEvents.PickResult, (_, list: Array<string>) => {
+      state.isReadList = true;
+      // 根据列表读取图片文件
+      readImagesFromPathList(list);
+    });
 
     // // 清空完成事件
     // window.PicMinMessage.onEmptyOver(() => {
@@ -65,5 +70,9 @@ export function useMessage() {
     //   }
     // });
     // return window.PicMinMessage.unListenAll;
+
+    return () => {
+      (ipcRenderer.removeAllListeners as any)();
+    };
   }, []);
 }

@@ -1,11 +1,10 @@
 import { AllowTypes } from "./const";
-import { IpcMainEvent } from "electron";
 import fs from "fs/promises";
 import path from "path";
 import readdirp from "readdirp";
-import { ImagePool } from "@squoosh/lib";
-import { cpus } from "os";
 import sizeOf from "image-size";
+import { indexes, state } from "./state";
+import { spawn } from "child_process";
 
 /**
  * 获取应用程序支持的所有后缀
@@ -15,23 +14,13 @@ export function getSupportExtensionsAsString() {
   return Object.keys(AllowTypes).join("/");
 }
 
-// import fs from 'fs/promises';
-
-// 创建处理池子
-const imagePool = new ImagePool(cpus().length);
-
-// 用来临时缓存所有的图片列表
-const imageList: Array<ImageItem> = [];
-// 用来缓存图片的索引，键是路径，值是imageList索引
-const imageKeyMap: Map<string, number> = new Map();
-
 /**
  * 清空图片列表
  * @param event
  */
 export async function emptyImageList() {
-  imageList.splice(0);
-  imageKeyMap.clear();
+  state.list = [];
+  indexes.clear();
 }
 
 /**
@@ -40,7 +29,7 @@ export async function emptyImageList() {
  * @param pathList
  * @returns
  */
-export async function addImagesFromList(pathList: ImageItem[]) {
+export async function readImagesFromPathList(pathList: string[]) {
   const list: ImageItem[] = [];
   // 如果不是目录，则判断是否是合法的图片文件
   const types = Object.keys(AllowTypes);
@@ -51,20 +40,20 @@ export async function addImagesFromList(pathList: ImageItem[]) {
    * 2、必须为支持的图片类型
    * @param image
    */
-  const ensureImageLegal = async (image: ImageItem): Promise<void> => {
+  const ensureImageLegal = async (imagePath: string): Promise<void> => {
     // 图片已存在，直接退出
-    if (imageKeyMap.has(image.path)) return;
+    if (indexes.has(imagePath)) return;
     // 检查是否支持，出于性能考虑，直接检查扩展名，不检查实际mime类型
-    const extension = path.extname(image.path).replace(/^\./, "");
+    const extension = path.extname(imagePath).replace(/^\./, "");
     if (types.includes(extension.toUpperCase())) {
       let item: ImageItem = {
+        // 初始化状态只能为正在处理中
         status: 1,
-        path: image.path,
-        name: image.name,
+        path: imagePath,
         extension,
       };
       // 获取文件的名字
-      item.nameWithoutExt = path.basename(image.path, "." + extension);
+      item.nameWithoutExt = path.basename(imagePath, "." + extension);
       item.name = item.nameWithoutExt + "." + extension;
       const stat = await fs.lstat(item.path);
       item.oldSize = stat.size;
@@ -78,42 +67,45 @@ export async function addImagesFromList(pathList: ImageItem[]) {
       list.push(item);
 
       // 这里同时将数据添加到imageList中并更新imageKeyMap
-      imageList.push(item);
-      imageKeyMap.set(item.path, imageList.length);
+      state.list.push({ key: item.path, ...item });
+      indexes.set(item.path, state.list.length);
     }
   };
 
   // 遍历文件夹
   for (let item of pathList) {
-    const imagePath = item.path;
-    const stat = await fs.lstat(imagePath);
+    // const imagePath = item.path;
+    const stat = await fs.lstat(item);
     const isDir = stat.isDirectory();
     // 如果是目录，则遍历读取目录的所有文件信息
     if (isDir) {
-      for await (const entry of readdirp(imagePath, { depth: Infinity })) {
-        ensureImageLegal({
-          status: item.status,
-          name: entry.basename,
-          path: entry.fullPath,
-        });
+      for await (const entry of readdirp(item, { depth: Infinity })) {
+        await ensureImageLegal(entry.fullPath);
       }
       continue;
     }
     // 如果是文件，直接验证文件
-    ensureImageLegal(item);
+    await ensureImageLegal(item);
   }
 
-  // // 到这里位置，响应客户端第一个状态
-  // // 读取图片列表完成，且获取了图片的初始宽高，尺寸等信息
-  // // 添加的初始化过程执行的是一次全量更新
-  // event.reply(IPCEvents.StatusUpdate, {
-  //   list: imageList,
-  //   readListOver: true,
-  //   type: "add",
-  //   keyMap: imageKeyMap,
-  // });
+  // 更新状态，图片列表读取完成
+  state.isReadList = false;
 
-  return list;
+  // 执行压缩
+  console.log(process.cwd());
+  const l = spawn(process.execPath, ["--help"], {
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: "1",
+    },
+  });
+  console.log(l);
+  l.on("error", (event) => {
+    console.log(event, "error");
+  });
+  l.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
 }
 
 // 缩放选项

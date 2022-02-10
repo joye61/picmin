@@ -5,11 +5,13 @@ import { CheckCircleOutlined, FileImageOutlined } from "@ant-design/icons";
 import { RowType, state } from "../state";
 import { Tooltip, Typography } from "antd";
 import clsx from "clsx";
-import { getSupportExtensionsAsString } from "../image";
+import { getSupportExtensionsAsString, readImagesFromPathList } from "../image";
 import { fsize } from "@/util";
 import { Indicator } from "@/Indicator";
 import { LoadingMask } from "@/LoadingMask";
 import { Fsize } from "@/Fsize";
+import { ipcRenderer } from "electron";
+import { IPCEvents } from "@/const";
 
 interface ColType {
   key: keyof RowType;
@@ -123,7 +125,7 @@ function showContent() {
       <div
         className={style.mask}
         onClick={() => {
-          // window.PicMin.pickImages();
+          ipcRenderer.send(IPCEvents.PickImages);
         }}
         onDragOver={(event) => {
           event.preventDefault();
@@ -134,18 +136,18 @@ function showContent() {
         onDragLeave={() => {
           state.dragActive = false;
         }}
-        onDrop={(event) => {
+        onDrop={async (event) => {
           event.preventDefault();
           state.dragActive = false;
-          let files: ImageItem[] = [];
+          let files: string[] = [];
           for (let i = 0; i < event.dataTransfer.items.length; i++) {
             if (event.dataTransfer.items[i].kind === "file") {
               const file = event.dataTransfer.items[i].getAsFile()!;
-              files.push({ path: file.path });
+              files.push(file.path);
             }
           }
-          // window.PicMin.addImages(files);
           state.isReadList = true;
+          await readImagesFromPathList(files);
         }}
       ></div>
     </ColCenter>

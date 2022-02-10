@@ -53,8 +53,7 @@ export function isConfigDisabled() {
  * @param num
  */
 export function fsize(num: number, array = false): string | [number, string] {
-  const result = fileSize(num, { output: "array" });
-  result[1] = result[1].toUpperCase();
+  const result = fileSize(num, {base: 2, output: "array", standard: "jedec" });
   if (array) {
     return result;
   } else {

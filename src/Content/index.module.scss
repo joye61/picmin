@@ -9,7 +9,7 @@
     user-select: none;
     th {
       background-color: #fafafa;
-      border-bottom: 1px solid #f0f0f0;
+      // border-bottom: 1px solid #f0f0f0;
       white-space: nowrap;
     }
     th,
@@ -17,7 +17,11 @@
       text-align: left;
       padding: 10px;
       border-bottom: 1px solid #f0f0f0;
+      height: 50px;
       // font-size: 13px;
+    }
+    td {
+      // height: 50px;
     }
     tr:hover td {
       background-color: #fafafa;
@@ -105,21 +109,26 @@ $actionWidth: 100px;
       white-space: nowrap;
     }
     > div {
-      margin:0 10px;
+      margin: 0 10px;
       font-size: 0;
-      width: 24px;
-      height: 24px;
+      width: 30px;
+      height: 30px;
       cursor: pointer;
-      color: $primary-color;
-      // color: #666;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      background-color: #f0f0f0;
       &:hover {
-        background-color: #f0f0f0;
+        img {
+          outline: 2px solid $primary-color;
+        }
       }
       &:active {
-        color: darken($primary-color, 10);
-      }
-      svg {
-        width: 16px;
+        img {
+          outline: 2px solid darken($primary-color, 10);
+        }
       }
     }
   }

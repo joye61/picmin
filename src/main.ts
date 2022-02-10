@@ -14,7 +14,7 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     show: false,
     width: 800,
-    height: 600,
+    height: 650,
     icon: getAssetsPath("icon.png"),
     // 窗口不可缩放
     resizable: false,
@@ -29,6 +29,7 @@ async function createWindow() {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       contextIsolation: false,
+      webSecurity: false,
     },
   });
 

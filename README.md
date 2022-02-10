@@ -1,1 +1,3 @@
-# PicMin  
+# PicMin 
+
+A powerful image compression tool

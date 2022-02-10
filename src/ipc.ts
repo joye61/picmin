@@ -50,8 +50,6 @@ export function bindIPC(mainWindow: BrowserWindow) {
       ],
     });
 
-    console.log(result);
-
     // 将读取的图片列表返回给渲染进程
     const replyList: Array<string> = Array.isArray(result) ? result : [];
     event.reply(IPCEvents.PickResult, replyList);

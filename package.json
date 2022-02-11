@@ -26,6 +26,7 @@
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
     "@types/node": "^16.11.22",
+    "@types/probe-image-size": "^7.0.1",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "babel-loader": "^8.2.3",
@@ -83,9 +84,9 @@
     "clsx": "^1.1.1",
     "concurrently": "^7.0.0",
     "filesize": "^8.0.7",
-    "image-size": "^1.0.1",
     "mobx": "^6.3.13",
     "mobx-react-lite": "^3.2.3",
+    "probe-image-size": "^7.2.3",
     "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
     "react-dom": "^17.0.2"

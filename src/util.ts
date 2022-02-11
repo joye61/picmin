@@ -1,7 +1,7 @@
 import { state, __g } from "./state";
 import fileSize from "filesize";
 import { ipcRenderer } from "electron";
-import { IPCEvents } from "./const";
+import { IPCEvents, TempDir } from "./const";
 import { isWin } from "./resolve";
 import path from "path";
 
@@ -102,4 +102,11 @@ export async function getBinPath(binName: string) {
 export async function getNodeModulesPath(moduleName?: string) {
   let nodeModulesPath: string = path.resolve(__g.appPath, "./node_modules/");
   return moduleName ? path.join(nodeModulesPath, moduleName) : nodeModulesPath;
+}
+
+/**
+ * 获取临时目录
+ */
+export function getTempDir() {
+  return path.join(__g.tempPath, TempDir);
 }

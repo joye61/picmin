@@ -14,7 +14,7 @@ export type State = {
   list: RowType[];
   showSetting: boolean;
   scaleMode: "percent" | "width" | "height";
-  scalePercent?: number;
+  scalePercent: number;
   scaleWidth?: number;
   scaleHeight?: number;
   qualityPercent: number;
@@ -44,7 +44,7 @@ export const state = observable.object<State>({
   scalePercent: 100,
   scaleWidth: undefined,
   scaleHeight: undefined,
-  qualityPercent: 70,
+  qualityPercent: 75,
   dragActive: false,
   isReadList: false,
   list: [],
@@ -55,6 +55,8 @@ export interface __GVars {
   appPath: string;
   // 系统临时目录
   tempPath: string;
+  // tid用于标识临时文件夹中文件的唯一值
+  tid: number;
 }
 
 /**
@@ -63,4 +65,5 @@ export interface __GVars {
 export const __g = {
   appPath: "",
   tempPath: "",
+  tid: 0,
 };

@@ -79,10 +79,14 @@ interface File {
 type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;
 
 interface ImageItem {
-  // 0：完成压缩，1：正在压缩
-  status?: 0 | 1;
+  // 0：完成压缩，1：正在等待压缩，2：正在压缩中
+  status?: 0 | 1 | 2;
   // 图片文件的完整路径
   path: string;
+  // 生成的临时文件路径
+  tempPath?: string;
+  // 生成的临时文件对应的id
+  tempId?: number;
   // 有扩展名的名字
   name?: string;
   // 没有扩展名的名字
@@ -96,3 +100,7 @@ interface ImageItem {
   // 图片文件的扩展名，原始扩展
   extension?: string;
 }
+
+type WaitingImageItem = Required<
+  Omit<ImageItem, "newSize" | "newWidth" | "newHeight">
+>;

@@ -27,7 +27,7 @@ const columns: ColType[] = [
     className: style._status,
     render(item) {
       let icon = <CheckCircleOutlined className={style.statusDone} />;
-      if (item.status === 1) {
+      if (item.status !== 0) {
         icon = <Indicator />;
       }
       return <div className={style.status}>{icon}</div>;
@@ -65,7 +65,17 @@ const columns: ColType[] = [
       return "-";
     },
   },
-  { key: "newSize", title: "新大小", className: style._newSize },
+  {
+    key: "newSize",
+    title: "新大小",
+    className: style._newSize,
+    render(item) {
+      if (typeof item.newSize === "number") {
+        return <Fsize value={fsize(item.newSize, true) as [number, string]} />;
+      }
+      return "-";
+    },
+  },
   { key: "rate", title: "压缩率", className: style._rate },
   { key: "action", title: "操作", className: style._action },
 ];
@@ -78,6 +88,22 @@ function createColGroupByColumns() {
       })}
     </colgroup>
   );
+}
+
+/**
+ * 处理文件拖拽进入事件
+ * @param event
+ */
+async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
+  let files: string[] = [];
+  for (let i = 0; i < event.dataTransfer.items.length; i++) {
+    if (event.dataTransfer.items[i].kind === "file") {
+      const file = event.dataTransfer.items[i].getAsFile()!;
+      files.push(file.path);
+    }
+  }
+  state.isReadList = true;
+  await readImagesFromPathList(files);
 }
 
 /**
@@ -111,7 +137,22 @@ function showContent() {
             </tr>
           </thead>
         </table>
-        <div className={style.list}>
+        <div
+          className={style.list}
+          onDragOver={(event) => {
+            if (state.isReadList) return;
+            event.preventDefault();
+          }}
+          onDragLeave={() => {
+            if (state.isReadList) return;
+            state.dragActive = false;
+          }}
+          onDrop={async (event) => {
+            if (state.isReadList) return;
+            event.preventDefault();
+            await handleFilesDrop(event);
+          }}
+        >
           <table>
             {colGroup}
             <tbody>{list}</tbody>
@@ -149,21 +190,12 @@ function showContent() {
         onDrop={async (event) => {
           event.preventDefault();
           state.dragActive = false;
-          let files: string[] = [];
-          for (let i = 0; i < event.dataTransfer.items.length; i++) {
-            if (event.dataTransfer.items[i].kind === "file") {
-              const file = event.dataTransfer.items[i].getAsFile()!;
-              files.push(file.path);
-            }
-          }
-          state.isReadList = true;
-          await readImagesFromPathList(files);
+          await handleFilesDrop(event);
         }}
       ></div>
     </ColCenter>
   );
 }
-
 
 export const Content = observer(() => {
   return <ColStart className={style.container}>{showContent()}</ColStart>;

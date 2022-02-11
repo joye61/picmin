@@ -1,3 +1,4 @@
+import { app } from "electron";
 import path from "path";
 
 /**
@@ -6,10 +7,9 @@ import path from "path";
  * @returns
  */
 export function getAssetsPath(...paths: string[]) {
-  const assetsPath =
-    process.env.NODE_ENV === "production"
-      ? path.join(process.resourcesPath, "./assets")
-      : path.join(__dirname, "../assets");
+  const assetsPath = app.isPackaged
+    ? path.join(process.resourcesPath, "./assets")
+    : path.join(__dirname, "../assets");
 
   return path.join(assetsPath, ...paths);
 }

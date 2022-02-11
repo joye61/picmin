@@ -5,6 +5,8 @@ import readdirp from "readdirp";
 import sizeOf from "image-size";
 import { indexes, state } from "./state";
 import { spawn } from "child_process";
+import { getNodeModulesPath, getSysPath } from "./util";
+// import { getNodeModulesPath } from "./resolve";
 
 /**
  * 获取应用程序支持的所有后缀
@@ -91,21 +93,7 @@ export async function readImagesFromPathList(pathList: string[]) {
   // 更新状态，图片列表读取完成
   state.isReadList = false;
 
-  // 执行压缩
-  console.log(process.cwd());
-  const l = spawn(process.execPath, ["--help"], {
-    env: {
-      ...process.env,
-      ELECTRON_RUN_AS_NODE: "1",
-    },
-  });
-  console.log(l);
-  l.on("error", (event) => {
-    console.log(event, "error");
-  });
-  l.stdout.on("data", (data) => {
-    console.log(`stdout: ${data}`);
-  });
+  await callSquoosh();
 }
 
 // 缩放选项
@@ -139,4 +127,24 @@ export async function compressImage(image: ImageItem, option?: CompressConfig) {
   if (typeof option === "object") {
     config = { ...config, ...option };
   }
+}
+
+export async function callSquoosh() {
+  const entry = await getNodeModulesPath("@squoosh");
+  const script = path.resolve(entry, "./cli/src/index.js");
+  const squoosh = spawn(process.execPath, [script, "--help"], {
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: "1",
+    },
+  });
+  squoosh.on("error", (event) => {
+    console.log(event, "error");
+  });
+  squoosh.stderr.on("data", (data: Buffer) => {
+    console.log("squoosh err:", data.toString("utf8"));
+  });
+  squoosh.stdout.on("data", (data: Buffer) => {
+    console.log(`squoosh out:`, data.toString("utf8"));
+  });
 }

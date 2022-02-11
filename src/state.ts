@@ -49,3 +49,18 @@ export const state = observable.object<State>({
   isReadList: false,
   list: [],
 });
+
+export interface __GVars {
+  // app目录
+  appPath: string;
+  // 系统临时目录
+  tempPath: string;
+}
+
+/**
+ * 全局变量存储
+ */
+export const __g = {
+  appPath: "",
+  tempPath: "",
+};

@@ -38,7 +38,6 @@ const columns: ColType[] = [
     title: "图片文件",
     className: style._name,
     render(item) {
-      // const blobUrl = URL.createObjectURL();
       return (
         <div className={style.name}>
           <RowBetween>
@@ -48,7 +47,7 @@ const columns: ColType[] = [
                 ipcRenderer.send(IPCEvents.LocateImage, item.path);
               }}
             >
-              <img alt="" src={item.path} />
+              <img alt="" src={`file://${item.path}`} />
             </RowCenter>
           </RowBetween>
         </div>
@@ -88,6 +87,7 @@ function createColGroupByColumns() {
 function showContent() {
   // 当数据存在时，创建列表
   if (state.list && state.list.length > 0) {
+    const colGroup = createColGroupByColumns();
     const list = state.list.map((row) => {
       const cols = columns.map((col) => {
         let value: React.ReactNode = row[col.key];
@@ -98,11 +98,27 @@ function showContent() {
       });
       return <tr key={row.key}>{cols}</tr>;
     });
+
     return (
-      <table>
-        {createColGroupByColumns()}
-        <tbody>{list}</tbody>
-      </table>
+      <>
+        <table className={style.ttitle}>
+          {colGroup}
+          <thead>
+            <tr>
+              {columns.map((item) => {
+                return <th key={item.key}>{item.title}</th>;
+              })}
+            </tr>
+          </thead>
+        </table>
+        <div className={style.list}>
+          <table>
+            {colGroup}
+            <tbody>{list}</tbody>
+          </table>
+          <LoadingMask />
+        </div>
+      </>
     );
   }
 
@@ -148,27 +164,7 @@ function showContent() {
   );
 }
 
-/**
- * 内容组件
- */
+
 export const Content = observer(() => {
-  return (
-    <ColStart className={style.container}>
-      {/* 标题栏 */}
-      <table className={style.ttitle}>
-        {createColGroupByColumns()}
-        <thead>
-          <tr>
-            {columns.map((item) => {
-              return <th key={item.key}>{item.title}</th>;
-            })}
-          </tr>
-        </thead>
-      </table>
-      <div className={style.list}>
-        {showContent()}
-        <LoadingMask />
-      </div>
-    </ColStart>
-  );
+  return <ColStart className={style.container}>{showContent()}</ColStart>;
 });

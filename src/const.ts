@@ -29,4 +29,11 @@ export enum IPCEvents {
   // StatusUpdate = "StatusUpdate",
   // 定位图片，打开图片所在文件夹 B->A
   LocateImage = "LocateImage",
+  // 获取系统文件夹路径 B->A
+  GetSysPath = "GetSysPath",
+  // 获取系统文件夹路径结果 A->B
+  GetSysPathResult = "GetSysPathResult",
 }
+
+// 临时的生成文件夹名字，放在临时目录下
+export const TempDir = "com.tuxiaoxiao.picmin";

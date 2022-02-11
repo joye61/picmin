@@ -54,6 +54,20 @@ export function bindIPC(mainWindow: BrowserWindow) {
     const replyList: Array<string> = Array.isArray(result) ? result : [];
     event.reply(IPCEvents.PickResult, replyList);
   });
+
+  // 获取系统相关的路径
+  ipcMain.on(
+    IPCEvents.GetSysPath,
+    (event, pathname: "app" | Parameters<typeof app.getPath>[any]) => {
+      let result: string;
+      if (pathname === "app") {
+        result = app.getAppPath();
+      } else {
+        result = app.getPath(pathname);
+      }
+      event.reply(IPCEvents.GetSysPathResult, result);
+    }
+  );
 }
 
 export function unbindIPC() {

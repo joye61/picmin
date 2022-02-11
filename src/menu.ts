@@ -24,7 +24,6 @@ export function createMenu() {
       accelerator: "CommandOrControl+Alt+I",
     });
   }
-
   const menu = Menu.buildFromTemplate([
     {
       label: "图小小",

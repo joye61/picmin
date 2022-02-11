@@ -1,5 +1,9 @@
-import { state } from "./state";
+import { state, __g } from "./state";
 import fileSize from "filesize";
+import { ipcRenderer } from "electron";
+import { IPCEvents } from "./const";
+import { isWin } from "./resolve";
+import path from "path";
 
 /**
  * 是否有文件正在处理中
@@ -39,7 +43,7 @@ export function isAddDisabled() {
 
 /**
  * 配置项是否禁用
- * @returns 
+ * @returns
  */
 export function isConfigDisabled() {
   if (state.isReadList || hasImageInProcessing()) {
@@ -53,10 +57,49 @@ export function isConfigDisabled() {
  * @param num
  */
 export function fsize(num: number, array = false): string | [number, string] {
-  const result = fileSize(num, {base: 2, output: "array", standard: "jedec" });
+  const result = fileSize(num, { base: 2, output: "array", standard: "jedec" });
   if (array) {
     return result;
   } else {
     return result[0] + result[1];
   }
+}
+
+/**
+ * 获取系统路径
+ * @param pathname
+ * @returns
+ */
+export async function getSysPath(pathname = "temp") {
+  ipcRenderer.send(IPCEvents.GetSysPath, pathname);
+  return new Promise<string>((resolve) => {
+    ipcRenderer.once(IPCEvents.GetSysPathResult, (_, result: string) => {
+      resolve(result);
+    });
+  });
+}
+
+/**
+ * 获取二进制文件的路径
+ * @param binName
+ */
+export async function getBinPath(binName: string) {
+  let name = binName;
+  if (isWin()) {
+    name += ".exe";
+  }
+  let binPart = `./bin/${process.platform}/${name}`;
+  if (process.env.NODE_ENV === "production") {
+    return path.resolve(process.resourcesPath, binPart);
+  }
+  return path.resolve(__g.appPath, `./assets/`, binPart);
+}
+
+/**
+ * 获取一个node_modules模块的具体路径
+ * @param moduleName
+ */
+export async function getNodeModulesPath(moduleName?: string) {
+  let nodeModulesPath: string = path.resolve(__g.appPath, "./node_modules/");
+  return moduleName ? path.join(nodeModulesPath, moduleName) : nodeModulesPath;
 }

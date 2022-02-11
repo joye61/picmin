@@ -22,6 +22,7 @@ import {
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "./const";
 import { useMessage } from "./useMessage";
+import { emptyImageList } from "./image";
 
 export const App = observer(() => {
   // 进程间通信处理用的专用hooks
@@ -105,7 +106,7 @@ export const App = observer(() => {
             disabled={clearDisabled}
             onClick={() => {
               if (clearDisabled) return;
-              // window.PicMin.emptyImages();
+              emptyImageList();
             }}
           >
             清空列表

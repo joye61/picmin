@@ -55,7 +55,7 @@
 $statusWidth: 50px;
 $oldSizeWidth: 120px;
 $newSizeWidth: 120px;
-$rateWidth: 120px;
+$rateWidth: 85px;
 $actionWidth: 100px;
 // $nameWidth: calc(
 //   100vw - $statusWidth - $oldSizeWidth - $newSizeWidth - $rateWidth -
@@ -200,5 +200,16 @@ $actionWidth: 100px;
   > p {
     margin-top: 15px;
     font-size: 12px;
+  }
+}
+
+.rateDown {
+  span {
+    color: $primary-color;
+  }
+}
+.rateUp {
+  span {
+    color: $warning-color;
   }
 }

@@ -1,7 +1,12 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
-import { ColCenter, ColStart, RowBetween, RowCenter } from "../Flex";
-import { CheckCircleOutlined, FileImageOutlined } from "@ant-design/icons";
+import { ColCenter, ColStart, RowBetween, RowCenter, RowStart } from "../Flex";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  CheckCircleOutlined,
+  FileImageOutlined,
+} from "@ant-design/icons";
 import { RowType, state } from "../state";
 import { Typography } from "antd";
 import clsx from "clsx";
@@ -76,7 +81,36 @@ const columns: ColType[] = [
       return "-";
     },
   },
-  { key: "rate", title: "压缩率", className: style._rate },
+  {
+    key: "rate",
+    title: "压缩率",
+    className: style._rate,
+    render(item) {
+      if (
+        typeof item.oldSize === "number" &&
+        typeof item.newSize === "number"
+      ) {
+        let percent = ((item.newSize - item.oldSize) * 100) / item.oldSize;
+        percent = Number(Math.abs(percent).toFixed(2));
+        if (item.newSize <= item.oldSize) {
+          return (
+            <RowBetween className={style.rateDown}>
+              <ArrowDownOutlined />
+              <Typography.Text>{percent}%</Typography.Text>
+            </RowBetween>
+          );
+        } else {
+          return (
+            <RowBetween className={style.rateUp}>
+              <ArrowUpOutlined />
+              <Typography.Text>{percent}%</Typography.Text>
+            </RowBetween>
+          );
+        }
+      }
+      return "-";
+    },
+  },
   { key: "action", title: "操作", className: style._action },
 ];
 

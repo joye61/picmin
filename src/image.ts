@@ -22,6 +22,13 @@ export function getSupportExtensionsAsString() {
 export async function emptyImageList() {
   state.list = [];
   indexes.clear();
+  // 同时清理临时文件夹
+  fs.rmSync(getTempDir(), {
+    force: true,
+    recursive: true,
+  });
+  // 恢复tid计数器到0
+  __g.tid = 0;
 }
 
 /**
@@ -260,19 +267,19 @@ export async function compressWithSquoosh(
       squoosh.on("error", (event) => {
         console.log("Spawn squoosh cli failed:", event);
         reject();
-        squoosh.kill();
       });
       // Squoosh CLI的输出在标准错误通道
       squoosh.stderr.on("data", (data: Buffer) => {
-        console.log(`Squoosh output:`, data.toString("utf8"));
-        resolve();
-        squoosh.kill();
+        const output = data.toString("utf8");
+        console.log(`Squoosh stderr:`, data.toString("utf8"));
+        if (/\√\s*Squoosh\s*results\:/.test(output)) {
+          resolve();
+        }
       });
       // 有正常输出的情况下，还要检查输出目录是否有文件生成，如果没有，则任务失败
       squoosh.stdout.on("data", (data: Buffer) => {
-        console.log(`Squoosh output:`, data.toString("utf8"));
+        console.log(`Squoosh stdout:`, data.toString("utf8"));
         resolve();
-        squoosh.kill();
       });
     });
 

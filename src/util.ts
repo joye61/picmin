@@ -9,7 +9,7 @@ import path from "path";
  * 是否有文件正在处理中
  */
 export function hasImageInProcessing() {
-  return state.list.some((item) => item.status === 1);
+  return state.list.some((item) => item.status !== 0);
 }
 
 /**

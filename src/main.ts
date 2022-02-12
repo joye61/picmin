@@ -14,14 +14,14 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     show: false,
     width: 800,
-    height: 650,
+    height: 600,
     icon: getAssetsPath("icon.png"),
     // 窗口不可缩放
     resizable: false,
     // 无边框
     frame: false,
     maximizable: false,
-    roundedCorners: false,
+    // roundedCorners: false,
     titleBarStyle: "hidden",
     webPreferences: {
       // 只有开发环境允许使用devtools

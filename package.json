@@ -6,7 +6,7 @@
   "main": "./dist/main/main.js",
   "scripts": {
     "start": "npm run build:main:dev && concurrently --timings \"node scripts/start.js\" \"npm run start:electron\"",
-    "start:electron": "wait-on tcp:4000 && electron --trace-warnings .",
+    "start:electron": "wait-on tcp:4000 && electron .",
     "build": "npm run build:renderer && npm run build:main:prod",
     "build:renderer": "node scripts/build.js",
     "build:main:dev": "cross-env NODE_ENV=development webpack --config ./config/webpack.main.js",

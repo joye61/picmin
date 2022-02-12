@@ -41,7 +41,7 @@ export function bindIPC(mainWindow: BrowserWindow) {
     }
     const result = dialog.showOpenDialogSync({
       title: "请选择待压缩的图片",
-      filters: [{ name: "图片类型", extensions }],
+      filters: [{ name: "支持类型", extensions }],
       properties: [
         ...openProps,
         "multiSelections",

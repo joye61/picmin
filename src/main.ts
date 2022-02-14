@@ -13,6 +13,7 @@ async function createWindow() {
   // 创建一个窗口实例
   mainWindow = new BrowserWindow({
     show: false,
+    title: "图小小",
     width: 800,
     height: 600,
     icon: getAssetsPath("icon.png"),
@@ -21,7 +22,7 @@ async function createWindow() {
     // 无边框
     frame: false,
     maximizable: false,
-    // roundedCorners: false,
+    roundedCorners: false,
     titleBarStyle: "hidden",
     webPreferences: {
       // 只有开发环境允许使用devtools

@@ -78,10 +78,9 @@ interface File {
 
 type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;
 
-
 interface ImageItem {
   // 0：完成压缩，1：正在等待压缩，2：正在压缩中
-  status?: 0 | 1 | 2;
+  status: 0 | 1 | 2;
   // 图片文件的完整路径
   path: string;
   // 生成的临时文件路径
@@ -103,9 +102,22 @@ interface ImageItem {
 }
 
 // 等待状态的图片
-type WaitingImageItem = Required<
-  Omit<ImageItem, "newSize" | "newWidth" | "newHeight">
->;
+interface WaitingImageItem {
+  status: 0 | 1 | 2;
+  path: string;
+  tempPath: string;
+  tempId: number;
+  name: string;
+  nameWithoutExt: string;
+  oldSize: number;
+  oldWidth: number;
+  oldHeight: number;
+  // 等待状态就最后三个状态不确定
+  newSize?: number;
+  newWidth?: number;
+  newHeight?: number;
+  extension: string;
+}
 
 // 缩放选项
 interface ScaleOption {

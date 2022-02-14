@@ -10,10 +10,7 @@ import { getNewDimensionByScale } from "./resize";
  * @param item
  * @param option
  */
-export async function run(
-  item: WaitingImageItem & ImageItem,
-  option: CompressConfig
-) {
+export async function run(item: WaitingImageItem, option: CompressConfig) {
   const entry = await getNodeModulesPath("@squoosh");
   const script = path.resolve(entry, "./cli/src/index.js");
   const options = getSquooshCliArguments(item, option);

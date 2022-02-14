@@ -118,20 +118,6 @@ export async function readImagesFromPathList(pathList: string[]) {
   await compress();
 }
 
-// 缩放选项
-export interface ScaleOption {
-  mode: "percent" | "width" | "height";
-  percent: number;
-  width?: number;
-  height?: number;
-}
-
-// 压缩选项
-export interface CompressConfig {
-  scale: ScaleOption;
-  quality: number;
-}
-
 /**
  * 获取最终的压缩选项
  * @param option

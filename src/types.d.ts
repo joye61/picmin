@@ -78,6 +78,7 @@ interface File {
 
 type IPCEventHandler = (event: IpcMainEvent, ...args: any[]) => void;
 
+
 interface ImageItem {
   // 0：完成压缩，1：正在等待压缩，2：正在压缩中
   status?: 0 | 1 | 2;
@@ -101,6 +102,21 @@ interface ImageItem {
   extension?: string;
 }
 
+// 等待状态的图片
 type WaitingImageItem = Required<
   Omit<ImageItem, "newSize" | "newWidth" | "newHeight">
 >;
+
+// 缩放选项
+interface ScaleOption {
+  mode: "percent" | "width" | "height";
+  percent: number;
+  width?: number;
+  height?: number;
+}
+
+// 压缩选项
+interface CompressConfig {
+  scale: ScaleOption;
+  quality: number;
+}

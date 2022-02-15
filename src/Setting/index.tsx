@@ -100,9 +100,9 @@ export const Setting = observer(() => {
         {showScale()}
 
         <Form.Item
-          label="压缩质量"
+          label="输出质量"
           name="qualityPercent"
-          extra="质量值越大，文件体积越大，压缩率越低"
+          extra="输出质量值越大，文件体积越大，压缩率越低"
         >
           <Slider />
         </Form.Item>

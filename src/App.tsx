@@ -8,6 +8,7 @@ import {
   ClearOutlined,
   SaveOutlined,
   ControlOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
 import { Content } from "./Content";
 import clsx from "clsx";
@@ -123,7 +124,7 @@ export const App = observer(() => {
             清空列表
           </Button>
           <Dropdown.Button
-            type="primary"
+            // type="primary"
             icon={<SaveOutlined />}
             disabled={saveDisabled}
             onClick={() => {
@@ -155,6 +156,14 @@ export const App = observer(() => {
           >
             添加图片
           </Button>
+          <Button
+            type="primary"
+            className={style.noDrag}
+            icon={<RedoOutlined />}
+            onClick={() => {
+              // TODO 重新压缩
+            }}
+          />
         </Space>
       </RowBetween>
 

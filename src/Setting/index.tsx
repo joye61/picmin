@@ -30,7 +30,7 @@ export const Setting = observer(() => {
   const showScale = () => {
     if (state.scaleMode === "percent") {
       return (
-        <Form.Item label="缩放到比例" name="scalePercent">
+        <Form.Item label="缩放到比例（0-100）" name="scalePercent">
           <Slider />
         </Form.Item>
       );
@@ -63,9 +63,9 @@ export const Setting = observer(() => {
       width={350}
       visible={state.showSetting}
       centered
-      title="压缩选项设置"
+      title="调整压缩选项"
       okText="立即应用"
-      cancelText="重置选项"
+      cancelText="重置为默认"
       forceRender
       closeIcon={
         <svg viewBox="0 0 24 24" className={style.close}>
@@ -74,6 +74,11 @@ export const Setting = observer(() => {
       }
       onCancel={() => {
         state.showSetting = false;
+      }}
+      cancelButtonProps={{
+        onClick(){
+          console.log("12345");
+        }
       }}
     >
       <Form
@@ -100,7 +105,7 @@ export const Setting = observer(() => {
         {showScale()}
 
         <Form.Item
-          label="输出质量"
+          label="输出图片质量（0-100）"
           name="qualityPercent"
           extra="输出质量值越大，文件体积越大，压缩率越低"
         >

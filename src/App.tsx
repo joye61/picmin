@@ -7,6 +7,7 @@ import {
   SettingOutlined,
   ClearOutlined,
   SaveOutlined,
+  ControlOutlined,
 } from "@ant-design/icons";
 import { Content } from "./Content";
 import clsx from "clsx";
@@ -23,6 +24,7 @@ import { ipcRenderer } from "electron";
 import { IPCEvents } from "./const";
 import { useMessage } from "./useMessage";
 import { emptyImageList } from "./image";
+import { SetEngine } from "./SetEngine";
 
 export const App = observer(() => {
   // 进程间通信处理用的专用hooks
@@ -44,25 +46,34 @@ export const App = observer(() => {
             <img alt="" src={logo} />
             <Typography.Title level={5}>图小小</Typography.Title>
           </RowStart>
-        </Space>
-
-        {/* 退出逻辑 */}
-        <Space className={clsx(style.action, style.noDrag)}>
           <Button
-            className={style.setting}
+            className={style.noDrag}
             icon={<SettingOutlined />}
             size="small"
             type="link"
-            disabled={configDisabled}
             onClick={() => {
-              if (configDisabled) return;
+              state.showSetEngin = true;
+            }}
+          >
+            设置引擎
+          </Button>
+          <Button
+            className={style.noDrag}
+            icon={<ControlOutlined />}
+            size="small"
+            type="link"
+            onClick={() => {
               state.showSetting = true;
             }}
           >
-            压缩选项
+            调整选项
           </Button>
+        </Space>
+
+        {/* 退出逻辑 */}
+        <Space className={style.action}>
           <RowCenter
-            className={style.mini}
+            className={clsx(style.mini, style.noDrag)}
             onClick={() => {
               ipcRenderer.send(IPCEvents.MiniApp);
             }}
@@ -72,7 +83,7 @@ export const App = observer(() => {
             </svg>
           </RowCenter>
           <RowCenter
-            className={style.close}
+            className={clsx(style.close, style.noDrag)}
             onClick={() => {
               ipcRenderer.send(IPCEvents.QuitApp);
             }}
@@ -147,6 +158,8 @@ export const App = observer(() => {
         </Space>
       </RowBetween>
 
+      {/* 调整引擎 */}
+      <SetEngine />
       {/* 设置框 */}
       <Setting />
     </div>

@@ -1,0 +1,112 @@
+import style from "./index.module.scss";
+import { Alert, Form, Modal, Select, Typography } from "antd";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import { state } from "../state";
+import {
+  type EngineList,
+  engineList,
+  type EngineMap,
+} from "@/compress/engine/define";
+import { RowBetween } from "@/Flex";
+
+interface FormValues {
+  jpeg: EngineMap["jpeg"];
+  png: EngineMap["png"];
+  webp: EngineMap["webp"];
+}
+
+/**
+ * 根据类型获取options
+ * @param type
+ * @param list
+ */
+function getOptions(type: "jpeg" | "png" | "webp", list: EngineList) {
+  return list[type].map((item) => {
+    return {
+      label: (
+        <RowBetween>
+          <Typography.Text>{item.name}</Typography.Text>
+          <Typography.Text type="secondary">{item.info}</Typography.Text>
+        </RowBetween>
+      ),
+      value: item.value,
+    };
+  });
+}
+
+export const SetEngine = observer(() => {
+  const [form] = Form.useForm<FormValues>();
+
+  useEffect(() => {
+    if (state.showSetEngin) {
+      form.setFieldsValue({
+        jpeg: state.jpegEngine,
+        png: state.pngEngine,
+        webp: state.webpEngine,
+      });
+    }
+  }, [state.showSetEngin]);
+
+  return (
+    <Modal
+      maskClosable
+      width={350}
+      visible={state.showSetEngin}
+      centered
+      title="设置压缩引擎"
+      okText="立即应用"
+      cancelText="重置为默认"
+      forceRender
+      closeIcon={
+        <svg viewBox="0 0 24 24" className={style.close}>
+          <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+        </svg>
+      }
+      onCancel={() => {
+        state.showSetEngin = false;
+      }}
+      cancelButtonProps={{
+        onClick() {
+          form.setFieldsValue({
+            jpeg: "canvas",
+            png: "upng",
+            webp: "canvas",
+          });
+          state.jpegEngine = "canvas";
+          state.pngEngine = "upng";
+          state.webpEngine = "webp";
+        },
+      }}
+    >
+      <Alert
+        type="info"
+        className={style.alert}
+        message="不同的引擎会有不同的处理时间和压缩效果，如果不了解相关引擎，可以试着调整观察不同之处"
+      />
+      <Form layout="vertical" form={form}>
+        <Form.Item label="JPEG" name="jpeg">
+          <Select
+            placeholder="请选择JPEG图片压缩引擎"
+            showArrow
+            options={getOptions("jpeg", engineList)}
+          />
+        </Form.Item>
+        <Form.Item label="PNG" name="png">
+          <Select
+            placeholder="请选择PNG图片压缩引擎"
+            showArrow
+            options={getOptions("png", engineList)}
+          />
+        </Form.Item>
+        <Form.Item label="WEBP" name="webp">
+          <Select
+            placeholder="请选择WEBP图片压缩引擎"
+            showArrow
+            options={getOptions("webp", engineList)}
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+});

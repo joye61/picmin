@@ -1,14 +1,21 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
-import { ColCenter, ColStart, RowBetween, RowCenter, RowStart } from "../Flex";
+import {
+  ColCenter,
+  ColStart,
+  RowBetween,
+  RowCenter,
+  RowEnd,
+  RowStart,
+} from "../Flex";
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
   CheckCircleOutlined,
-  FileImageOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { RowType, state } from "../state";
-import { Typography } from "antd";
+import { Tooltip, Typography } from "antd";
 import clsx from "clsx";
 import { getSupportExtensionsAsString, readImagesFromPathList } from "../image";
 import { fsize } from "@/util";
@@ -94,24 +101,52 @@ const columns: ColType[] = [
         percent = Number(Math.abs(percent).toFixed(2));
         if (item.newSize <= item.oldSize) {
           return (
-            <RowBetween className={style.rateDown}>
+            <RowStart className={style.rateDown}>
               <ArrowDownOutlined />
               <Typography.Text>{percent}%</Typography.Text>
-            </RowBetween>
+            </RowStart>
           );
         } else {
           return (
-            <RowBetween className={style.rateUp}>
+            <RowStart className={style.rateUp}>
               <ArrowUpOutlined />
               <Typography.Text>{percent}%</Typography.Text>
-            </RowBetween>
+            </RowStart>
           );
         }
       }
       return "-";
     },
   },
-  { key: "action", title: "操作", className: style._action },
+  {
+    key: "action",
+    title: "操作",
+    className: style._action,
+    render() {
+      return (
+        <RowEnd className={style.action}>
+          <Tooltip title="单图压缩转换" placement="left">
+            <Typography.Text className={style.actionHandle}>
+              <svg viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M14.68 13.25C13.45 14.15 12.54 15.47 12.18 17H6.5L9.25 13.47L11.21 15.83L13.96 12.29L14.68 13.25M5 19V5H19V12.03C19.7 12.09 20.38 12.24 21 12.5V5C21 3.9 20.11 3 19 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H12.5C12.24 20.38 12.09 19.7 12.03 19H5M22 18.5V14.5L20.83 15.67C20.11 14.95 19.11 14.5 18 14.5C15.79 14.5 14 16.29 14 18.5S15.79 22.5 18 22.5C19.68 22.5 21.12 21.47 21.71 20H20C19.54 20.61 18.82 21 18 21C16.62 21 15.5 19.88 15.5 18.5S16.62 16 18 16C18.69 16 19.32 16.28 19.77 16.73L18 18.5H22Z"
+                />
+              </svg>
+            </Typography.Text>
+          </Tooltip>
+          <Typography.Text className={style.actionRemove}>
+            <svg viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"
+              />
+            </svg>
+          </Typography.Text>
+        </RowEnd>
+      );
+    },
+  },
 ];
 
 function createColGroupByColumns() {
@@ -166,7 +201,11 @@ function showContent() {
           <thead>
             <tr>
               {columns.map((item) => {
-                return <th key={item.key}>{item.title}</th>;
+                return (
+                  <th key={item.key} className={item.className}>
+                    {item.title}
+                  </th>
+                );
               })}
             </tr>
           </thead>
@@ -202,7 +241,12 @@ function showContent() {
     <ColCenter
       className={clsx(style.dragZone, state.dragActive && style.dragActive)}
     >
-      <FileImageOutlined className={style.icon} />
+      <svg className={style.icon} viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M13.09 20H6L12 14L13.88 15.88C14.5 14.9 15.36 14.1 16.4 13.6L18 12V13.09C18.33 13.04 18.66 13 19 13C19.34 13 19.67 13.04 20 13.09V8L14 2H6C4.89 2 4 2.89 4 4V20C4 21.1 4.89 22 6 22H13.81C13.46 21.39 13.21 20.72 13.09 20M13 3.5L18.5 9H13V3.5M8 9C9.11 9 10 9.9 10 11S9.11 13 8 13 6 12.11 6 11 6.9 9 8 9M20 15V18H23V20H20V23H18V20H15V18H18V15H20Z"
+        />
+      </svg>
       <Typography.Title level={2}>
         拖拽或选取要压缩的图片到这里
       </Typography.Title>

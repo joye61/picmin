@@ -11,6 +11,9 @@
       background-color: #fafafa;
       // border-bottom: 1px solid #f0f0f0;
       white-space: nowrap;
+      &._action {
+        text-align: right;
+      }
     }
     th,
     td {
@@ -85,7 +88,8 @@ $actionWidth: 100px;
 .status {
   padding-left: 4px;
   .statusDone {
-    color: $primary-color;
+    font-size: 14px;
+    color: $success-color;
   }
 }
 
@@ -145,12 +149,10 @@ $actionWidth: 100px;
     background-color: #fafafa;
   }
   .icon {
-    font-size: 40px;
+    width: 50px;
     margin-bottom: 20px;
-    svg {
-      path {
-        fill: $primary-color;
-      }
+    path {
+      fill: $primary-color;
     }
   }
   h2,
@@ -201,13 +203,51 @@ $actionWidth: 100px;
   }
 }
 
+.rateDown,
+.rateUp {
+  > span:nth-child(1) {
+    margin-right: 2px;
+  }
+}
 .rateDown {
   span {
-    color: $primary-color;
+    color: $success-color;
   }
 }
 .rateUp {
   span {
     color: $warning-color;
+  }
+}
+
+.action {
+  height: 100%;
+
+  span {
+    cursor: pointer;
+    font-size: 0;
+    color: #999;
+    &:hover {
+      color: $primary-color;
+    }
+    &:active {
+      color: darken($primary-color, 10);
+    }
+    svg {
+      width: 18px;
+    }
+    &.actionRemove {
+      margin-left: 15px;
+      position: relative;
+      &:hover {
+        color: $warning-color;
+      }
+      &:active {
+        color: darken($warning-color, 10);
+      }
+      svg {
+        width: 18px;
+      }
+    }
   }
 }

@@ -2,7 +2,7 @@ import style from "./App.module.scss";
 import { RowBetween, RowCenter, RowStart } from "./Flex";
 import logo from "./assets/icon.svg";
 import { Button, Typography, Space, Dropdown, Menu } from "antd";
-import {
+import Icon, {
   PlusOutlined,
   SettingOutlined,
   ClearOutlined,

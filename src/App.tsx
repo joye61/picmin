@@ -19,6 +19,7 @@ import {
   isAddDisabled,
   isClearDisabled,
   isConfigDisabled,
+  isRedoDisabled,
   isSaveDisabled,
 } from "./util";
 import { ipcRenderer } from "electron";
@@ -36,6 +37,7 @@ export const App = observer(() => {
   const saveDisabled = isSaveDisabled();
   const addDisabled = isAddDisabled();
   const configDisabled = isConfigDisabled();
+  const redoDisabled = isRedoDisabled();
 
   return (
     <div className={style.container}>
@@ -52,6 +54,7 @@ export const App = observer(() => {
             icon={<SettingOutlined />}
             size="small"
             type="link"
+            disabled={configDisabled}
             onClick={() => {
               state.showSetEngin = true;
             }}
@@ -63,6 +66,7 @@ export const App = observer(() => {
             icon={<ControlOutlined />}
             size="small"
             type="link"
+            disabled={configDisabled}
             onClick={() => {
               state.showSetting = true;
             }}
@@ -124,7 +128,7 @@ export const App = observer(() => {
             清空列表
           </Button>
           <Dropdown.Button
-            // type="primary"
+            type="primary"
             icon={<SaveOutlined />}
             disabled={saveDisabled}
             onClick={() => {
@@ -160,6 +164,7 @@ export const App = observer(() => {
             type="primary"
             className={style.noDrag}
             icon={<RedoOutlined />}
+            disabled={redoDisabled}
             onClick={() => {
               // TODO 重新压缩
             }}

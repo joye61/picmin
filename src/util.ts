@@ -53,6 +53,16 @@ export function isConfigDisabled() {
 }
 
 /**
+ * 重新压缩按钮是否禁用
+ */
+export function isRedoDisabled() {
+  if (state.list.length === 0 || state.isReadList || hasImageInProcessing()) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * 获取一个格式化之后的大小
  * @param num
  */

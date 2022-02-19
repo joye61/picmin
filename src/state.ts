@@ -55,7 +55,7 @@ export const state = observable.object<State>({
   webpEngine: "canvas",
   dragActive: false,
   isReadList: false,
-  showSetEngin: true,
+  showSetEngin: false,
   list: [],
 });
 

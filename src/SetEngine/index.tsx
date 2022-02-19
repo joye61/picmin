@@ -9,6 +9,7 @@ import {
   type EngineMap,
 } from "@/compress/engine/define";
 import { RowBetween } from "@/Flex";
+import { compress } from "../image";
 
 interface FormValues {
   jpeg: EngineMap["jpeg"];
@@ -73,16 +74,23 @@ export const SetEngine = observer(() => {
             png: "upng",
             webp: "canvas",
           });
-          state.jpegEngine = "canvas";
-          state.pngEngine = "upng";
-          state.webpEngine = "webp";
         },
+      }}
+      onOk={async () => {
+        const values = form.getFieldsValue(true);
+        state.jpegEngine = values.jpeg;
+        state.pngEngine = values.png;
+        state.webpEngine = values.webp;
+        // 关闭弹框
+        state.showSetEngin = false;
+        // 立即压缩
+        await compress();
       }}
     >
       <Alert
         type="info"
         className={style.alert}
-        message="不同的引擎会有不同的处理时间和压缩效果，如果不了解相关引擎，可以试着调整观察不同之处"
+        message="不同引擎有不同的处理时间和压缩效果，如果不了解相关引擎技术原理，可以试着调整观察不同之处"
       />
       <Form layout="vertical" form={form}>
         <Form.Item label="JPEG" name="jpeg">

@@ -227,26 +227,24 @@ $actionWidth: 100px;
     cursor: pointer;
     font-size: 0;
     color: #999;
-    &:hover {
-      color: $primary-color;
-    }
-    &:active {
-      color: darken($primary-color, 10);
-    }
     svg {
       width: 18px;
     }
+    &.actionHandle {
+      &:hover {
+        color: $primary-color;
+      }
+      &:active {
+        color: darken($primary-color, 10);
+      }
+    }
     &.actionRemove {
       margin-left: 15px;
-      position: relative;
       &:hover {
         color: $warning-color;
       }
       &:active {
         color: darken($warning-color, 10);
-      }
-      svg {
-        width: 18px;
       }
     }
   }

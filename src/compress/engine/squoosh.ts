@@ -3,14 +3,17 @@ import { spawn } from "child_process";
 import path from "path";
 import fs from "fs";
 import sizeOf from "probe-image-size";
-import { getNewDimensionByScale } from "./resize";
+import { assignNewWithOld, getNewDimensionByScale } from "./function";
 
 /**
  * 用squoosh压缩，压缩JPEG/JPG/WEBP/AVIF文件
  * @param item
  * @param option
  */
-export async function run(item: WaitingImageItem, option: CompressConfig) {
+export async function compressBySquoosh(
+  item: WaitingImageItem,
+  option: CompressConfig
+) {
   const entry = await getNodeModulesPath("@squoosh");
   const script = path.resolve(entry, "./cli/src/index.js");
   const options = getSquooshCliArguments(item, option);
@@ -63,11 +66,9 @@ export async function run(item: WaitingImageItem, option: CompressConfig) {
   } catch (error) {
     console.log("Unknown exception:", error);
     // 压缩失败，使用旧的文件值直接替换，防止报错
-    item.newSize = item.oldSize;
-    item.newWidth = item.oldWidth;
-    item.newHeight = item.oldHeight;
-    item.tempPath = item.path;
+    assignNewWithOld(item);
   }
+  return item;
 }
 
 /**

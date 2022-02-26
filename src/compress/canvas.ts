@@ -16,9 +16,9 @@ import {
  */
 export async function compressByCanvas(
   item: WaitingImageItem,
-  option: CompressConfig,
-  type: "JPEG" | "WEBP"
-) {
+  option: CompressConfig
+): Promise<ImageItem> {
+  const type = item.extension.toUpperCase() as "JPEG" | "JPG" | "WEBP";
   // 删除旧临时文件
   removeOldTemp(item);
 

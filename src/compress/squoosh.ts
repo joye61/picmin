@@ -13,7 +13,7 @@ import { assignNewWithOld, getNewDimensionByScale } from "./function";
 export async function compressBySquoosh(
   item: WaitingImageItem,
   option: CompressConfig
-) {
+): Promise<ImageItem> {
   const entry = await getNodeModulesPath("@squoosh");
   const script = path.resolve(entry, "./cli/src/index.js");
   const options = getSquooshCliArguments(item, option);

@@ -2,8 +2,8 @@ export interface EngineMap {
   apng: "upng";
   avif: "avif";
   gif: "gifsicle";
-  jpeg: "canvas" | "mozjpeg" | "jpegxl";
-  png: "pngquant" | "oxipng" | "upng";
+  jpeg: "canvas" | "mozjpeg";
+  png: "upng" | "pngquant" | "oxipng";
   svg: "svgo";
   webp: "canvas" | "webp";
 }
@@ -21,11 +21,10 @@ export const engineList: EngineList = {
   jpeg: [
     { name: "Browser Canvas", value: "canvas", info: "速度极快，体积一般" },
     {
-      name: "MozJPEG",
+      name: "Squoosh MozJPEG",
       value: "mozjpeg",
       info: "速度较快，体积极小",
-    },
-    { name: "Squoosh JPEG-XL", value: "jpegxl", info: "速度一般，体积较小" },
+    }
   ],
   webp: [
     { name: "Browser Canvas", value: "canvas", info: "速度极快，体积一般" },

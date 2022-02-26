@@ -1,4 +1,12 @@
 import fs from "fs-extra";
+import { EngineMap } from "./define";
+import { compressByCanvas } from "./canvas";
+import { compressByGifsicle } from "./gifsicle";
+import { compressByOxipng } from "./oxipng";
+import { compressByPngQuant } from "./pngquant";
+import { compressBySquoosh } from "./squoosh";
+import { compressBySvgo } from "./svgo";
+import { compressByUpng } from "./upng";
 
 /**
  * 根据传入的配置参数获取将要生成的图片的宽度和高度
@@ -90,4 +98,58 @@ export async function writeToTemp(item: WaitingImageItem, data: Blob) {
   const buf = await data.arrayBuffer();
   fs.outputFileSync(item.tempPath, new Uint8Array(buf));
   return fs.existsSync(item.tempPath);
+}
+
+/**
+ * 压缩图片
+ * @param item
+ * @param option
+ * @param engin
+ * @returns
+ */
+export async function compressImage(
+  item: WaitingImageItem,
+  option: CompressConfig,
+  engin: Partial<EngineMap>
+): Promise<Required<ImageItem>> {
+  const type = item.upperExtension;
+  if (type === "APNG") {
+    await compressByUpng(item, option);
+  } else if (type === "AVIF") {
+    await compressBySquoosh(item, option);
+  } else if (type === "GIF") {
+    await compressByGifsicle(item, option);
+  } else if (type === "JPG" || type === "JPEG") {
+    if (engin.jpeg === "canvas") {
+      await compressByCanvas(item, option);
+    } else if (engin.jpeg === "mozjpeg") {
+      await compressBySquoosh(item, option);
+    } else {
+      assignNewWithOld(item);
+    }
+  } else if (type === "PNG") {
+    if (engin.png === "upng") {
+      await compressByUpng(item, option);
+    } else if (engin.png === "pngquant") {
+      await compressByPngQuant(item, option);
+    } else if (engin.png === "oxipng") {
+      await compressByOxipng(item, option);
+    } else {
+      assignNewWithOld(item);
+    }
+  } else if (type === "SVG") {
+    await compressBySvgo(item, option);
+  } else if (type === "WEBP") {
+    if (engin.webp === "canvas") {
+      await compressByCanvas(item, option);
+    } else if (engin.webp === "webp") {
+      await compressBySquoosh(item, option);
+    } else {
+      assignNewWithOld(item);
+    }
+  } else {
+    assignNewWithOld(item);
+  }
+
+  return item as Required<ImageItem>;
 }

@@ -13,6 +13,7 @@
       white-space: nowrap;
       &._action {
         text-align: right;
+        padding-right: 20px;
       }
     }
     th,
@@ -222,7 +223,7 @@ $actionWidth: 100px;
 
 .action {
   height: 100%;
-
+  padding-right: 10px;
   span {
     cursor: pointer;
     font-size: 0;

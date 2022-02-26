@@ -7,9 +7,8 @@ import {
   type EngineList,
   engineList,
   type EngineMap,
-} from "@/compress/engine/define";
+} from "@/compress/define";
 import { RowBetween } from "@/Flex";
-import { compress } from "../image";
 
 interface FormValues {
   jpeg: EngineMap["jpeg"];
@@ -84,7 +83,7 @@ export const SetEngine = observer(() => {
         // 关闭弹框
         state.showSetEngin = false;
         // 立即压缩
-        await compress();
+        // TODO
       }}
     >
       <Alert

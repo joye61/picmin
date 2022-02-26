@@ -99,6 +99,8 @@ interface ImageItem {
   newHeight?: number;
   // 图片文件的扩展名，原始扩展
   extension?: string;
+  // 大写扩展名
+  upperExtension?: string;
 }
 
 // 等待状态的图片
@@ -109,6 +111,8 @@ interface WaitingImageItem {
   tempId: number;
   name: string;
   nameWithoutExt: string;
+  extension: string;
+  upperExtension: string;
   oldSize: number;
   oldWidth: number;
   oldHeight: number;
@@ -116,7 +120,6 @@ interface WaitingImageItem {
   newSize?: number;
   newWidth?: number;
   newHeight?: number;
-  extension: string;
 }
 
 // 缩放选项

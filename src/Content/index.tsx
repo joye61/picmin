@@ -12,7 +12,6 @@ import {
   ArrowDownOutlined,
   ArrowUpOutlined,
   CheckCircleOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import { RowType, state } from "../state";
 import { Tooltip, Typography } from "antd";

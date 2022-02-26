@@ -1,6 +1,6 @@
 import { observable } from "mobx";
 import { Key } from "react";
-import { EngineMap } from "./compress/engine/define";
+import { EngineMap } from "./compress/define";
 
 export interface RowType extends ImageItem {
   key: Key;
@@ -15,14 +15,23 @@ export type State = {
   list: RowType[];
   showSetting: boolean;
   showSetEngin: boolean;
+
+  // 批量压缩配置选项
   scaleMode: "percent" | "width" | "height";
   scalePercent: number;
   scaleWidth?: number;
   scaleHeight?: number;
   qualityPercent: number;
+
+  // 压缩引擎配置
   jpegEngine: EngineMap["jpeg"];
   pngEngine: EngineMap["png"];
   webpEngine: EngineMap["webp"];
+  svgEngine: EngineMap["svg"];
+  apngEngine: EngineMap["apng"];
+  avifEngine: EngineMap["avif"];
+  gifEngine: EngineMap["gif"];
+
   dragActive: boolean;
   // 是否正在读取列表，用来显示loading状态
   isReadList: boolean;
@@ -53,6 +62,10 @@ export const state = observable.object<State>({
   jpegEngine: "canvas",
   pngEngine: "upng",
   webpEngine: "canvas",
+  svgEngine: "svgo",
+  gifEngine: "gifsicle",
+  apngEngine: "upng",
+  avifEngine: "avif",
   dragActive: false,
   isReadList: false,
   showSetEngin: false,

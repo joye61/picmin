@@ -114,7 +114,7 @@ export async function addImagesFromPathList(pathList: string[]) {
       list.push(imageItem);
     }
     state.list.push({ key: imagePath, ...(<ImageItem>imageItem) });
-    indexes.set(imagePath, state.list.length);
+    indexes.set(imagePath, state.list.length - 1);
   };
 
   // 遍历文件夹

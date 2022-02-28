@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import { EngineMap } from "./define";
+import { type EngineMap } from "./define";
 import { compressByCanvas } from "./canvas";
 import { compressByGifsicle } from "./gifsicle";
 import { compressByOxipng } from "./oxipng";
@@ -70,14 +70,19 @@ export function assignNewWithOld(item: WaitingImageItem) {
 export async function createImageBySrc(
   src: string | Blob
 ): Promise<HTMLImageElement> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = document.createElement("img");
     if (src instanceof Blob) {
       img.src = URL.createObjectURL(src);
     } else {
-      img.src = src;
+      img.src = "file://" + src;
     }
-    img.onload = () => resolve(img);
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.onload = () => {
+      resolve(img);
+    };
   });
 }
 

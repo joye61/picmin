@@ -17,7 +17,7 @@ import {
 export async function compressByCanvas(
   item: WaitingImageItem,
   option: CompressConfig
-): Promise<ImageItem> {
+) {
   const type = item.extension.toUpperCase() as "JPEG" | "JPG" | "WEBP";
   // 删除旧临时文件
   removeOldTemp(item);
@@ -35,7 +35,17 @@ export async function compressByCanvas(
   const context = canvas.getContext("2d");
 
   if (context instanceof CanvasRenderingContext2D) {
-    const image = await createImageBySrc(item.path);
+    let image: HTMLImageElement | null = null;
+    try {
+      image = await createImageBySrc(item.path);
+    } catch (error) {}
+
+    // 发生异常，直接返回
+    if (!(image instanceof HTMLImageElement)) {
+      assignNewWithOld(item);
+      return;
+    }
+
     context.drawImage(
       image,
       0,
@@ -63,12 +73,11 @@ export async function compressByCanvas(
         item.newWidth = newWidth;
         item.newHeight = newHeight;
         item.newSize = blob.size;
-        return item;
+        return;
       }
     }
   }
+
   // 走到这里代表失败，用原值替换
   assignNewWithOld(item);
-
-  return item;
 }

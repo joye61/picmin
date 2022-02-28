@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import { useEffect } from "react";
 import { IPCEvents } from "./const";
-import { readImagesFromPathList } from "./image";
+import { addImagesFromPathList } from "./image";
 import { state } from "./state";
 
 /**
@@ -13,7 +13,7 @@ export function useMessage() {
     ipcRenderer.on(IPCEvents.PickResult, (_, list: Array<string>) => {
       state.isReadList = true;
       // 根据列表读取图片文件
-      readImagesFromPathList(list);
+      addImagesFromPathList(list);
     });
 
     return () => {

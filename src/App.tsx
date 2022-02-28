@@ -162,7 +162,6 @@ export const App = observer(() => {
           </Button>
           <Button
             type="primary"
-            className={style.noDrag}
             icon={<RedoOutlined />}
             disabled={redoDisabled}
             onClick={() => {

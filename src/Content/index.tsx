@@ -16,7 +16,7 @@ import {
 import { RowType, state } from "../state";
 import { Tooltip, Typography } from "antd";
 import clsx from "clsx";
-import { getSupportExtensionsAsString, readImagesFromPathList } from "../image";
+import { getSupportExtensionsAsString, addImagesFromPathList } from "../image";
 import { fsize } from "@/util";
 import { Indicator } from "@/Indicator";
 import { LoadingMask } from "@/LoadingMask";
@@ -171,7 +171,7 @@ async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
     }
   }
   state.isReadList = true;
-  await readImagesFromPathList(files);
+  await addImagesFromPathList(files);
 }
 
 /**

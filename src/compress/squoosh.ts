@@ -147,11 +147,11 @@ export function getSquooshCliArguments(
   } else if (ext === "AVIF") {
     // 对于avif格式，cqLevel取值0-63，值越大压缩率越高
     let fQuality = ((100 - quality) * 63) / 100;
-    
+
     options.push(
       "--avif",
       JSON.stringify({
-        cqLevel: 63,
+        cqLevel: fQuality,
         cqAlphaLevel: -1,
         subsample: 1,
         tileColsLog2: 0,

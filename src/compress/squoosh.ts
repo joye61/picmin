@@ -38,13 +38,13 @@ export async function compressBySquoosh(
         console.log("Spawn squoosh cli failed:", event);
         reject();
       });
-      squoosh.stdout.on("data", (data) => {
-        console.log(`stdout: ${data.toString("utf8")}`);
-      });
+      // squoosh.stdout.on("data", (data) => {
+      //   console.log(`stdout: ${data.toString("utf8")}`);
+      // });
 
-      squoosh.stderr.on("data", (data) => {
-        console.error(`stderr: ${data.toString("utf8")}`);
-      });
+      // squoosh.stderr.on("data", (data) => {
+      //   console.error(`stderr: ${data.toString("utf8")}`);
+      // });
     });
 
     await ensureOutputImageExits(item);
@@ -147,10 +147,11 @@ export function getSquooshCliArguments(
   } else if (ext === "AVIF") {
     // 对于avif格式，cqLevel取值0-63，值越大压缩率越高
     let fQuality = ((100 - quality) * 63) / 100;
+    
     options.push(
       "--avif",
       JSON.stringify({
-        cqLevel: fQuality,
+        cqLevel: 63,
         cqAlphaLevel: -1,
         subsample: 1,
         tileColsLog2: 0,

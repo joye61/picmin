@@ -1,9 +1,11 @@
 import { getNodeModulesPath, getTempDir } from "@/util";
 import { spawn } from "child_process";
 import path from "path";
-import fs from "fs";
-import sizeOf from "probe-image-size";
-import { assignNewWithOld, getNewDimensionByScale } from "./function";
+import {
+  assignNewWithOld,
+  ensureOutputImageExits,
+  getNewDimensionByScale,
+} from "./function";
 
 /**
  * 用squoosh压缩，压缩JPEG/JPG/WEBP/AVIF文件
@@ -13,16 +15,13 @@ import { assignNewWithOld, getNewDimensionByScale } from "./function";
 export async function compressBySquoosh(
   item: WaitingImageItem,
   option: CompressConfig
-): Promise<ImageItem> {
-  const entry = await getNodeModulesPath("@squoosh");
-  const script = path.resolve(entry, "./cli/src/index.js");
-  const options = getSquooshCliArguments(item, option);
-
-  // 压缩前先确保删除旧的临时文件
-  fs.rmSync(item.tempPath, { force: true });
-
+) {
   // 调用 Squoosh CLI 执行压缩
   try {
+    const entry = getNodeModulesPath("@squoosh");
+    const script = path.resolve(entry, "./cli/src/index.js");
+    const options = getSquooshCliArguments(item, option);
+
     await new Promise<void>((resolve, reject) => {
       const squoosh = spawn(process.execPath, [script, ...options], {
         env: {
@@ -30,45 +29,23 @@ export async function compressBySquoosh(
           ELECTRON_RUN_AS_NODE: "1",
         },
       });
+      squoosh.on("exit", (event) => {
+        console.log("Squoosh cli exited:", event);
+        resolve();
+      });
       // 如果启动进程报错，则任务失败
       squoosh.on("error", (event) => {
         console.log("Spawn squoosh cli failed:", event);
         reject();
       });
-      // Squoosh CLI的输出在标准错误通道
-      squoosh.stderr.on("data", (data: Buffer) => {
-        const output = data.toString("utf8");
-        console.log(`Squoosh stderr:`, data.toString("utf8"));
-        if (/\√\s*Squoosh\s*results\:/.test(output)) {
-          resolve();
-        }
-      });
-      // 有正常输出的情况下，还要检查输出目录是否有文件生成，如果没有，则任务失败
-      squoosh.stdout.on("data", (data: Buffer) => {
-        console.log(`Squoosh stdout:`, data.toString("utf8"));
-        resolve();
-      });
     });
 
-    // 检查目录中是否有输出文件
-    if (fs.existsSync(item.tempPath)) {
-      const stat = fs.lstatSync(item.tempPath);
-      item.newSize = stat.size;
-      // 读取图片文件的尺寸信息
-      const { width, height } = await sizeOf(
-        fs.createReadStream(item.tempPath)
-      );
-      item.newWidth = width;
-      item.newHeight = height;
-    } else {
-      throw new Error("The compressed file does not exist");
-    }
+    await ensureOutputImageExits(item);
   } catch (error) {
-    console.log("Unknown exception:", error);
+    console.log("Squoosh compression exception: ", error);
     // 压缩失败，使用旧的文件值直接替换，防止报错
     assignNewWithOld(item);
   }
-  return item;
 }
 
 /**
@@ -181,12 +158,9 @@ export function getSquooshCliArguments(
   }
 
   // 设置文件后缀
-
   options.push("--suffix", "." + item.tempId);
-
   // 设置输出目录
   options.push("--output-dir", getTempDir());
-
   // 设置待压缩的文件
   options.push(item.path);
 

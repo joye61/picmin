@@ -24,7 +24,8 @@ export async function emptyImageList() {
   state.list = [];
   indexes.clear();
   // 同时清理临时文件夹
-  fs.rmSync(getTempDir(), {
+  const tempDir = getTempDir();
+  fs.rmSync(tempDir, {
     force: true,
     recursive: true,
   });
@@ -61,6 +62,7 @@ export async function createWaitingImageItem(
     path: filePath,
     extension,
     upperExtension,
+    cantCompress: false,
   };
 
   // 获取文件的名字

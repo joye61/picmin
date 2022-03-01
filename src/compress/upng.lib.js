@@ -1649,7 +1649,8 @@ UPNG.encode._filterZero = function (img, h, bpp, bpl, data, filter, levelZero) {
   var opts;
   if (levelZero) opts = { level: 0 };
 
-  var CMPR = data.length > 10e6 && UZIP != null ? UZIP : pako;
+  // var CMPR = data.length > 10e6 && UZIP != null ? UZIP : pako;
+  var CMPR = pako;
 
   var time = Date.now();
   for (var i = 0; i < ftry.length; i++) {

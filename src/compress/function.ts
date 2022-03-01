@@ -7,6 +7,8 @@ import { compressByPngQuant } from "./pngquant";
 import { compressBySquoosh } from "./squoosh";
 import { compressBySvgo } from "./svgo";
 import { compressByUpng } from "./upng";
+import sizeOf from "probe-image-size";
+import { AllowTypes } from "@/const";
 
 /**
  * 根据传入的配置参数获取将要生成的图片的宽度和高度
@@ -59,7 +61,46 @@ export function assignNewWithOld(item: WaitingImageItem) {
   item.newSize = item.oldSize;
   item.newWidth = item.oldWidth;
   item.newHeight = item.oldHeight;
-  item.tempPath = item.path;
+  item.cantCompress = true;
+}
+
+/**
+ * 生成图片文件的buffer数据
+ * @param src
+ * @returns
+ */
+export async function readImageFileToBuffer(src: string) {
+  const resp = await fetch(`file://` + src);
+  const buf = await resp.arrayBuffer();
+  return buf;
+}
+
+/**
+ * 根据图片文件创建Blob
+ * @param item
+ * @param option
+ */
+export async function createBlob(
+  item: WaitingImageItem,
+  option: CompressConfig
+) {
+  // 计算新的高度和宽度
+  const { width, height } = getNewDimensionByScale(item, option.scale);
+  const image = await createImageBySrc(item.path);
+  const { canvas } = drawImageToCanvas(image, width, height);
+  // 生成Blob
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(
+      (res) => resolve(res),
+      (AllowTypes as any)[item.upperExtension],
+      option.quality / 100
+    );
+  });
+  if (!(blob instanceof Blob)) {
+    throw new Error("Unable to read image binary information");
+  }
+
+  return blob;
 }
 
 /**
@@ -87,11 +128,39 @@ export async function createImageBySrc(
 }
 
 /**
- * 删除旧的生成文件
- * @param item
+ * 绘制图片到canvas中
+ * @param image
+ * @param width
+ * @param height
  */
-export function removeOldTemp(item: WaitingImageItem) {
-  fs.rmSync(item.tempPath, { force: true });
+export function drawImageToCanvas(
+  image: HTMLImageElement,
+  width: number,
+  height: number
+) {
+  // 通过canvas写新图片
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!(context instanceof CanvasRenderingContext2D)) {
+    throw new Error("Unable to get canvas drawing context");
+  }
+
+  // 将图片绘制到canvas中
+  context.drawImage(
+    image,
+    0,
+    0,
+    image.width,
+    image.height,
+    0,
+    0,
+    width,
+    height
+  );
+
+  return { canvas, context };
 }
 
 /**
@@ -99,10 +168,48 @@ export function removeOldTemp(item: WaitingImageItem) {
  * @param item
  * @param data
  */
-export async function writeToTemp(item: WaitingImageItem, data: Blob) {
-  const buf = await data.arrayBuffer();
-  fs.outputFileSync(item.tempPath, new Uint8Array(buf));
-  return fs.existsSync(item.tempPath);
+export async function writeToTemp(
+  item: WaitingImageItem,
+  data: Blob | ArrayBuffer | string
+) {
+  // 写入新文件前先删除旧文件
+  fs.rmSync(item.tempPath, { force: true });
+
+  let content: Uint8Array | string = "";
+  if (data instanceof ArrayBuffer) {
+    content = new Uint8Array(data);
+  } else if (data instanceof Blob) {
+    const buf = await data.arrayBuffer();
+    content = new Uint8Array(buf);
+  } else if (typeof content === "string") {
+    content = data;
+  }
+
+  fs.outputFileSync(item.tempPath, content);
+  const wres = fs.existsSync(item.tempPath);
+  if (!wres) {
+    throw new Error(
+      `File cannot be written to temporary directory: ${item.path}`
+    );
+  }
+}
+
+/**
+ * 确认输出文件存在，如果不存在，则抛出错误
+ * @param item
+ */
+export async function ensureOutputImageExits(item: WaitingImageItem) {
+  // 检查目录中是否有输出文件
+  if (!fs.existsSync(item.tempPath)) {
+    throw new Error("The compressed file does not exist");
+  }
+  const stat = fs.lstatSync(item.tempPath);
+  item.newSize = stat.size;
+  // 读取图片文件的尺寸信息
+  const { width, height } = await sizeOf(fs.createReadStream(item.tempPath));
+  item.newWidth = width;
+  item.newHeight = height;
+  item.cantCompress = false;
 }
 
 /**

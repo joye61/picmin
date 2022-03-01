@@ -46,13 +46,12 @@ const columns: ColType[] = [
   },
   {
     key: "name",
-    title: "图片文件",
+    title: "源图片",
     className: style._name,
     render(item) {
       return (
         <div className={style.name}>
           <RowBetween>
-            <Typography.Text>{item.name}</Typography.Text>
             <RowCenter
               onClick={() => {
                 ipcRenderer.send(IPCEvents.LocateImage, item.path);
@@ -60,6 +59,7 @@ const columns: ColType[] = [
             >
               <img alt="" src={`file://${item.path}`} />
             </RowCenter>
+            <Typography.Text>{item.name}</Typography.Text>
           </RowBetween>
         </div>
       );

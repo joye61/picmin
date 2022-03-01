@@ -72,6 +72,8 @@ declare module "*.module.sass" {
 
 declare module "@squoosh/lib";
 
+declare module "svgo";
+
 interface File {
   path: string;
 }
@@ -101,6 +103,8 @@ interface ImageItem {
   extension?: string;
   // 大写扩展名
   upperExtension?: string;
+  // 是否无法压缩
+  cantCompress: boolean;
 }
 
 // 等待状态的图片
@@ -120,6 +124,7 @@ interface WaitingImageItem {
   newSize?: number;
   newWidth?: number;
   newHeight?: number;
+  cantCompress: boolean;
 }
 
 // 缩放选项

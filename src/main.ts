@@ -24,6 +24,7 @@ async function createWindow() {
     maximizable: false,
     roundedCorners: false,
     titleBarStyle: "hidden",
+    hasShadow: true,
     webPreferences: {
       // 只有开发环境允许使用devtools
       devTools: process.env.NODE_ENV === "development",

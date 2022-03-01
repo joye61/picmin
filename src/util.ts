@@ -93,7 +93,7 @@ export async function getSysPath(pathname = "temp") {
  * 获取二进制文件的路径
  * @param binName
  */
-export async function getBinPath(binName: string) {
+export function getBinPath(binName: string) {
   let name = binName;
   if (isWin()) {
     name += ".exe";
@@ -109,7 +109,7 @@ export async function getBinPath(binName: string) {
  * 获取一个node_modules模块的具体路径
  * @param moduleName
  */
-export async function getNodeModulesPath(moduleName?: string) {
+export function getNodeModulesPath(moduleName?: string) {
   let nodeModulesPath: string = path.resolve(__g.appPath, "./node_modules/");
   return moduleName ? path.join(nodeModulesPath, moduleName) : nodeModulesPath;
 }

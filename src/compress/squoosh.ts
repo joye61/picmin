@@ -38,6 +38,13 @@ export async function compressBySquoosh(
         console.log("Spawn squoosh cli failed:", event);
         reject();
       });
+      squoosh.stdout.on("data", (data) => {
+        console.log(`stdout: ${data.toString("utf8")}`);
+      });
+
+      squoosh.stderr.on("data", (data) => {
+        console.error(`stderr: ${data.toString("utf8")}`);
+      });
     });
 
     await ensureOutputImageExits(item);
@@ -79,7 +86,7 @@ export function getSquooshCliArguments(
 
   // 拼接质量参数
   const quality = option.quality;
-  const ext = item.extension!.toUpperCase();
+  const ext = item.upperExtension;
   if (ext === "JPG" || ext === "JPEG") {
     // 对于jpeg格式，quality取值0-100，值越小压缩率越高
     options.push(
@@ -137,7 +144,7 @@ export function getSquooshCliArguments(
         use_sharp_yuv: 0,
       })
     );
-  } else if (ext === "avif") {
+  } else if (ext === "AVIF") {
     // 对于avif格式，cqLevel取值0-63，值越大压缩率越高
     let fQuality = ((100 - quality) * 63) / 100;
     options.push(

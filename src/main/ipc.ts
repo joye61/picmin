@@ -1,5 +1,3 @@
-// Warning: 当前文件只能被主进程调用
-
 import {
   app,
   BrowserWindow,
@@ -8,8 +6,10 @@ import {
   OpenDialogSyncOptions,
   shell,
 } from "electron";
-import { AllowTypes, IPCEvents } from "./const";
-import { isMac } from "./resolve";
+import { AllowTypes, IPCEvents } from "../utils/const";
+import { readImageListFromFiles } from "./reader";
+import { isMac } from "@/utils/is";
+import { resetTemp } from "./util";
 
 /**
  * 进程间通信绑定逻辑
@@ -31,8 +31,22 @@ export function bindIPC(mainWindow: BrowserWindow) {
     shell.showItemInFolder(imagePath);
   });
 
+  // 临时目录重置
+  ipcMain.on(IPCEvents.TempReset, (event) => {
+    resetTemp();
+    event.reply(IPCEvents.TempResetOver);
+  });
+
+  // 读取图片列表，拖拽上传的
+  ipcMain.on(
+    IPCEvents.ReadImages,
+    (event, replyList: string[], existList: Set<string>) => {
+      readImageListFromFiles(event, replyList, existList);
+    }
+  );
+
   // 选取图片
-  ipcMain.on(IPCEvents.PickImages, (event) => {
+  ipcMain.on(IPCEvents.PickImages, (event, existList: Set<string>) => {
     const extensions = Object.keys(AllowTypes).map((ext) => ext.toLowerCase());
     // windows和linux下不支持同时选择文件和文件夹
     const openProps: OpenDialogSyncOptions["properties"] = ["openFile"];
@@ -52,7 +66,7 @@ export function bindIPC(mainWindow: BrowserWindow) {
 
     // 将读取的图片列表返回给渲染进程
     const replyList: Array<string> = Array.isArray(result) ? result : [];
-    event.reply(IPCEvents.PickResult, replyList);
+    readImageListFromFiles(event, replyList, existList);
   });
 
   // 获取系统相关的路径

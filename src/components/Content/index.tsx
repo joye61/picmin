@@ -13,16 +13,16 @@ import {
   ArrowUpOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import { RowType, state } from "../state";
+import { RowType, state } from "@/renderer/state";
 import { Tooltip, Typography } from "antd";
 import clsx from "clsx";
-import { getSupportExtensionsAsString, addImagesFromPathList } from "../image";
-import { fsize } from "@/util";
-import { Indicator } from "@/Indicator";
-import { LoadingMask } from "@/LoadingMask";
-import { Fsize } from "@/Fsize";
+import { getSupportExtensionsAsString } from "@/renderer/image";
+import { fsize, getExistsSets } from "@/renderer/util";
+import { Indicator } from "@/components/Indicator";
+import { LoadingMask } from "@/components/LoadingMask";
+import { Fsize } from "@/components/Fsize";
 import { ipcRenderer } from "electron";
-import { IPCEvents } from "@/const";
+import { IPCEvents } from "@/utils/const";
 
 interface ColType {
   key: keyof RowType;
@@ -171,7 +171,8 @@ async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
     }
   }
   state.isReadList = true;
-  await addImagesFromPathList(files);
+  // 读取图片
+  ipcRenderer.send(IPCEvents.ReadImages, files, getExistsSets());
 }
 
 /**
@@ -211,6 +212,8 @@ function showContent() {
         </table>
         <div
           className={style.list}
+          // 读取图片的时候不允许滚动
+          style={{ overflowY: state.isReadList ? "hidden" : "auto" }}
           onDragOver={(event) => {
             if (state.isReadList) return;
             event.preventDefault();
@@ -253,7 +256,8 @@ function showContent() {
       <div
         className={style.mask}
         onClick={() => {
-          ipcRenderer.send(IPCEvents.PickImages);
+          state.isReadList = true;
+          ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
         }}
         onDragOver={(event) => {
           event.preventDefault();

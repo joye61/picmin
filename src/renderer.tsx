@@ -4,8 +4,8 @@ import { App } from "./App";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/lib/locale/zh_CN";
 import { configure } from "mobx";
-import { getSysPath } from "./util";
-import { __g } from "./state";
+import { getSysPath } from "./renderer/util";
+import { __g } from "./renderer/state";
 
 (async () => {
   // 配置mobx

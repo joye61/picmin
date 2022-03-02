@@ -1,6 +1,6 @@
 import {
   assignNewWithOld,
-  createImageBySrc,
+  createImage,
   drawImageToCanvas,
   ensureOutputImageExits,
   getNewDimensionByScale,
@@ -34,7 +34,7 @@ export async function compressByUpng(
         // 如果编码过程中报错，尝试用canvas绘制
         cbuf = UPNG.encode([decodeRes.data.buffer], width, height, quality);
       } catch (error) {
-        const image = await createImageBySrc(item.path);
+        const image = await createImage(item);
         const { context } = drawImageToCanvas(image, width, height);
         const imageData = context.getImageData(0, 0, width, height);
         cbuf = UPNG.encode([imageData.data.buffer], width, height, quality);

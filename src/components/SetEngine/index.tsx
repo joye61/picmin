@@ -2,13 +2,13 @@ import style from "./index.module.scss";
 import { Alert, Form, Modal, Select, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { state } from "../state";
+import { state } from "@/renderer/state";
 import {
   type EngineList,
   engineList,
   type EngineMap,
 } from "@/compress/define";
-import { RowBetween } from "@/Flex";
+import { RowBetween } from "@/components/Flex";
 
 interface FormValues {
   jpeg: EngineMap["jpeg"];

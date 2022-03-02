@@ -1,4 +1,4 @@
-import { getBinPath, getTempDir } from "@/util";
+import { getBinPath, getTempDir } from "@/renderer/util";
 import { spawn } from "child_process";
 import {
   assignNewWithOld,

@@ -1,4 +1,4 @@
-@import "../var";
+@import "@/var";
 
 .loading {
   z-index: 1;
@@ -7,13 +7,19 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #ffffffcc;
+  background-color: #ffffffdd;
   user-select: none;
   > span {
     font-size: 24px;
   }
-  > p {
+  > div {
     margin-top: 15px;
     font-size: 13px;
+  }
+
+  .num {
+    span:nth-child(1) {
+      color: $warning-color;
+    }
   }
 }

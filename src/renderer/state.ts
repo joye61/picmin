@@ -1,6 +1,6 @@
 import { observable } from "mobx";
 import { Key } from "react";
-import { EngineMap } from "./compress/define";
+import { EngineMap } from "../compress/define";
 
 export interface RowType extends ImageItem {
   key: Key;
@@ -33,17 +33,17 @@ export type State = {
   gifEngine: EngineMap["gif"];
 
   dragActive: boolean;
+  
   // 是否正在读取列表，用来显示loading状态
   isReadList: boolean;
+  readTotal: number;
+  readCurrent: number;
 };
 
 export type SaveMenuItem = {
   value: SaveType;
   name: string;
 };
-
-// 用来缓存图片的索引，键是路径，值是imageList索引
-export const indexes: Map<string, number> = new Map();
 
 export const saveMenus: SaveMenuItem[] = [
   { name: "覆盖保存", value: "cover" },
@@ -68,6 +68,8 @@ export const state = observable.object<State>({
   avifEngine: "avif",
   dragActive: false,
   isReadList: false,
+  readTotal: 0,
+  readCurrent: 0,
   showSetEngin: false,
   list: [],
 });
@@ -77,8 +79,6 @@ export interface __GVars {
   appPath: string;
   // 系统临时目录
   tempPath: string;
-  // tid用于标识临时文件夹中文件的唯一值
-  tid: number;
 }
 
 /**
@@ -87,5 +87,4 @@ export interface __GVars {
 export const __g = {
   appPath: "",
   tempPath: "",
-  tid: 0,
 };

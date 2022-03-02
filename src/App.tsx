@@ -1,8 +1,8 @@
 import style from "./App.module.scss";
-import { RowBetween, RowCenter, RowStart } from "./Flex";
+import { RowBetween, RowCenter, RowStart } from "./components/Flex";
 import logo from "./assets/icon.svg";
 import { Button, Typography, Space, Dropdown, Menu } from "antd";
-import Icon, {
+import {
   PlusOutlined,
   SettingOutlined,
   ClearOutlined,
@@ -10,23 +10,23 @@ import Icon, {
   ControlOutlined,
   RedoOutlined,
 } from "@ant-design/icons";
-import { Content } from "./Content";
+import { Content } from "./components/Content";
 import clsx from "clsx";
 import { observer } from "mobx-react-lite";
-import { saveMenus, SaveType, state } from "./state";
-import { Setting } from "./Setting";
+import { saveMenus, SaveType, state } from "./renderer/state";
+import { Setting } from "./components/Setting";
 import {
   isAddDisabled,
   isClearDisabled,
   isConfigDisabled,
   isRedoDisabled,
   isSaveDisabled,
-} from "./util";
+} from "./renderer/util";
 import { ipcRenderer } from "electron";
-import { IPCEvents } from "./const";
-import { useMessage } from "./useMessage";
-import { emptyImageList } from "./image";
-import { SetEngine } from "./SetEngine";
+import { IPCEvents } from "./utils/const";
+import { useMessage } from "./renderer/useMessage";
+import { emptyImageList } from "./renderer/image";
+import { SetEngine } from "./components/SetEngine";
 
 export const App = observer(() => {
   // 进程间通信处理用的专用hooks
@@ -155,6 +155,7 @@ export const App = observer(() => {
             disabled={addDisabled}
             onClick={() => {
               if (addDisabled) return;
+              state.isReadList = true;
               ipcRenderer.send(IPCEvents.PickImages);
             }}
           >

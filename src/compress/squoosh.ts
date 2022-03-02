@@ -1,4 +1,4 @@
-import { getNodeModulesPath, getTempDir } from "@/util";
+import { getNodeModulesPath, getTempDir } from "@/renderer/util";
 import { spawn } from "child_process";
 import path from "path";
 import {

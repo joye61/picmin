@@ -6,10 +6,7 @@ import {
 import svgo from "svgo";
 import fs from "fs";
 
-export async function compressBySvgo(
-  item: WaitingImageItem,
-  option: CompressConfig
-) {
+export async function compressBySvgo(item: WaitingImageItem) {
   try {
     const content = fs.readFileSync(item.path, { encoding: "utf-8" });
     const result = svgo.optimize(content, {

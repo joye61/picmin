@@ -1,4 +1,4 @@
-import { getBinPath } from "@/util";
+import { getBinPath } from "@/renderer/util";
 import { spawn } from "child_process";
 import {
   assignNewWithOld,

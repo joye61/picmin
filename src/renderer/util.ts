@@ -1,8 +1,8 @@
 import { state, __g } from "./state";
 import fileSize from "filesize";
 import { ipcRenderer } from "electron";
-import { IPCEvents, TempDir } from "./const";
-import { isWin } from "./resolve";
+import { IPCEvents, TempDir } from "../utils/const";
+import { isWin } from "../utils/is";
 import path from "path";
 
 /**
@@ -119,4 +119,16 @@ export function getNodeModulesPath(moduleName?: string) {
  */
 export function getTempDir() {
   return path.join(__g.tempPath, TempDir);
+}
+
+/**
+ * 将已展示的图片路径返回
+ * @returns 
+ */
+export function getExistsSets() {
+  const esets = new Set<string>();
+  state.list.forEach((item) => {
+    esets.add(item.path);
+  });
+  return esets;
 }

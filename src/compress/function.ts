@@ -8,7 +8,9 @@ import { compressBySquoosh } from "./squoosh";
 import { compressBySvgo } from "./svgo";
 import { compressByUpng } from "./upng";
 import sizeOf from "probe-image-size";
-import { AllowTypes } from "@/const";
+import { AllowTypes } from "@/utils/const";
+
+declare const OffscreenCanvas: any;
 
 /**
  * 根据传入的配置参数获取将要生成的图片的宽度和高度
@@ -76,9 +78,10 @@ export async function readImageFileToBuffer(src: string) {
 }
 
 /**
- * 根据图片文件创建Blob
+ * 根据图片对象创建blob
  * @param item
  * @param option
+ * @returns
  */
 export async function createBlob(
   item: WaitingImageItem,
@@ -86,16 +89,13 @@ export async function createBlob(
 ) {
   // 计算新的高度和宽度
   const { width, height } = getNewDimensionByScale(item, option.scale);
-  const image = await createImageBySrc(item.path);
+  const image = await createImage(item);
   const { canvas } = drawImageToCanvas(image, width, height);
-  // 生成Blob
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob(
-      (res) => resolve(res),
-      (AllowTypes as any)[item.upperExtension],
-      option.quality / 100
-    );
+  const blob = await canvas.convertToBlob({
+    type: (AllowTypes as any)[item.upperExtension],
+    quality: option.quality / 100,
   });
+
   if (!(blob instanceof Blob)) {
     throw new Error("Unable to read image binary information");
   }
@@ -104,27 +104,19 @@ export async function createBlob(
 }
 
 /**
- * 通过图片地址创建图片
- * @param src
+ * 通过图片对象创建位图数据对象
+ * @param item
  * @returns
  */
-export async function createImageBySrc(
-  src: string | Blob
-): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = document.createElement("img");
-    if (src instanceof Blob) {
-      img.src = URL.createObjectURL(src);
-    } else {
-      img.src = "file://" + src;
-    }
-    img.onerror = (error) => {
-      reject(error);
-    };
-    img.onload = () => {
-      resolve(img);
-    };
+export async function createImage(
+  item: WaitingImageItem
+): Promise<ImageBitmap> {
+  const resp = await fetch(`file://${item.path}`);
+  const source = await resp.blob();
+  const image: ImageBitmap = await createImageBitmap(source, {
+    resizeQuality: "high",
   });
+  return image;
 }
 
 /**
@@ -134,21 +126,16 @@ export async function createImageBySrc(
  * @param height
  */
 export function drawImageToCanvas(
-  image: HTMLImageElement,
+  image: ImageBitmap,
   width: number,
   height: number
 ) {
-  // 通过canvas写新图片
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  // 只有离屏canvas才能在worker中使用
+  const canvas: HTMLCanvasElement = new OffscreenCanvas(width, height);
   const context = canvas.getContext("2d");
-  if (!(context instanceof CanvasRenderingContext2D)) {
-    throw new Error("Unable to get canvas drawing context");
-  }
 
   // 将图片绘制到canvas中
-  context.drawImage(
+  context!.drawImage(
     image,
     0,
     0,
@@ -160,7 +147,10 @@ export function drawImageToCanvas(
     height
   );
 
-  return { canvas, context };
+  return {
+    canvas: canvas as any,
+    context: context as CanvasRenderingContext2D,
+  };
 }
 
 /**
@@ -250,7 +240,7 @@ export async function compressImage(
       assignNewWithOld(item);
     }
   } else if (type === "SVG") {
-    await compressBySvgo(item, option);
+    await compressBySvgo(item);
   } else if (type === "WEBP") {
     if (engin.webp === "canvas") {
       await compressByCanvas(item, option);

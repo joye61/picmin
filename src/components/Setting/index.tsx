@@ -2,7 +2,7 @@ import style from "./index.module.scss";
 import { Form, Input, Modal, Radio, Slider } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { state } from "../state";
+import { state } from "@/renderer/state";
 
 interface FormValues {
   scaleMode: "percent" | "width" | "height";

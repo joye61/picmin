@@ -90,11 +90,13 @@ export const Setting = observer(() => {
         onClick() {
           state.scaleMode = "percent";
           state.scalePercent = 100;
+          state.qualityPercent = 75;
           state.scaleWidth = undefined;
           state.scaleHeight = undefined;
           form.setFieldsValue({
             scaleMode: "percent",
             scalePercent: 100,
+            qualityPercent: 75,
           });
         },
       }}

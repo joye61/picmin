@@ -4,8 +4,13 @@ import { App } from "./App";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/lib/locale/zh_CN";
 import { configure } from "mobx";
-import { getSysPath } from "./renderer/util";
-import { __g } from "./renderer/state";
+import {
+  getAppPath,
+  getBinPath,
+  getNodeModulesPath,
+  getTempPath,
+} from "./renderer/util";
+import { __g } from "./renderer/g";
 
 (async () => {
   // 配置mobx
@@ -14,11 +19,11 @@ import { __g } from "./renderer/state";
     useProxies: "always",
   });
 
-  // 读取系统目录
-  const tempPath = await getSysPath();
-  const appPath = await getSysPath("app");
-  __g.tempPath = tempPath;
-  __g.appPath = appPath;
+  // 预读取系统目录
+  __g.tempPath = await getTempPath();
+  __g.appPath = await getAppPath();
+  __g.nodeModulesPath = await getNodeModulesPath();
+  __g.binPath = await getBinPath();
 
   // 渲染界面
   ReactDOM.render(

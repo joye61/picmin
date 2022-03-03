@@ -9,6 +9,7 @@ import { compressBySvgo } from "./svgo";
 import { compressByUpng } from "./upng";
 import sizeOf from "probe-image-size";
 import { AllowTypes } from "@/utils/const";
+import { __g } from "@/renderer/g";
 
 declare const OffscreenCanvas: any;
 
@@ -146,6 +147,8 @@ export function drawImageToCanvas(
     width,
     height
   );
+  // 清理图片内存
+  image.close();
 
   return {
     canvas: canvas as any,
@@ -212,20 +215,21 @@ export async function ensureOutputImageExits(item: WaitingImageItem) {
 export async function compressImage(
   item: WaitingImageItem,
   option: CompressConfig,
-  engin: Partial<EngineMap>
+  engin: Partial<EngineMap>,
+  g: typeof __g
 ): Promise<Required<ImageItem>> {
   const type = item.upperExtension;
   if (type === "APNG") {
     await compressByUpng(item, option);
   } else if (type === "AVIF") {
-    await compressBySquoosh(item, option);
+    await compressBySquoosh(item, option, g);
   } else if (type === "GIF") {
-    await compressByGifsicle(item, option);
+    await compressByGifsicle(item, option, g);
   } else if (type === "JPG" || type === "JPEG") {
     if (engin.jpeg === "canvas") {
       await compressByCanvas(item, option);
     } else if (engin.jpeg === "mozjpeg") {
-      await compressBySquoosh(item, option);
+      await compressBySquoosh(item, option, g);
     } else {
       assignNewWithOld(item);
     }
@@ -233,9 +237,9 @@ export async function compressImage(
     if (engin.png === "upng") {
       await compressByUpng(item, option);
     } else if (engin.png === "pngquant") {
-      await compressByPngQuant(item, option);
+      await compressByPngQuant(item, option, g);
     } else if (engin.png === "oxipng") {
-      await compressByOxipng(item, option);
+      await compressByOxipng(item, option, g);
     } else {
       assignNewWithOld(item);
     }
@@ -245,7 +249,7 @@ export async function compressImage(
     if (engin.webp === "canvas") {
       await compressByCanvas(item, option);
     } else if (engin.webp === "webp") {
-      await compressBySquoosh(item, option);
+      await compressBySquoosh(item, option, g);
     } else {
       assignNewWithOld(item);
     }

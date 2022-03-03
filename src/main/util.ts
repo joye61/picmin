@@ -2,11 +2,11 @@ import { app } from "electron";
 import fs from "fs-extra";
 import { UID } from "./uid";
 import path from "path";
-import { TempDir } from "@/utils/const";
+import { TempDirName } from "@/utils/const";
 
 export function resetTemp() {
   const tempDir = app.getPath("temp");
-  const tempPath = path.resolve(tempDir, TempDir);
+  const tempPath = path.resolve(tempDir, TempDirName);
   fs.rmSync(tempPath, {
     force: true,
     recursive: true,

@@ -9,8 +9,10 @@
     user-select: none;
     th {
       background-color: #fafafa;
-      // border-bottom: 1px solid #f0f0f0;
       white-space: nowrap;
+      &._status {
+        padding-left: 14px;
+      }
       &._action {
         text-align: right;
         padding-right: 20px;
@@ -22,10 +24,6 @@
       padding: 10px;
       border-bottom: 1px solid #f0f0f0;
       height: 50px;
-      // font-size: 13px;
-    }
-    td {
-      // height: 50px;
     }
     tr:hover td {
       background-color: #fafafa;
@@ -61,18 +59,18 @@ $oldSizeWidth: 120px;
 $newSizeWidth: 120px;
 $rateWidth: 85px;
 $actionWidth: 100px;
-// $nameWidth: calc(
-//   100vw - $statusWidth - $oldSizeWidth - $newSizeWidth - $rateWidth -
-//     $actionWidth
-// );
+$nameWidth: calc(
+  100vw - $statusWidth - $oldSizeWidth - $newSizeWidth - $rateWidth -
+    $actionWidth
+);
 
 // 列属性
 ._status {
   width: $statusWidth;
 }
-// ._name {
-//   width: $nameWidth;
-// }
+._name {
+  width: $nameWidth;
+}
 ._oldSize {
   width: $oldSizeWidth;
 }
@@ -87,7 +85,7 @@ $actionWidth: 100px;
 }
 
 .status {
-  padding-left: 4px;
+  padding-left: 10px;
   .statusDone {
     font-size: 14px;
     color: $success-color;
@@ -202,23 +200,6 @@ $actionWidth: 100px;
   > p {
     margin-top: 15px;
     font-size: 12px;
-  }
-}
-
-.rateDown,
-.rateUp {
-  > span:nth-child(1) {
-    margin-right: 2px;
-  }
-}
-.rateDown {
-  span {
-    color: $success-color;
-  }
-}
-.rateUp {
-  span {
-    color: $warning-color;
   }
 }
 

@@ -1,4 +1,3 @@
-import { getBinPath, getTempDir } from "@/renderer/util";
 import { spawn } from "child_process";
 import {
   assignNewWithOld,
@@ -8,13 +7,16 @@ import {
   writeToTemp,
 } from "./function";
 import fs from "fs-extra";
+import { __g } from "@/renderer/g";
+import path from "path";
 
 export async function compressByPngQuant(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
+  g: typeof __g
 ) {
   try {
-    const binPath = getBinPath("pngquant");
+    const binPath = path.join(g.binPath, "pngquant");
     const { width } = getNewDimensionByScale(item, option.scale);
 
     // 如果启用了缩放逻辑，先生成缩放图
@@ -26,7 +28,7 @@ export async function compressByPngQuant(
     }
 
     // 要确保临时目录存在，否则pngquant无法生成文件
-    fs.ensureDirSync(getTempDir(), {
+    fs.ensureDirSync(g.tempPath, {
       mode: 0o744,
     });
 

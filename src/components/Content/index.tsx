@@ -1,18 +1,7 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
-import {
-  ColCenter,
-  ColStart,
-  RowBetween,
-  RowCenter,
-  RowEnd,
-  RowStart,
-} from "../Flex";
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  CheckCircleOutlined,
-} from "@ant-design/icons";
+import { ColCenter, ColStart, RowBetween, RowCenter, RowEnd } from "../Flex";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { RowType, state } from "@/renderer/state";
 import { Tooltip, Typography } from "antd";
 import clsx from "clsx";
@@ -23,6 +12,7 @@ import { LoadingMask } from "@/components/LoadingMask";
 import { Fsize } from "@/components/Fsize";
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "@/utils/const";
+import { Rate } from "../Rate";
 
 interface ColType {
   key: keyof RowType;
@@ -71,7 +61,12 @@ const columns: ColType[] = [
     className: style._oldSize,
     render(item) {
       if (typeof item.oldSize === "number") {
-        return <Fsize value={fsize(item.oldSize, true) as [number, string]} />;
+        return (
+          <Fsize
+            withGap
+            formats={fsize(item.oldSize, true) as [number, string]}
+          />
+        );
       }
       return "-";
     },
@@ -82,7 +77,12 @@ const columns: ColType[] = [
     className: style._newSize,
     render(item) {
       if (typeof item.newSize === "number") {
-        return <Fsize value={fsize(item.newSize, true) as [number, string]} />;
+        return (
+          <Fsize
+            withGap
+            formats={fsize(item.newSize, true) as [number, string]}
+          />
+        );
       }
       return "-";
     },
@@ -96,23 +96,7 @@ const columns: ColType[] = [
         typeof item.oldSize === "number" &&
         typeof item.newSize === "number"
       ) {
-        let percent = ((item.newSize - item.oldSize) * 100) / item.oldSize;
-        percent = Number(Math.abs(percent).toFixed(2));
-        if (item.newSize <= item.oldSize) {
-          return (
-            <RowStart className={style.rateDown}>
-              <ArrowDownOutlined />
-              <Typography.Text>{percent}%</Typography.Text>
-            </RowStart>
-          );
-        } else {
-          return (
-            <RowStart className={style.rateUp}>
-              <ArrowUpOutlined />
-              <Typography.Text>{percent}%</Typography.Text>
-            </RowStart>
-          );
-        }
+        return <Rate oldSize={item.oldSize} newSize={item.newSize} />;
       }
       return "-";
     },

@@ -16,6 +16,8 @@ import { observer } from "mobx-react-lite";
 import { saveMenus, SaveType, state } from "./renderer/state";
 import { Setting } from "./components/Setting";
 import {
+  fsize,
+  getExistsSets,
   isAddDisabled,
   isClearDisabled,
   isConfigDisabled,
@@ -25,8 +27,12 @@ import {
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "./utils/const";
 import { useMessage } from "./renderer/useMessage";
-import { emptyImageList } from "./renderer/image";
+import { emptyImageList, invokeCompress } from "./renderer/image";
 import { SetEngine } from "./components/SetEngine";
+import { Fsize } from "./components/Fsize";
+import { Rate } from "./components/Rate";
+import { toJS } from "mobx";
+import { Indicator } from "./components/Indicator";
 
 export const App = observer(() => {
   // 进程间通信处理用的专用hooks
@@ -73,10 +79,43 @@ export const App = observer(() => {
           >
             调整选项
           </Button>
+          <Button
+            size="small"
+            type="link"
+            className={clsx(style.redo, style.noDrag)}
+            icon={<RedoOutlined />}
+            disabled={redoDisabled}
+            onClick={() => {
+              const list = toJS(state.list);
+              list.forEach((item) => {
+                item.newSize = undefined;
+                item.newWidth = undefined;
+                item.newHeight = undefined;
+                item.cantCompress = false;
+                item.status = 1;
+              });
+              state.list = list;
+              window.setTimeout(() => {
+                invokeCompress();
+              }, 1000);
+            }}
+          >
+            重新压缩
+          </Button>
         </Space>
 
         {/* 退出逻辑 */}
         <Space className={style.action}>
+          {state.sum.cnum !== state.list.length && (
+            <RowStart className={style.processNum}>
+              <Indicator />
+              <Typography.Text type="warning">{state.sum.cnum}</Typography.Text>
+              /
+              <Typography.Text type="secondary">
+                {state.list.length}
+              </Typography.Text>
+            </RowStart>
+          )}
           <RowCenter
             className={clsx(style.mini, style.noDrag)}
             onClick={() => {
@@ -108,12 +147,23 @@ export const App = observer(() => {
       {/* 底部 */}
       <RowBetween className={style.footer}>
         {/* 信息展示 */}
-        <Typography.Text type="secondary">
-          共<Typography.Text type="warning">21</Typography.Text>
-          张图片，压缩前<Typography.Text type="warning">3.2M</Typography.Text>
-          ，压缩后<Typography.Text type="warning">1.2M</Typography.Text>，压缩率
-          <Typography.Text type="warning">75%</Typography.Text>
-        </Typography.Text>
+        <RowStart className={style.helpInfo}>
+          压缩前共
+          <Fsize
+            type="success"
+            formats={fsize(state.sum.oldTotalSize, true) as [number, string]}
+          />
+          ，压缩后共
+          <Fsize
+            type="warning"
+            formats={fsize(state.sum.newTotalSize, true) as [number, string]}
+          />
+          ，总体积
+          <Rate
+            oldSize={state.sum.oldTotalSize}
+            newSize={state.sum.newTotalSize}
+          />
+        </RowStart>
 
         {/* 操作按钮 */}
         <Space className={style.noDrag}>
@@ -156,19 +206,12 @@ export const App = observer(() => {
             onClick={() => {
               if (addDisabled) return;
               state.isReadList = true;
-              ipcRenderer.send(IPCEvents.PickImages);
+              state.isReadList = true;
+              ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
             }}
           >
             添加图片
           </Button>
-          <Button
-            type="primary"
-            icon={<RedoOutlined />}
-            disabled={redoDisabled}
-            onClick={() => {
-              // TODO 重新压缩
-            }}
-          />
         </Space>
       </RowBetween>
 

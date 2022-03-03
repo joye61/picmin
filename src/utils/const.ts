@@ -34,4 +34,4 @@ export enum IPCEvents {
 }
 
 // 临时的生成文件夹名字，放在临时目录下
-export const TempDir = "com.tuxiaoxiao.picmin";
+export const TempDirName = "com.tuxiaoxiao.picmin";

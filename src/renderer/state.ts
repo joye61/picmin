@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { autorun, observable } from "mobx";
 import { Key } from "react";
 import { EngineMap } from "../compress/define";
 
@@ -33,16 +33,28 @@ export type State = {
   gifEngine: EngineMap["gif"];
 
   dragActive: boolean;
-  
+
   // 是否正在读取列表，用来显示loading状态
   isReadList: boolean;
   readTotal: number;
   readCurrent: number;
+
+  // 统计用的临时值
+  sum: SumType;
 };
 
 export type SaveMenuItem = {
   value: SaveType;
   name: string;
+};
+
+export type SumType = {
+  // 已完成压缩的数量
+  cnum: number;
+  // 压缩前总体积
+  oldTotalSize: number;
+  // 压缩后总体积
+  newTotalSize: number;
 };
 
 export const saveMenus: SaveMenuItem[] = [
@@ -72,19 +84,35 @@ export const state = observable.object<State>({
   readCurrent: 0,
   showSetEngin: false,
   list: [],
+  sum: {
+    cnum: 0,
+    oldTotalSize: 0,
+    newTotalSize: 0,
+  },
 });
 
-export interface __GVars {
-  // app目录
-  appPath: string;
-  // 系统临时目录
-  tempPath: string;
-}
-
-/**
- * 全局变量存储
- */
-export const __g = {
-  appPath: "",
-  tempPath: "",
-};
+autorun(() => {
+  const sum: SumType = {
+    cnum: 0,
+    oldTotalSize: 0,
+    newTotalSize: 0,
+  };
+  state.sum = state.list.reduce((prev: typeof sum, item) => {
+    let cnum = prev.cnum;
+    let oldTotalSize = prev.oldTotalSize;
+    let newTotalSize = prev.newTotalSize;
+    const itemSize = item.oldSize!;
+    oldTotalSize += itemSize;
+    if (item.status === 0) {
+      cnum += 1;
+      newTotalSize += item.newSize!;
+    } else {
+      newTotalSize += itemSize;
+    }
+    return {
+      cnum,
+      oldTotalSize,
+      newTotalSize,
+    };
+  }, sum);
+});

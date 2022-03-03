@@ -1,17 +1,19 @@
-import { getBinPath } from "@/renderer/util";
+import { __g } from "@/renderer/g";
 import { spawn } from "child_process";
 import {
   assignNewWithOld,
   ensureOutputImageExits,
   getNewDimensionByScale,
 } from "./function";
+import path from "path";
 
 export async function compressByGifsicle(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
+  g: typeof __g
 ) {
   try {
-    const binPath = getBinPath("gifsicle");
+    const binPath = path.join(g.binPath, "gifsicle");
     const { width, height } = getNewDimensionByScale(item, option.scale);
 
     // 执行gif压缩

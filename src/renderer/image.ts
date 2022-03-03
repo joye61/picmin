@@ -3,6 +3,7 @@ import { state } from "./state";
 import { type EngineMap } from "../compress/define";
 import { ipcRenderer } from "electron";
 import { toJS } from "mobx";
+import { gworker, __g } from "./g";
 
 /**
  * 获取应用程序支持的所有后缀
@@ -49,24 +50,31 @@ export async function invokeCompress() {
     scale,
   };
 
-  for (let item of state.list) {
+  for (let index = 0; index < state.list.length; index++) {
+    const item = state.list[index];
+    // 只有等待压缩的选项才执行压缩
     if (item.status !== 1) continue;
-    // 压缩逻辑，放在worker中压缩
-    const result: ImageItem = await new Promise<ImageItem>((resolve) => {
-      const worker = new Worker(
-        new URL("./compressWorker.ts", import.meta.url)
-      );
-      worker.postMessage({ item: toJS(item), config, enginMap });
-      worker.onmessage = function (event) {
-        resolve(event.data);
-        worker.terminate();
-      };
-    });
-
-    // 更新列表中对应的项
-    const findIndex = state.list.findIndex((item) => item.path === result.path);
-    if (findIndex !== -1) {
-      state.list[findIndex] = { key: result.path, ...result, status: 0 };
-    }
+    gworker.postMessage({ index, item: toJS(item), config, enginMap, g: __g });
   }
+}
+
+/**
+ * 立即重新执行压缩
+ */
+export async function reCompress() {
+  await emptyImageList();
+  const list = toJS(state.list);
+  list.forEach((item) => {
+    item.newSize = undefined;
+    item.newWidth = undefined;
+    item.newHeight = undefined;
+    item.cantCompress = false;
+    item.status = 1;
+  });
+  state.list = list;
+  // 列表状态更新后，停止一秒钟
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 1000);
+  });
+  await invokeCompress();
 }

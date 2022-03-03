@@ -1,0 +1,18 @@
+@import "@/var";
+
+.rateDown,
+.rateUp {
+  > span:nth-child(1) {
+    margin-right: 2px;
+  }
+}
+.rateDown {
+  span {
+    color: $warning-color;
+  }
+}
+.rateUp {
+  span {
+    color: $success-color;
+  }
+}

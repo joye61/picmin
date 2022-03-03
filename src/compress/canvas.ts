@@ -14,7 +14,7 @@ import {
  */
 export async function compressByCanvas(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
 ) {
   try {
     const blob = await createBlob(item, option);

@@ -1,4 +1,4 @@
-import { getBinPath } from "@/renderer/util";
+import { __g } from "@/renderer/g";
 import { spawn } from "child_process";
 import {
   assignNewWithOld,
@@ -7,13 +7,15 @@ import {
   getNewDimensionByScale,
   writeToTemp,
 } from "./function";
+import path from "path";
 
 export async function compressByOxipng(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
+  g: typeof __g
 ) {
   try {
-    const binPath = getBinPath("oxipng");
+    const binPath = path.join(g.binPath, "oxipng");
     const { width } = getNewDimensionByScale(item, option.scale);
 
     // 如果启用了缩放逻辑，先生成缩放图

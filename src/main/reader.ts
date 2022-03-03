@@ -1,4 +1,4 @@
-import { AllowTypes, IPCEvents, TempDir } from "@/utils/const";
+import { AllowTypes, IPCEvents, TempDirName } from "@/utils/const";
 import fs from "fs-extra";
 import path from "path";
 import readdirp from "readdirp";
@@ -51,7 +51,7 @@ export async function createWaitingImageItem(
   item.oldHeight = height;
 
   // 获取目标将要生成的临时文件路径
-  const outputDir = path.join(getTempDir(), TempDir);
+  const outputDir = path.join(getTempDir(), TempDirName);
 
   // 临时文件名字：名字.id.后缀
   const tempId = UID.temp;

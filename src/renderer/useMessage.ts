@@ -1,8 +1,10 @@
 import { ipcRenderer } from "electron";
 import { useEffect } from "react";
 import { IPCEvents } from "../utils/const";
+import { gworker } from "./g";
 import { invokeCompress } from "./image";
 import { state } from "./state";
+import { type RespMsg } from "./worker";
 
 interface ReceiveImageItemResult {
   readOver: boolean;
@@ -16,6 +18,15 @@ interface ReceiveImageItemResult {
  */
 export function useMessage() {
   useEffect(() => {
+    // 监听worker的通信
+    const workerListen = (event: MessageEvent<RespMsg>) => {
+      const item = event.data.item;
+      const index = event.data.index;
+      state.list[index] = { key: item.path, ...item, status: 0 };
+    };
+    gworker.addEventListener("message", workerListen);
+
+    // 监听主进程的通信
     ipcRenderer.on(
       IPCEvents.ReadImageItem,
       async (_, result: ReceiveImageItemResult) => {
@@ -36,6 +47,7 @@ export function useMessage() {
     );
 
     return () => {
+      gworker.removeEventListener("message", workerListen);
       (ipcRenderer.removeAllListeners as any)();
     };
   }, []);

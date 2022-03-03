@@ -1,4 +1,4 @@
-import { getNodeModulesPath, getTempDir } from "@/renderer/util";
+import { __g } from "@/renderer/g";
 import { spawn } from "child_process";
 import path from "path";
 import {
@@ -14,13 +14,14 @@ import {
  */
 export async function compressBySquoosh(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
+  g: typeof __g
 ) {
   // 调用 Squoosh CLI 执行压缩
   try {
-    const entry = getNodeModulesPath("@squoosh");
+    const entry = path.join(g.nodeModulesPath, "@squoosh");
     const script = path.resolve(entry, "./cli/src/index.js");
-    const options = getSquooshCliArguments(item, option);
+    const options = await getSquooshCliArguments(item, option, g);
 
     await new Promise<void>((resolve, reject) => {
       const squoosh = spawn(process.execPath, [script, ...options], {
@@ -60,9 +61,10 @@ export async function compressBySquoosh(
  * @param item
  * @param option
  */
-export function getSquooshCliArguments(
+export async function getSquooshCliArguments(
   item: WaitingImageItem,
-  option: CompressConfig
+  option: CompressConfig,
+  g: typeof __g
 ) {
   // 最终的输出选项数组
   const options: string[] = [];
@@ -168,7 +170,7 @@ export function getSquooshCliArguments(
   // 设置文件后缀
   options.push("--suffix", "." + item.tempId);
   // 设置输出目录
-  options.push("--output-dir", getTempDir());
+  options.push("--output-dir", g.tempPath);
   // 设置待压缩的文件
   options.push(item.path);
 

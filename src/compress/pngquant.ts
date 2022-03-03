@@ -32,14 +32,17 @@ export async function compressByPngQuant(
       mode: 0o744,
     });
 
-    // 执行gif压缩
+    // 执行PNG压缩
+    const speed = 11 - (10 * option.quality) / 100;
     await new Promise<void>((resolve, reject) => {
       const pngquant = spawn(binPath, [
         "--force",
         "--output",
         item.tempPath,
         "--quality",
-        `${option.quality}`,
+        "0-100",
+        "--speed",
+        `${speed}`,
         "--strip",
         needResize ? item.tempPath : item.path,
       ]);

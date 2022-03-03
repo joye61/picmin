@@ -3,12 +3,9 @@ import { Alert, Form, Modal, Select, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { state } from "@/renderer/state";
-import {
-  type EngineList,
-  engineList,
-  type EngineMap,
-} from "@/compress/define";
+import { type EngineList, engineList, type EngineMap } from "@/compress/define";
 import { RowBetween } from "@/components/Flex";
+import { reCompress } from "@/renderer/image";
 
 interface FormValues {
   jpeg: EngineMap["jpeg"];
@@ -83,7 +80,9 @@ export const SetEngine = observer(() => {
         // 关闭弹框
         state.showSetEngin = false;
         // 立即压缩
-        // TODO
+        if (state.list.length > 0) {
+          await reCompress();
+        }
       }}
     >
       <Alert

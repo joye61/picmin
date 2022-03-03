@@ -27,7 +27,7 @@ import {
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "./utils/const";
 import { useMessage } from "./renderer/useMessage";
-import { emptyImageList, invokeCompress } from "./renderer/image";
+import { emptyImageList, invokeCompress, reCompress } from "./renderer/image";
 import { SetEngine } from "./components/SetEngine";
 import { Fsize } from "./components/Fsize";
 import { Rate } from "./components/Rate";
@@ -85,20 +85,7 @@ export const App = observer(() => {
             className={clsx(style.redo, style.noDrag)}
             icon={<RedoOutlined />}
             disabled={redoDisabled}
-            onClick={() => {
-              const list = toJS(state.list);
-              list.forEach((item) => {
-                item.newSize = undefined;
-                item.newWidth = undefined;
-                item.newHeight = undefined;
-                item.cantCompress = false;
-                item.status = 1;
-              });
-              state.list = list;
-              window.setTimeout(() => {
-                invokeCompress();
-              }, 1000);
-            }}
+            onClick={reCompress}
           >
             重新压缩
           </Button>

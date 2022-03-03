@@ -19,6 +19,13 @@ export function getSupportExtensionsAsString() {
  */
 export async function emptyImageList() {
   state.list = [];
+  await clearTempDir();
+}
+
+/**
+ * 清空临时目录
+ */
+export async function clearTempDir() {
   ipcRenderer.send(IPCEvents.TempReset);
   await new Promise<void>((resolve) => {
     ipcRenderer.once(IPCEvents.TempResetOver, () => resolve());
@@ -62,7 +69,7 @@ export async function invokeCompress() {
  * 立即重新执行压缩
  */
 export async function reCompress() {
-  await emptyImageList();
+  await clearTempDir();
   const list = toJS(state.list);
   list.forEach((item) => {
     item.newSize = undefined;

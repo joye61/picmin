@@ -3,6 +3,7 @@ import { Form, Input, Modal, Radio, Slider } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { state } from "@/renderer/state";
+import { reCompress } from "@/renderer/image";
 
 interface FormValues {
   scaleMode: "percent" | "width" | "height";
@@ -36,9 +37,14 @@ export const Setting = observer(() => {
       );
     } else if (state.scaleMode === "width") {
       return (
-        <Form.Item label="缩放到宽度" name="ScalaeWidth">
+        <Form.Item
+          label="缩放到宽度"
+          name="scaleWidth"
+          rules={[{ pattern: /^([1-9]\d*)?$/, message: "不合法的数字值" }]}
+        >
           <Input
-            placeholder="设置固定宽度，高度自适应"
+            placeholder="设置固定宽度，高度自适应，最长6位数字"
+            maxLength={6}
             allowClear
             suffix="px"
           />
@@ -46,9 +52,14 @@ export const Setting = observer(() => {
       );
     } else if (state.scaleMode === "height") {
       return (
-        <Form.Item label="缩放到高度" name="scaleHeight">
+        <Form.Item
+          label="缩放到高度"
+          name="scaleHeight"
+          rules={[{ pattern: /^([1-9]\d*)?$/, message: "不合法的数字值" }]}
+        >
           <Input
-            placeholder="设置固定高度，宽度度自适应"
+            placeholder="设置固定高度，宽度度自适应，最长6位数字"
+            maxLength={6}
             allowClear
             suffix="px"
           />
@@ -76,9 +87,42 @@ export const Setting = observer(() => {
         state.showSetting = false;
       }}
       cancelButtonProps={{
-        onClick(){
-          console.log("12345");
-        }
+        onClick() {
+          state.scaleMode = "percent";
+          state.scalePercent = 100;
+          state.scaleWidth = undefined;
+          state.scaleHeight = undefined;
+          form.setFieldsValue({
+            scaleMode: "percent",
+            scalePercent: 100,
+          });
+        },
+      }}
+      onOk={async () => {
+        try {
+          const values = await form.validateFields();
+          state.qualityPercent = Number(values.qualityPercent);
+          if (state.scaleMode === "percent") {
+            state.scaleWidth = undefined;
+            state.scaleHeight = undefined;
+            state.scalePercent = Number(values.scalePercent);
+          } else if (state.scaleMode === "width") {
+            state.scalePercent = 100;
+            state.scaleHeight = undefined;
+            state.scaleWidth = values.scaleWidth
+              ? Number(values.scaleWidth)
+              : undefined;
+          } else if (state.scaleMode === "height") {
+            state.scalePercent = 100;
+            state.scaleWidth = undefined;
+            state.scaleHeight = values.scaleHeight
+              ? Number(values.scaleHeight)
+              : undefined;
+          }
+
+          state.showSetting = false;
+          await reCompress();
+        } catch (error) {}
       }}
     >
       <Form

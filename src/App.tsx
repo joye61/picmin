@@ -205,8 +205,6 @@ export const App = observer(() => {
             disabled={addDisabled}
             onClick={() => {
               if (addDisabled) return;
-              state.isReadList = true;
-              state.isReadList = true;
               ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
             }}
           >

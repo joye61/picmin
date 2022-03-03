@@ -154,7 +154,6 @@ async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
       files.push(file.path);
     }
   }
-  state.isReadList = true;
   // 读取图片
   ipcRenderer.send(IPCEvents.ReadImages, files, getExistsSets());
 }
@@ -240,7 +239,6 @@ function showContent() {
       <div
         className={style.mask}
         onClick={() => {
-          state.isReadList = true;
           ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
         }}
         onDragOver={(event) => {

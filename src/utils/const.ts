@@ -19,6 +19,8 @@ export enum IPCEvents {
   ReadImages = "ReadImages",
   // 选取图片 B->A
   PickImages = "PickImages",
+  // 开始读取
+  StartRead = "StartRead",
   // 收到一张图片对象
   ReadImageItem = "ReceiveImageItem",
   // 定位图片，打开图片所在文件夹 B->A
@@ -30,7 +32,7 @@ export enum IPCEvents {
   // 临时目录重置
   TempReset = "TempReset",
   // 临时目录重置完成
-  TempResetOver = "TempResetOver"
+  TempResetOver = "TempResetOver",
 }
 
 // 临时的生成文件夹名字，放在临时目录下

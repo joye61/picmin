@@ -41,6 +41,8 @@ export function bindIPC(mainWindow: BrowserWindow) {
   ipcMain.on(
     IPCEvents.ReadImages,
     (event, replyList: string[], existList: Set<string>) => {
+      // 响应渲染层读取开始
+      event.reply(IPCEvents.StartRead);
       readImageListFromFiles(event, replyList, existList);
     }
   );
@@ -66,6 +68,8 @@ export function bindIPC(mainWindow: BrowserWindow) {
 
     // 将读取的图片列表返回给渲染进程
     const replyList: Array<string> = Array.isArray(result) ? result : [];
+    // 响应渲染层读取开始
+    event.reply(IPCEvents.StartRead);
     readImageListFromFiles(event, replyList, existList);
   });
 

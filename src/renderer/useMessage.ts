@@ -13,6 +13,11 @@ interface ReceiveImageItemResult {
   current: number;
 }
 
+interface StartReadResult {
+  total: number;
+  current: number;
+}
+
 /**
  * 这个hooks用来响应主进程的信号
  */
@@ -26,6 +31,11 @@ export function useMessage() {
     };
     gworker.addEventListener("message", workerListen);
 
+    // 开始读取
+    ipcRenderer.on(IPCEvents.StartRead, () => {
+      state.isReadList = true;
+    });
+
     // 监听主进程的通信
     ipcRenderer.on(
       IPCEvents.ReadImageItem,
@@ -36,6 +46,8 @@ export function useMessage() {
         // 读取结束，调用压缩
         if (result.readOver) {
           state.isReadList = false;
+          state.readTotal = 0;
+          state.readCurrent = 0;
           await invokeCompress();
           return;
         }

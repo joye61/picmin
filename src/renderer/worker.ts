@@ -14,6 +14,7 @@ export interface ReqMsg {
 export interface RespMsg {
   index: number;
   item: ImageItem;
+  ok?: boolean;
 }
 
 self.onmessage = async function (event: any) {
@@ -31,4 +32,6 @@ self.onmessage = async function (event: any) {
   }
 
   await Promise.all(all);
+  // 通知主线程完成
+  self.postMessage({ ok: true });
 };

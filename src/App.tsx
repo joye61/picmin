@@ -27,11 +27,12 @@ import {
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "./utils/const";
 import { useMessage } from "./renderer/message";
-import { emptyImageList, reCompress } from "./renderer/image";
+import { emptyImageList, reCompress, saveImageList } from "./renderer/image";
 import { SetEngine } from "./components/SetEngine";
 import { Fsize } from "./components/Fsize";
 import { Rate } from "./components/Rate";
 import { Indicator } from "./components/Indicator";
+import { CloseIcon } from "./components/CloseIcon";
 
 export const App = observer(() => {
   // 进程间通信处理用的专用hooks
@@ -133,9 +134,7 @@ export const App = observer(() => {
               ipcRenderer.send(IPCEvents.QuitApp);
             }}
           >
-            <svg viewBox="0 0 24 24">
-              <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-            </svg>
+            <CloseIcon />
           </RowCenter>
         </Space>
       </RowBetween>
@@ -149,12 +148,14 @@ export const App = observer(() => {
       <RowBetween className={style.footer}>
         {/* 信息展示 */}
         <RowStart className={style.helpInfo}>
-          压缩前共
+          共
+          <Typography.Text type="success">{state.list.length}</Typography.Text>
+          张图片，压缩前
           <Fsize
             type="success"
             formats={fsize(state.sum.oldTotalSize, true) as [number, string]}
           />
-          ，压缩后共
+          ，压缩后
           <Fsize
             type="warning"
             formats={fsize(state.sum.newTotalSize, true) as [number, string]}
@@ -184,7 +185,7 @@ export const App = observer(() => {
             disabled={saveDisabled}
             onClick={() => {
               if (saveDisabled) return;
-              // TODO
+              saveImageList();
             }}
             overlay={
               <Menu

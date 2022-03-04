@@ -8,25 +8,24 @@ import { Indicator } from "@/components/Indicator";
  * 显示加载中状态
  */
 export const LoadingMask = observer(() => {
-  if (!state.isReadList) return null;
+  if (!state.isSaving) return null;
 
-  const showNum = () => {
-    if (state.readTotal > 0) {
-      return (
-        <>
-          ：
-          <div className={style.num}>
-            <span>{state.readCurrent}</span>/<span>{state.readTotal}</span>
-          </div>
-        </>
-      );
+  const showMessage = () => {
+    if (state.saveType === "alias") {
+      return "正在以别名方式保存压缩图片...";
+    }
+    if (state.saveType === "cover") {
+      return "正在以覆盖源文件形式保存压缩图片...";
+    }
+    if (state.saveType === "bundle") {
+      return "正在生成压缩图打包...";
     }
   };
 
   return (
     <ColCenter className={style.loading}>
       <Indicator large />
-      <RowCenter>正在读取并验证图片列表{showNum()}</RowCenter>
+      <RowCenter>{showMessage()}</RowCenter>
     </ColCenter>
   );
 });

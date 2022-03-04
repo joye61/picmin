@@ -3,6 +3,8 @@
 .container {
   height: 100%;
   align-items: stretch;
+  user-select: none;
+  position: relative;
 }
 
 .THeader,
@@ -14,6 +16,7 @@
     flex-shrink: 0;
     flex-grow: 1;
     padding: 10px;
+    transition: opacity 500ms;
   }
   > div._action {
     padding-right: 20px;
@@ -21,7 +24,20 @@
 }
 .THeader {
   background-color: #fafafa;
-  user-select: none;
+  font-weight: bold;
+}
+
+.TRow {
+  &.rowDisable {
+    cursor: progress;
+    > div {
+      pointer-events: none;
+      opacity: 0.2;
+    }
+  }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .list {

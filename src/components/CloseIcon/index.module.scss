@@ -1,0 +1,14 @@
+.CloseIcon {
+  font-size: 0;
+  cursor: pointer;
+  color: #999;
+  &:hover {
+    color: #666;
+  }
+  svg {
+    width: 19px;
+    path {
+      fill: currentColor;
+    }
+  }
+}

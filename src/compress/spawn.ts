@@ -13,7 +13,7 @@ export interface SpawnMsg {
  */
 export async function compressViaExec(msg: SpawnMsg) {
   // 调用可执行文件
-  await new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const exec = spawn(msg.execPath, msg.args, msg.option);
     exec.on("exit", (event) => {
       console.log(`${msg.execPath} exited: `, event);
@@ -24,6 +24,4 @@ export async function compressViaExec(msg: SpawnMsg) {
       reject();
     });
   });
-
-  return;
 }

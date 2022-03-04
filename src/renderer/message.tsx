@@ -1,3 +1,4 @@
+import { notification, Typography } from "antd";
 import { ipcRenderer } from "electron";
 import { useEffect } from "react";
 import { IPCEvents } from "../utils/const";
@@ -5,6 +6,7 @@ import { gworker } from "./g";
 import { invokeCompress } from "./image";
 import { state } from "./state";
 import { type RespMsg } from "./worker";
+import { CloseIcon } from "@/components/CloseIcon";
 
 interface ReceiveImageItemResult {
   readOver: boolean;
@@ -20,9 +22,31 @@ export function useMessage() {
   useEffect(() => {
     // 监听worker的通信
     const workerListen = (event: MessageEvent<RespMsg>) => {
-      const item = event.data.item;
-      const index = event.data.index;
-      state.list[index] = { key: item.path, ...item, status: 0 };
+      const result = event.data;
+      if (result.ok === true) {
+        const cacheName = "ok-tip";
+        const cache = window.sessionStorage.getItem(cacheName);
+        if (!cache) {
+          notification.success({
+            duration: 3,
+            message: <Typography.Text type="success">压缩完成</Typography.Text>,
+            closeIcon: <CloseIcon />,
+            description: (
+              <Typography.Text>
+                压缩结果不会自动保存，请选择一种保存方式主动保存。
+                <Typography.Text type="secondary">
+                  （该提示只会在启动后的首次压缩时显示）
+                </Typography.Text>
+              </Typography.Text>
+            ),
+          });
+          window.sessionStorage.setItem(cacheName, "ok");
+        }
+      } else {
+        const item = event.data.item;
+        const index = event.data.index;
+        state.list[index] = { key: item.path, ...item, status: 0 };
+      }
     };
     gworker.addEventListener("message", workerListen);
 

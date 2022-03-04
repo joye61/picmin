@@ -2,7 +2,6 @@ import { state } from "./state";
 import fileSize from "filesize";
 import { ipcRenderer } from "electron";
 import { IPCEvents, TempDirName } from "../utils/const";
-import { isWin } from "../utils/is";
 import path from "path";
 import { __g } from "./g";
 
@@ -17,7 +16,12 @@ export function hasImageInProcessing() {
  * 清除按钮是否禁用
  */
 export function isClearDisabled() {
-  if (state.list.length === 0 || state.isReadList || hasImageInProcessing()) {
+  if (
+    state.list.length === 0 ||
+    state.isReadList ||
+    state.isSaving ||
+    hasImageInProcessing()
+  ) {
     return true;
   }
   return false;
@@ -27,7 +31,12 @@ export function isClearDisabled() {
  * 保存按钮是否禁用
  */
 export function isSaveDisabled() {
-  if (state.list.length === 0 || state.isReadList || hasImageInProcessing()) {
+  if (
+    state.list.length === 0 ||
+    state.isReadList ||
+    state.isSaving ||
+    hasImageInProcessing()
+  ) {
     return true;
   }
   return false;
@@ -36,7 +45,7 @@ export function isSaveDisabled() {
  * 添加按钮是否禁用
  */
 export function isAddDisabled() {
-  if (state.isReadList || hasImageInProcessing()) {
+  if (state.isReadList || state.isSaving || hasImageInProcessing()) {
     return true;
   }
   return false;
@@ -47,7 +56,7 @@ export function isAddDisabled() {
  * @returns
  */
 export function isConfigDisabled() {
-  if (state.isReadList || hasImageInProcessing()) {
+  if (state.isReadList || state.isSaving || hasImageInProcessing()) {
     return true;
   }
   return false;
@@ -57,7 +66,12 @@ export function isConfigDisabled() {
  * 重新压缩按钮是否禁用
  */
 export function isRedoDisabled() {
-  if (state.list.length === 0 || state.isReadList || hasImageInProcessing()) {
+  if (
+    state.list.length === 0 ||
+    state.isSaving ||
+    state.isReadList ||
+    hasImageInProcessing()
+  ) {
     return true;
   }
   return false;

@@ -41,6 +41,13 @@ export type State = {
 
   // 统计用的临时值
   sum: SumType;
+
+  // 保存时的别名
+  alias: string;
+  // 正在保存中
+  isSaving: boolean;
+  // 打包存储的文件名
+  bundleName: string;
 };
 
 export type SaveMenuItem = {
@@ -64,7 +71,7 @@ export const saveMenus: SaveMenuItem[] = [
 ];
 
 export const state = observable.object<State>({
-  saveType: "cover",
+  saveType: "alias",
   showSetting: false,
   scaleMode: "percent",
   scalePercent: 100,
@@ -89,6 +96,9 @@ export const state = observable.object<State>({
     oldTotalSize: 0,
     newTotalSize: 0,
   },
+  alias: "bak",
+  isSaving: false,
+  bundleName: "bundle",
 });
 
 autorun(() => {

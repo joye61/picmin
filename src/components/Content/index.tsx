@@ -10,22 +10,25 @@ import {
 } from "../Flex";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { RowType, state } from "@/renderer/state";
-import { Tooltip, Typography } from "antd";
+import { Modal, Tooltip, Typography } from "antd";
 import clsx from "clsx";
-import { getSupportExtensionsAsString } from "@/renderer/image";
+import {
+  getSupportExtensionsAsString,
+  removeImageItem,
+} from "@/renderer/image";
 import { fsize, getExistsSets } from "@/renderer/util";
 import { Indicator } from "@/components/Indicator";
-import { LoadingMask } from "@/components/LoadingMask";
 import { Fsize } from "@/components/Fsize";
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "@/utils/const";
 import { Rate } from "../Rate";
+import { LoadingMask } from "../LoadingMask";
 
 interface ColType {
   key: keyof RowType;
   title: string;
   className?: string;
-  render?(row: RowType): React.ReactNode;
+  render?(row: RowType, index?: number): React.ReactNode;
 }
 
 const columns: ColType[] = [
@@ -56,7 +59,7 @@ const columns: ColType[] = [
             >
               <img loading="lazy" alt="" src={`file://${item.path}`} />
             </RowCenter>
-            <Typography.Text>{item.name}</Typography.Text>
+            <Typography.Text title={item.path}>{item.name}</Typography.Text>
           </RowBetween>
         </div>
       );
@@ -112,7 +115,7 @@ const columns: ColType[] = [
     key: "action",
     title: "操作",
     className: style._action,
-    render() {
+    render(item, index) {
       return (
         <RowEnd className={style.action}>
           <Tooltip title="单图压缩转换" placement="left">
@@ -125,7 +128,24 @@ const columns: ColType[] = [
               </svg>
             </Typography.Text>
           </Tooltip>
-          <Typography.Text className={style.actionRemove}>
+          <Typography.Text
+            className={style.actionRemove}
+            onClick={() => {
+              Modal.confirm({
+                title: "提示",
+                content: "是否同时删除本地原始图片文件?",
+                okText: "确认",
+                cancelText: "取消",
+                centered: true,
+                onCancel() {
+                  removeImageItem(item as WaitingImageItem, index!, false);
+                },
+                onOk() {
+                  removeImageItem(item as WaitingImageItem, index!, true);
+                },
+              });
+            }}
+          >
             <svg viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -162,11 +182,11 @@ function createTHeader() {
  * @returns
  */
 function createTList() {
-  return state.list.map((row) => {
+  return state.list.map((row, index) => {
     const cols = columns.map((col) => {
       let value: React.ReactNode = row[col.key];
       if (typeof col.render === "function") {
-        value = col.render(row);
+        value = col.render(row, index);
       }
       return (
         <div key={col.key} className={col.className}>
@@ -175,7 +195,10 @@ function createTList() {
       );
     });
     return (
-      <RowStart key={row.key} className={style.TRow}>
+      <RowStart
+        key={row.key}
+        className={clsx(style.TRow, row.status !== 0 && style.rowDisable)}
+      >
         {cols}
       </RowStart>
     );
@@ -209,9 +232,7 @@ function showContent() {
       <>
         {createTHeader()}
         <div
-          className={style.list}
-          // 读取图片的时候不允许滚动
-          style={{ overflowY: state.isReadList ? "hidden" : "auto" }}
+          className={clsx(style.list, state.isSaving && style.noScroll)}
           onDragOver={(event) => {
             if (state.isReadList) return;
             event.preventDefault();
@@ -227,7 +248,6 @@ function showContent() {
           }}
         >
           {createTList()}
-          <LoadingMask />
         </div>
       </>
     );
@@ -273,5 +293,10 @@ function showContent() {
 }
 
 export const Content = observer(() => {
-  return <ColStart className={style.container}>{showContent()}</ColStart>;
+  return (
+    <ColStart className={style.container}>
+      {showContent()}
+      <LoadingMask />
+    </ColStart>
+  );
 });

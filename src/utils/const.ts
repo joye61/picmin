@@ -33,6 +33,10 @@ export enum IPCEvents {
   TempReset = "TempReset",
   // 临时目录重置完成
   TempResetOver = "TempResetOver",
+  // 保存压缩包
+  SaveBundle = "SaveBundle",
+  // 保存压缩包结束
+  SaveBundleOver = "SaveBundleOver",
 }
 
 // 临时的生成文件夹名字，放在临时目录下

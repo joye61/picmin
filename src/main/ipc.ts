@@ -73,6 +73,24 @@ export function bindIPC(mainWindow: BrowserWindow) {
     readImageListFromFiles(event, replyList, existList);
   });
 
+  // 打包保存
+  ipcMain.on(
+    IPCEvents.SaveBundle,
+    (event, list: WaitingImageItem, bundleName: string) => {
+      
+      // TODO
+      const savePath = dialog.showSaveDialogSync(mainWindow, {
+        defaultPath: bundleName,
+        title: "打包另存",
+      });
+      if (!savePath) {
+        event.reply(IPCEvents.SaveBundleOver, { ok: false });
+        return;
+      }
+
+    }
+  );
+
   // 获取系统相关的路径
   ipcMain.on(
     IPCEvents.GetSysPath,

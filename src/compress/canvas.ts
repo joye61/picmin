@@ -21,7 +21,7 @@ export async function compressByCanvas(
     await writeToTemp(item, blob);
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log("CANVAS:", error);
+    console.log(error);
     assignNewWithOld(item);
   }
 }

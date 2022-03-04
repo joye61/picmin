@@ -1,4 +1,3 @@
-import { spawn } from "child_process";
 import {
   assignNewWithOld,
   createBlob,
@@ -9,6 +8,7 @@ import {
 import fs from "fs-extra";
 import { __g } from "@/renderer/g";
 import path from "path";
+import { compressViaExec } from "./spawn";
 
 export async function compressByPngQuant(
   item: WaitingImageItem,
@@ -34,31 +34,24 @@ export async function compressByPngQuant(
 
     // 执行PNG压缩
     const speed = 11 - (10 * option.quality) / 100;
-    await new Promise<void>((resolve, reject) => {
-      const pngquant = spawn(binPath, [
-        "--force",
-        "--output",
-        item.tempPath,
-        "--quality",
-        "0-100",
-        "--speed",
-        `${speed}`,
-        "--strip",
-        needResize ? item.tempPath : item.path,
-      ]);
-      pngquant.on("exit", (event) => {
-        console.log("Pngquant cli exited:", event);
-        resolve();
-      });
-      pngquant.on("error", (event) => {
-        console.log("Spawn pngquant cli failed:", event);
-        reject();
-      });
+    const args = [
+      "--force",
+      "--output",
+      item.tempPath,
+      "--quality",
+      "0-100",
+      "--speed",
+      `${speed}`,
+      "--strip",
+      needResize ? item.tempPath : item.path,
+    ];
+    await compressViaExec({
+      execPath: binPath,
+      args,
     });
-
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log("Exceptions occur when compressing png file: ", error);
+    console.error(error);
     // 压缩失败，使用旧的文件值直接替换，防止报错
     assignNewWithOld(item);
   }

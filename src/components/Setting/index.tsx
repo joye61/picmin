@@ -58,7 +58,7 @@ export const Setting = observer(() => {
           rules={[{ pattern: /^([1-9]\d*)?$/, message: "不合法的数字值" }]}
         >
           <Input
-            placeholder="设置固定高度，宽度度自适应，最长6位数字"
+            placeholder="设置固定高度，宽度自适应，最长6位数字"
             maxLength={6}
             allowClear
             suffix="px"
@@ -74,7 +74,7 @@ export const Setting = observer(() => {
       width={350}
       visible={state.showSetting}
       centered
-      title="调整压缩选项"
+      title="调整选项"
       okText="立即应用"
       cancelText="重置为默认"
       forceRender

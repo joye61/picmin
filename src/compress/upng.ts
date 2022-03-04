@@ -58,7 +58,7 @@ export async function compressByUpng(
     // 更新数据
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log(`Exceptions occur when compressing [A]PNG file: `, error);
+    console.error(error);
     assignNewWithOld(item);
   }
 }

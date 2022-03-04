@@ -24,7 +24,7 @@ export async function compressBySvgo(item: WaitingImageItem) {
     await writeToTemp(item, result.data);
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log(`SVG:`, error);
+    console.error(error);
     assignNewWithOld(item);
   }
 }

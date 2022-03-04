@@ -51,7 +51,7 @@ export const SetEngine = observer(() => {
       width={350}
       visible={state.showSetEngin}
       centered
-      title="设置压缩引擎"
+      title="设置引擎"
       okText="立即应用"
       cancelText="重置为默认"
       forceRender

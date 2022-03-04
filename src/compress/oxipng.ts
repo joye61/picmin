@@ -8,6 +8,7 @@ import {
   writeToTemp,
 } from "./function";
 import path from "path";
+import { compressViaExec } from "./spawn";
 
 export async function compressByOxipng(
   item: WaitingImageItem,
@@ -26,34 +27,23 @@ export async function compressByOxipng(
       needResize = true;
     }
 
-    // 执行gif压缩
-    await new Promise<void>((resolve, reject) => {
-      let quality: number | string = Math.ceil((option.quality * 7) / 100);
-      if (quality === 7) {
-        quality = "max";
-      }
-      const oxipng = spawn(binPath, [
-        "-o",
-        `${quality}`,
-        "--out",
-        item.tempPath,
-        "--strip",
-        "all",
-        needResize ? item.tempPath : item.path,
-      ]);
-      oxipng.on("exit", (event) => {
-        console.log("Oxipng cli exited:", event);
-        resolve();
-      });
-      oxipng.on("error", (event) => {
-        console.log("Spawn oxipng cli failed:", event);
-        reject();
-      });
-    });
-
+    let quality: number | string = Math.ceil((option.quality * 7) / 100);
+    if (quality === 7) {
+      quality = "max";
+    }
+    const args = [
+      "-o",
+      `${quality}`,
+      "--out",
+      item.tempPath,
+      "--strip",
+      "all",
+      needResize ? item.tempPath : item.path,
+    ];
+    await compressViaExec({ execPath: binPath, args });
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log("Exceptions occur when compressing png file: ", error);
+    console.error(error);
     // 压缩失败，使用旧的文件值直接替换，防止报错
     assignNewWithOld(item);
   }

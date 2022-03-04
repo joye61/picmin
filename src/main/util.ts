@@ -1,6 +1,6 @@
 import { app } from "electron";
 import fs from "fs-extra";
-import { UID } from "./uid";
+import { UID } from "../utils/uid";
 import path from "path";
 import { TempDirName } from "@/utils/const";
 
@@ -12,5 +12,5 @@ export function resetTemp() {
     recursive: true,
   });
   fs.ensureDirSync(tempPath);
-  UID.resetTemp();
+  UID.reset();
 }

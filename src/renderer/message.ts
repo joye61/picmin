@@ -13,11 +13,6 @@ interface ReceiveImageItemResult {
   current: number;
 }
 
-interface StartReadResult {
-  total: number;
-  current: number;
-}
-
 /**
  * 这个hooks用来响应主进程的信号
  */

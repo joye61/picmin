@@ -1,6 +1,13 @@
 import style from "./index.module.scss";
 import { observer } from "mobx-react-lite";
-import { ColCenter, ColStart, RowBetween, RowCenter, RowEnd } from "../Flex";
+import {
+  ColCenter,
+  ColStart,
+  RowBetween,
+  RowCenter,
+  RowEnd,
+  RowStart,
+} from "../Flex";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { RowType, state } from "@/renderer/state";
 import { Tooltip, Typography } from "antd";
@@ -31,7 +38,7 @@ const columns: ColType[] = [
       if (item.status !== 0) {
         icon = <Indicator />;
       }
-      return <div className={style.status}>{icon}</div>;
+      return <RowCenter className={style.status}>{icon}</RowCenter>;
     },
   },
   {
@@ -47,7 +54,7 @@ const columns: ColType[] = [
                 ipcRenderer.send(IPCEvents.LocateImage, item.path);
               }}
             >
-              <img alt="" src={`file://${item.path}`} />
+              <img loading="lazy" alt="" src={`file://${item.path}`} />
             </RowCenter>
             <Typography.Text>{item.name}</Typography.Text>
           </RowBetween>
@@ -132,14 +139,47 @@ const columns: ColType[] = [
   },
 ];
 
-function createColGroupByColumns() {
+/**
+ * 创建表头
+ * @returns
+ */
+function createTHeader() {
   return (
-    <colgroup>
+    <RowStart className={style.THeader}>
       {columns.map((item) => {
-        return <col key={item.key} className={item.className} />;
+        return (
+          <div key={item.key} className={item.className}>
+            {item.title}
+          </div>
+        );
       })}
-    </colgroup>
+    </RowStart>
   );
+}
+
+/**
+ * 创建列表
+ * @returns
+ */
+function createTList() {
+  return state.list.map((row) => {
+    const cols = columns.map((col) => {
+      let value: React.ReactNode = row[col.key];
+      if (typeof col.render === "function") {
+        value = col.render(row);
+      }
+      return (
+        <div key={col.key} className={col.className}>
+          {value}
+        </div>
+      );
+    });
+    return (
+      <RowStart key={row.key} className={style.TRow}>
+        {cols}
+      </RowStart>
+    );
+  });
 }
 
 /**
@@ -165,34 +205,9 @@ async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
 function showContent() {
   // 当数据存在时，创建列表
   if (state.list && state.list.length > 0) {
-    const colGroup = createColGroupByColumns();
-    const list = state.list.map((row) => {
-      const cols = columns.map((col) => {
-        let value: React.ReactNode = row[col.key];
-        if (typeof col.render === "function") {
-          value = col.render(row);
-        }
-        return <td key={col.key}>{value}</td>;
-      });
-      return <tr key={row.key}>{cols}</tr>;
-    });
-
     return (
       <>
-        <table className={style.ttitle}>
-          {colGroup}
-          <thead>
-            <tr>
-              {columns.map((item) => {
-                return (
-                  <th key={item.key} className={item.className}>
-                    {item.title}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-        </table>
+        {createTHeader()}
         <div
           className={style.list}
           // 读取图片的时候不允许滚动
@@ -211,10 +226,7 @@ function showContent() {
             await handleFilesDrop(event);
           }}
         >
-          <table>
-            {colGroup}
-            <tbody>{list}</tbody>
-          </table>
+          {createTList()}
           <LoadingMask />
         </div>
       </>
@@ -255,7 +267,7 @@ function showContent() {
           state.dragActive = false;
           await handleFilesDrop(event);
         }}
-      ></div>
+      />
     </ColCenter>
   );
 }

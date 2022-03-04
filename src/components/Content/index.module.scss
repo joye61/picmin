@@ -3,47 +3,34 @@
 .container {
   height: 100%;
   align-items: stretch;
-  table {
-    width: 100vw;
-    border-collapse: collapse;
-    user-select: none;
-    th {
-      background-color: #fafafa;
-      white-space: nowrap;
-      &._status {
-        padding-left: 14px;
-      }
-      &._action {
-        text-align: right;
-        padding-right: 20px;
-      }
-    }
-    th,
-    td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #f0f0f0;
-      height: 50px;
-    }
-    tr:hover td {
-      background-color: #fafafa;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-  }
 }
 
-.ttitle {
-  flex-shrink: 0;
+.THeader,
+.TRow {
+  width: 100vw;
+  height: 50px;
+  border-bottom: 1px solid #f0f0f0;
+  > div {
+    flex-shrink: 0;
+    flex-grow: 1;
+    padding: 10px;
+  }
+  > div._action {
+    padding-right: 20px;
+  }
 }
+.THeader {
+  background-color: #fafafa;
+  user-select: none;
+}
+
 .list {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
   &::-webkit-scrollbar-thumb {
     width: 4px;
@@ -67,6 +54,7 @@ $nameWidth: calc(
 // 列属性
 ._status {
   width: $statusWidth;
+  text-align: center;
 }
 ._name {
   width: $nameWidth;
@@ -82,10 +70,10 @@ $nameWidth: calc(
 }
 ._action {
   width: $actionWidth;
+  text-align: right;
 }
 
 .status {
-  padding-left: 10px;
   .statusDone {
     font-size: 14px;
     color: $success-color;
@@ -205,7 +193,6 @@ $nameWidth: calc(
 
 .action {
   height: 100%;
-  padding-right: 10px;
   span {
     cursor: pointer;
     font-size: 0;
@@ -222,7 +209,7 @@ $nameWidth: calc(
       }
     }
     &.actionRemove {
-      margin-left: 15px;
+      margin-left: 10px;
       &:hover {
         color: $warning-color;
       }

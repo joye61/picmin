@@ -1,11 +1,12 @@
 import { __g } from "@/renderer/g";
-import { spawn } from "child_process";
+import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import path from "path";
 import {
   assignNewWithOld,
   ensureOutputImageExits,
   getNewDimensionByScale,
 } from "./function";
+import { compressViaExec } from "./spawn";
 
 /**
  * 用squoosh压缩，压缩JPEG/JPG/WEBP/AVIF文件
@@ -23,34 +24,23 @@ export async function compressBySquoosh(
     const script = path.resolve(entry, "./cli/src/index.js");
     const options = await getSquooshCliArguments(item, option, g);
 
-    await new Promise<void>((resolve, reject) => {
-      const squoosh = spawn(process.execPath, [script, ...options], {
-        env: {
-          ...process.env,
-          ELECTRON_RUN_AS_NODE: "1",
-        },
-      });
-      squoosh.on("exit", (event) => {
-        console.log("Squoosh cli exited:", event);
-        resolve();
-      });
-      // 如果启动进程报错，则任务失败
-      squoosh.on("error", (event) => {
-        console.log("Spawn squoosh cli failed:", event);
-        reject();
-      });
-      // squoosh.stdout.on("data", (data) => {
-      //   console.log(`stdout: ${data.toString("utf8")}`);
-      // });
+    const args = [script, ...options];
+    const execOption: SpawnOptionsWithoutStdio = {
+      env: {
+        ...process.env,
+        ELECTRON_RUN_AS_NODE: "1",
+      },
+    };
 
-      // squoosh.stderr.on("data", (data) => {
-      //   console.error(`stderr: ${data.toString("utf8")}`);
-      // });
+    await compressViaExec({
+      execPath: process.execPath,
+      args,
+      option: execOption,
     });
 
     await ensureOutputImageExits(item);
   } catch (error) {
-    console.log("Squoosh compression exception: ", error);
+    console.error(error);
     // 压缩失败，使用旧的文件值直接替换，防止报错
     assignNewWithOld(item);
   }

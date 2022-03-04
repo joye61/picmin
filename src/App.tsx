@@ -26,12 +26,11 @@ import {
 } from "./renderer/util";
 import { ipcRenderer } from "electron";
 import { IPCEvents } from "./utils/const";
-import { useMessage } from "./renderer/useMessage";
-import { emptyImageList, invokeCompress, reCompress } from "./renderer/image";
+import { useMessage } from "./renderer/message";
+import { emptyImageList, reCompress } from "./renderer/image";
 import { SetEngine } from "./components/SetEngine";
 import { Fsize } from "./components/Fsize";
 import { Rate } from "./components/Rate";
-import { toJS } from "mobx";
 import { Indicator } from "./components/Indicator";
 
 export const App = observer(() => {
@@ -55,6 +54,34 @@ export const App = observer(() => {
             <img alt="" src={logo} />
             <Typography.Title level={5}>图小小</Typography.Title>
           </RowStart>
+
+          {state.sum.cnum !== state.list.length && (
+            <RowStart className={style.processNum}>
+              <Indicator />
+              <Typography.Text type="warning">{state.sum.cnum}</Typography.Text>
+              /
+              <Typography.Text type="secondary">
+                {state.list.length}
+              </Typography.Text>
+            </RowStart>
+          )}
+        </Space>
+
+        {/* 退出逻辑 */}
+        <Space className={style.action}>
+          <Button
+            type="link"
+            icon={<PlusOutlined />}
+            disabled={addDisabled}
+            className={style.noDrag}
+            size="small"
+            onClick={() => {
+              if (addDisabled) return;
+              ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
+            }}
+          >
+            批量添加
+          </Button>
           <Button
             className={style.noDrag}
             icon={<SettingOutlined />}
@@ -89,20 +116,7 @@ export const App = observer(() => {
           >
             重新压缩
           </Button>
-        </Space>
 
-        {/* 退出逻辑 */}
-        <Space className={style.action}>
-          {state.sum.cnum !== state.list.length && (
-            <RowStart className={style.processNum}>
-              <Indicator />
-              <Typography.Text type="warning">{state.sum.cnum}</Typography.Text>
-              /
-              <Typography.Text type="secondary">
-                {state.list.length}
-              </Typography.Text>
-            </RowStart>
-          )}
           <RowCenter
             className={clsx(style.mini, style.noDrag)}
             onClick={() => {
@@ -186,17 +200,6 @@ export const App = observer(() => {
           >
             {saveMenus.find((menu) => menu.value === state.saveType)?.name}
           </Dropdown.Button>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            disabled={addDisabled}
-            onClick={() => {
-              if (addDisabled) return;
-              ipcRenderer.send(IPCEvents.PickImages, getExistsSets());
-            }}
-          >
-            添加图片
-          </Button>
         </Space>
       </RowBetween>
 

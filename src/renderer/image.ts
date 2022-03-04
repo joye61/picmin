@@ -56,13 +56,7 @@ export async function invokeCompress() {
     quality: state.qualityPercent,
     scale,
   };
-
-  for (let index = 0; index < state.list.length; index++) {
-    const item = state.list[index];
-    // 只有等待压缩的选项才执行压缩
-    if (item.status !== 1) continue;
-    gworker.postMessage({ index, item: toJS(item), config, enginMap, g: __g });
-  }
+  gworker.postMessage({ list: toJS(state.list), config, enginMap, g: __g });
 }
 
 /**

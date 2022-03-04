@@ -5,8 +5,7 @@ import { __g } from "./g";
 declare const self: any;
 
 export interface ReqMsg {
-  index: number;
-  item: WaitingImageItem;
+  list: WaitingImageItem[];
   config: CompressConfig;
   enginMap: EngineMap;
   g: typeof __g;
@@ -19,7 +18,17 @@ export interface RespMsg {
 
 self.onmessage = async function (event: any) {
   const data = event.data as ReqMsg;
-  const item: WaitingImageItem = { ...data.item };
-  await compressImage(item, data.config, data.enginMap, data.g);
-  self.postMessage({ item, index: data.index });
+
+  const all: Promise<void>[] = [];
+
+  for (let i = 0; i < data.list.length; i++) {
+    const item = data.list[i];
+    const task = async () => {
+      await compressImage(item, data.config, data.enginMap, data.g);
+      self.postMessage({ item, index: i });
+    };
+    all.push(task());
+  }
+
+  await Promise.all(all);
 };

@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import readdirp from "readdirp";
 import sizeOf from "probe-image-size";
-import { UID } from "./uid";
+import { UID } from "../utils/uid";
 import { IpcMainEvent } from "electron";
 import { getTempDir } from "./resolve";
 
@@ -54,7 +54,7 @@ export async function createWaitingImageItem(
   const outputDir = path.join(getTempDir(), TempDirName);
 
   // 临时文件名字：名字.id.后缀
-  const tempId = UID.temp;
+  const tempId = UID.value;
   item.tempId = tempId;
   if (["JPG", "JPEG"].includes(upperExtension)) {
     // squoosh生成的临时文件后缀都是jpg

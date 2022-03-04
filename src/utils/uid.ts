@@ -3,11 +3,14 @@
  */
 export const UID = {
   _tempIndex: 0,
-  get temp(): number {
+  get value(): number {
+    if(this._tempIndex > 1e10) {
+      this._tempIndex = 0;
+    }
     this._tempIndex++;
     return this._tempIndex;
   },
-  resetTemp() {
+  reset() {
     this._tempIndex = 0;
   },
 };

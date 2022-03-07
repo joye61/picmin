@@ -9,7 +9,6 @@ import {
 import { AllowTypes, IPCEvents } from "../utils/const";
 import { readImageListFromFiles } from "./reader";
 import { isMac } from "@/utils/is";
-import { resetTemp } from "./util";
 
 /**
  * 进程间通信绑定逻辑
@@ -29,12 +28,6 @@ export function bindIPC(mainWindow: BrowserWindow) {
   // 定位图片
   ipcMain.on(IPCEvents.LocateImage, (_, imagePath) => {
     shell.showItemInFolder(imagePath);
-  });
-
-  // 临时目录重置
-  ipcMain.on(IPCEvents.TempReset, (event) => {
-    resetTemp();
-    event.reply(IPCEvents.TempResetOver);
   });
 
   // 读取图片列表，拖拽上传的
@@ -77,7 +70,6 @@ export function bindIPC(mainWindow: BrowserWindow) {
   ipcMain.on(
     IPCEvents.SaveBundle,
     (event, list: WaitingImageItem, bundleName: string) => {
-      
       // TODO
       const savePath = dialog.showSaveDialogSync(mainWindow, {
         defaultPath: bundleName,
@@ -87,7 +79,6 @@ export function bindIPC(mainWindow: BrowserWindow) {
         event.reply(IPCEvents.SaveBundleOver, { ok: false });
         return;
       }
-
     }
   );
 

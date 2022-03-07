@@ -115,17 +115,6 @@ export async function getAppPath() {
 }
 
 /**
- * 获取临时存储目录
- * @returns
- */
-export async function getTempPath() {
-  if (__g.tempPath) return __g.appPath;
-  const tempRoot = await getSysPath("temp");
-  __g.tempPath = path.join(tempRoot, TempDirName);
-  return __g.tempPath;
-}
-
-/**
  * 获取二进制文件的路径
  * @param binName
  */

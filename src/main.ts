@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell } from "electron";
 import { bindIPC, unbindIPC } from "./main/ipc";
 import { createMenu } from "./main/menu";
 import { getAssetsPath, getEntryUrl } from "./main/resolve";
-import { resetTemp } from "./main/util";
+import { resetTemp } from "./utils/temp";
 
 // 当前主窗口的引用
 let mainWindow: BrowserWindow | null = null;

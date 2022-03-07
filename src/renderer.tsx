@@ -4,13 +4,9 @@ import { App } from "./App";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/lib/locale/zh_CN";
 import { configure } from "mobx";
-import {
-  getAppPath,
-  getBinPath,
-  getNodeModulesPath,
-  getTempPath,
-} from "./renderer/util";
+import { getAppPath, getBinPath, getNodeModulesPath } from "./renderer/util";
 import { __g } from "./renderer/g";
+import { getTempPath } from "./utils/temp";
 
 (async () => {
   // 配置mobx
@@ -20,7 +16,7 @@ import { __g } from "./renderer/g";
   });
 
   // 预读取系统目录
-  __g.tempPath = await getTempPath();
+  __g.tempPath = getTempPath();
   __g.appPath = await getAppPath();
   __g.nodeModulesPath = await getNodeModulesPath();
   __g.binPath = await getBinPath();

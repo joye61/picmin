@@ -6,6 +6,7 @@ import { toJS } from "mobx";
 import { gworker, __g } from "./g";
 import fs from "fs-extra";
 import path from "path";
+import { resetTemp } from "@/utils/temp";
 
 /**
  * 获取应用程序支持的所有后缀
@@ -21,17 +22,7 @@ export function getSupportExtensionsAsString() {
  */
 export async function emptyImageList() {
   state.list = [];
-  await clearTempDir();
-}
-
-/**
- * 清空临时目录
- */
-export async function clearTempDir() {
-  ipcRenderer.send(IPCEvents.TempReset);
-  await new Promise<void>((resolve) => {
-    ipcRenderer.once(IPCEvents.TempResetOver, () => resolve());
-  });
+  resetTemp();
 }
 
 /**
@@ -138,7 +129,7 @@ export async function invokeCompress() {
  * 立即重新执行压缩
  */
 export async function reCompress() {
-  await clearTempDir();
+  resetTemp();
   const list = toJS(state.list);
   list.forEach((item) => {
     item.newSize = undefined;

@@ -1,0 +1,134 @@
+@import "@/var";
+
+.container {
+  height: 100vh;
+  background-color: #fff;
+}
+.header,
+.footer {
+  height: 50px;
+  padding: 0 10px;
+  background-color: #fafafa;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  -webkit-app-region: drag;
+  .noDrag {
+    -webkit-app-region: no-drag;
+  }
+}
+.header {
+  border-bottom: 1px solid #f0f0f0;
+  .logo {
+    font-size: 0;
+    margin-right: 15px;
+    > img {
+      width: 18px;
+      margin-right: 8px;
+    }
+    > span {
+      font-size: 15px;
+      line-height: 1;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+    .processNum {
+      font-family: Arial, Helvetica, sans-serif;
+      margin-left: 15px;
+      color: #999;
+      font-size: 14px;
+      span:nth-of-type(1) {
+        margin: 0 3px 0 10px;
+        color: $warningColor;
+      }
+      span:nth-of-type(2) {
+        margin-left: 3px;
+      }
+    }
+  }
+
+  .mini,
+  .close {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    margin-left: 5px;
+    svg {
+      width: 19px;
+      path {
+        fill: #999;
+      }
+    }
+    &:hover {
+      background-color: #f0f0f0;
+      svg {
+        path {
+          fill: #333;
+        }
+      }
+    }
+  }
+
+  .mini {
+    margin-left: 20px;
+  }
+}
+.footer {
+  border-top: 1px solid #f0f0f0;
+  .helpInfo {
+    color: rgba(0, 0, 0, 0.45);
+    .yellow {
+      color: $warningColor;
+    }
+    .green {
+      color: $mainColor;
+    }
+  }
+  .btns {
+    > div {
+      margin-left: 10px;
+    }
+  }
+
+  .saveBox {
+    > div:nth-child(1) > div {
+      border-right: 1px solid darken($mainColor, 4);
+    }
+    &.saveOptionDisable {
+      > div:nth-child(1) > div {
+        border-right: none;
+      }
+    }
+  }
+}
+
+.saveOptions {
+  position: absolute;
+  top: -2px;
+  transform: translateY(-100%);
+  background-color: #fff;
+  border: 1px solid $mainColor;
+  z-index: 2;
+  > div {
+    white-space: nowrap;
+    line-height: 30px;
+    padding: 0 15px;
+    cursor: pointer;
+    &:hover {
+      background-color: $mainColor;
+      color: #fff;
+    }
+    &.current {
+      color: $mainColor;
+      background-color: #fafafa;
+      &:hover {
+        background-color: $mainColor;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.content {
+  height: calc(100vh - 100px);
+}

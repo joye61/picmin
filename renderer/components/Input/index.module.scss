@@ -1,0 +1,53 @@
+@import "@/var";
+
+.container {
+  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+  input {
+    display: inline-block;
+    width: 100%;
+    font-size: 12px;
+    height: 30px;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 0 45px 0 10px;
+    box-sizing: border-box;
+    &::placeholder {
+      color: #999;
+      font-size: 12px;
+    }
+    &:focus {
+      border: 1px solid $mainColor;
+    }
+  }
+}
+
+.extra {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  margin-top: -8px;
+  height: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  svg {
+    width: 16px;
+    cursor: pointer;
+    path {
+      fill: #999;
+    }
+    &:hover {
+      path {
+        fill: #666;
+      }
+    }
+  }
+  span {
+    margin-left: 3px;
+    font-size: 12px;
+    color: #999;
+  }
+}

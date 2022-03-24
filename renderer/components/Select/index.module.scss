@@ -1,0 +1,32 @@
+@import "@/var";
+
+.container {
+  position: relative;
+}
+
+.options {
+  position: absolute;
+  top: -2px;
+  transform: translateY(-100%);
+  background-color: #fff;
+  border: 1px solid $mainColor;
+  z-index: 2;
+  > div {
+    white-space: nowrap;
+    line-height: 30px;
+    padding: 0 15px;
+    cursor: pointer;
+    &:hover {
+      background-color: $mainColor;
+      color: #fff;
+    }
+    &.current {
+      color: $mainColor;
+      background-color: #fafafa;
+      &:hover {
+        background-color: $mainColor;
+        color: #fff;
+      }
+    }
+  }
+}

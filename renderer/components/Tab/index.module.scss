@@ -1,0 +1,25 @@
+@import "@/var";
+
+.container {
+  display: inline-flex;
+  > div {
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+    padding: 0 15px;
+    height: 30px;
+    border: $lightBorder;
+    border-right-color: transparent;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: pointer;
+    &:last-child {
+      border-right: $lightBorder;
+    }
+    &.itemActive {
+      border: 1px solid $mainColor;
+      color: $mainColor;
+    }
+  }
+}

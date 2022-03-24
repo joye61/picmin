@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                                  
+    "module": "commonjs",                                
+    "baseUrl": "./",                                  
+    "paths": {
+      "@/*": [
+        "../renderer/*"
+      ]
+    },                                                                
+    "noEmit": true,                                   
+    "esModuleInterop": true,     
+    "moduleResolution":"Node",                        
+    "forceConsistentCasingInFileNames": true,           
+    "strict": true,                                      
+    "skipLibCheck": true                                 
+  },
+  "include": [
+    "./", "../types.d.ts"
+  ]
+}

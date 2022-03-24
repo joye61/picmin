@@ -1,3 +1,3 @@
-# PicMin 
+# PicMin（图小小）
 
-A powerful image compression tool
+一款图片压缩工具

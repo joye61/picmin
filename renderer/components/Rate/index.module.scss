@@ -1,0 +1,17 @@
+@import "@/var";
+
+.rateDown,
+.rateUp {
+  svg {
+    width: 16px;
+  }
+  > span:nth-child(1) {
+    margin-right: 2px;
+  }
+}
+.rateDown {
+  color: $warningColor;
+}
+.rateUp {
+  color: $mainColor;
+}

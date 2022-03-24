@@ -1,0 +1,75 @@
+@import "@/var.scss";
+
+.btn {
+  user-select: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  height: 30px;
+  font-size: 12px;
+  padding: 0 15px;
+  svg {
+    margin-left: -4px;
+    margin-right: 5px;
+    width: 18px;
+  }
+  &.noContent {
+    width: 30px;
+    padding: 0;
+    svg {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+}
+
+// 禁用状态
+
+.primary {
+  background-color: $mainColor;
+  border: 1px solid $mainColor;
+  color: #fff;
+  &:hover {
+    background-color: darken($mainColor, 5);
+    border: 1px solid darken($mainColor, 5);
+  }
+  &:active {
+    background-color: darken($mainColor, 10);
+    border: 1px solid darken($mainColor, 10);
+  }
+}
+.outline {
+  background-color: #fff;
+  border: 1px solid $mainColor;
+  color: $mainColor;
+  &:hover {
+    color: darken($mainColor, 5);
+    border-color: darken($mainColor, 5);
+  }
+  &:active {
+    color: darken($mainColor, 10);
+    border-color: darken($mainColor, 10);
+  }
+}
+
+.link {
+  color: $mainColor;
+  &:hover {
+    color: darken($mainColor, 5);
+  }
+  &:active {
+    color: darken($mainColor, 10);
+  }
+}
+
+.disabled {
+  cursor: not-allowed;
+  &.primary,
+  &.outline {
+    background-color: #f5f5f5;
+    border: 1px solid #d5d5d5;
+    color: #d5d5d5;
+  }
+  &.link {
+    color: #d5d5d5;
+  }
+}

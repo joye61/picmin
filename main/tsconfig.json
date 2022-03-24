@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "declaration": false,
+    "outDir": "../dist/main",
+    "removeComments": true,
+    "noEmit": false,
+    "newLine": "lf",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "alwaysStrict": true,
+    "skipLibCheck": true
+  },
+  "include": ["./", "../types.d.ts"]
+}

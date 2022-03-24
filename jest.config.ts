@@ -6,12 +6,13 @@ export default {
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
+    "^@/(.*)$": "<rootDir>/renderer/$1",
   },
   preset: "ts-jest",
   globals: {
     "ts-jest": {
       isolatedModules: true,
+      tsconfig: "./__tests__/tsconfig.json"
     },
   },
   rootDir: path.resolve(__dirname),
@@ -19,6 +20,6 @@ export default {
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[tj]s?(x)"],
   testPathIgnorePatterns: [
     "/node_modules/",
-    "<rootDir>/(release|config|dist|public|release|scripts|src)",
+    "<rootDir>/(release|dist|public|resources)",
   ],
 };

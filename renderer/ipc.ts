@@ -1,7 +1,8 @@
 import WorkerP from "./workerp?worker";
 import WorkerC from "./workerc?worker";
-import { getCompressOption, state } from "./state";
+import { getCompressOption, state, __g } from "./state";
 import { useEffect } from "react";
+import { toJS } from "mobx";
 
 const { ipcRenderer } = require("electron");
 
@@ -25,6 +26,7 @@ export function useIpc() {
       workers.wc?.postMessage({
         list,
         option: getCompressOption(),
+        g: __g
       });
     });
     ipcRenderer.on("StartRead", () => {
@@ -55,7 +57,13 @@ export function useWorker() {
     };
 
     workers.wc.onmessage = (event) => {
-      console.log(event.data);
+      const index = state.list.findIndex(
+        (item) => item.path === event.data.path
+      );
+      if (index >= 0) {
+        const item = toJS(state.list[index]);
+        state.list[index] = { ...item, ...event.data, status: 1 };
+      }
     };
 
     return () => {

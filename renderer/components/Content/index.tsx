@@ -140,7 +140,7 @@ export const Content = observer(() => {
                 key={row.path}
                 className={clsx(
                   style.TRow,
-                  row.status !== 0 && style.rowDisable
+                  row.status === 0 && style.rowDisable
                 )}
               >
                 {cols}

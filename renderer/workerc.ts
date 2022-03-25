@@ -1,15 +1,30 @@
 import type { Sharp, SharpOptions } from "sharp";
+import type {
+  SpawnOptionsWithoutStdio,
+  ChildProcessWithoutNullStreams,
+} from "child_process";
+import { type GData } from "./state";
 
 // nodejs模块需要用require来加载
 const sharp = require("sharp");
-const fs = require("fs");
+const fs = require("fs-extra");
 const svgo = require("svgo");
 const sizeOf = require("probe-image-size");
+const { spawn } = require("child_process");
+const process = require("process");
+const path = require("path");
 
 interface CompressData {
   list: ImageItem[];
   option: CompressOption;
+  g: GData;
 }
+
+// 用于压缩的worker
+self.addEventListener("message", (event) => {
+  const { list, option, g } = event.data as CompressData;
+  compressList(list, option, g);
+});
 
 export type OldDimension = {
   oldWidth: number;
@@ -62,11 +77,30 @@ export function getNewDimension(
   return { width, height };
 }
 
-// 用于压缩的worker
-self.addEventListener("message", (event) => {
-  const { list, option } = event.data as CompressData;
-  compressList(list, option);
-});
+/**
+ * 获取二进制文件路径
+ * @param binName
+ * @param g
+ */
+export function getBinPath(binName: string, g: GData) {
+  const isMac = process.platform === "darwin";
+  const isWin = process.platform === "win32";
+  const isPacked = g.isPacked!;
+  let basePath: string;
+  if (isPacked) {
+    basePath = process.resourcesPath;
+  } else {
+    basePath = path.join(g.appPath!, "resources");
+  }
+
+  if (isMac) {
+    return path.join(basePath, `${binName}-mac`);
+  } else if (isWin) {
+    return path.join(basePath, `${binName}-win.exe`);
+  } else {
+    return "";
+  }
+}
 
 /**
  * 读取图片的信息
@@ -81,19 +115,41 @@ async function getImageInfo(filePath: string) {
   return { size, width, height };
 }
 
+export interface SpawnMsg {
+  execPath: string;
+  args: string[];
+  option?: SpawnOptionsWithoutStdio;
+}
+
 /**
- * 压缩SVG文件
+ * 通过外部可执行文件进行压缩
+ * @param msg
+ * @returns
+ */
+export async function spawnNewProcess(msg: SpawnMsg) {
+  // 调用可执行文件
+  return new Promise<void>((resolve, reject) => {
+    const exec: ChildProcessWithoutNullStreams = spawn(
+      msg.execPath,
+      msg.args,
+      msg.option
+    );
+    exec.on("exit", (event) => {
+      console.log(`${msg.execPath} exited: `, event);
+      resolve();
+    });
+    exec.on("error", (event) => {
+      console.error(`${msg.execPath} error: `, event);
+      reject();
+    });
+  });
+}
+
+/**
+ * 压缩完毕后最后执行一次检查，并发送结果
  * @param item
  */
-async function compressSVG(item: ImageItem) {
-  try {
-    // 写入新文件前先删除旧临时文件
-    fs.rmSync(item.tempPath, { force: true });
-    const content = fs.readFileSync(item.path, { encoding: "utf-8" });
-    const result = svgo.optimize(content);
-    fs.outputFileSync(item.tempPath, result);
-  } catch (error) {}
-
+async function recheckOutput(item: ImageItem) {
   // 如果没有找到生成文件，则用旧值赋给新值
   if (!fs.existsSync(item.tempPath)) {
     item.newSize = item.oldSize;
@@ -108,6 +164,55 @@ async function compressSVG(item: ImageItem) {
   }
   delete item.preview;
   self.postMessage(item);
+}
+
+/**
+ * 压缩gif文件
+ * @param item
+ * @param option
+ * @param g
+ */
+async function compressGif(item: ImageItem, option: CompressOption, g: GData) {
+  try {
+    const execPath = getBinPath("gifsicle", g);
+    const { width, height } = getNewDimension(item, option);
+    const quality = Math.ceil((3 * option.quality) / 100);
+    const args = [
+      `-O${quality}`,
+      "--resize",
+      `${width}x${height}`,
+      "--lossy",
+      item.path,
+      "-o",
+      item.tempPath,
+    ];
+    // 执行GIF压缩
+    await spawnNewProcess({ execPath, args });
+  } catch (error) {
+    console.log(error);
+  }
+
+  // 验证输出
+  await recheckOutput(item);
+}
+
+/**
+ * 压缩SVG文件
+ * @param item
+ */
+async function compressSVG(item: ImageItem) {
+  try {
+    // 写入新文件前先删除旧临时文件
+    fs.rmSync(item.tempPath, { force: true });
+    const content = fs.readFileSync(item.path, { encoding: "utf-8" });
+    const result = svgo.optimize(content);
+    fs.outputFileSync(item.tempPath, result.data);
+  } catch (error) {
+    console.log(error);
+  }
+
+  // 验证输出
+  await recheckOutput(item);
 }
 
 /**
@@ -204,7 +309,11 @@ async function compressWithSharp(item: ImageItem, option: CompressOption) {
  * 压缩输入的列表
  * @param list
  */
-async function compressList(list: ImageItem[], option: CompressOption) {
+async function compressList(
+  list: ImageItem[],
+  option: CompressOption,
+  g: GData
+) {
   const all: Array<Promise<void> | void> = [];
 
   for (let item of list) {
@@ -214,6 +323,13 @@ async function compressList(list: ImageItem[], option: CompressOption) {
       continue;
     }
 
+    // GIF文件通过gifsicle压缩
+    if (item.upperExtension === "GIF") {
+      all.push(compressGif(item, option, g));
+      continue;
+    }
+
+    // 其余类型通过sharp压缩
     all.push(compressWithSharp(item, option));
   }
 

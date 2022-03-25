@@ -8,6 +8,7 @@ import { type ModeType, scaleMenus, state } from "@/state";
 import { useRef, useState } from "react";
 import { Button } from "../Button";
 import { observer } from "mobx-react-lite";
+import { reCompress } from "@/utils";
 
 type Cstate = {
   mode: ModeType;
@@ -102,7 +103,7 @@ export const Setting = observer(() => {
     // 关闭弹框
     state.showSetting = false;
     // 应用更新
-    // reCompress();
+    reCompress();
   };
 
   if (state.showSetting) {

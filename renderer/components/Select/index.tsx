@@ -76,6 +76,7 @@ export function Select(props: SelectProps) {
                 className={className}
                 onClick={() => {
                   onChange?.(item.key, item);
+                  status.current.onC2 = false;
                   setShowOption(false);
                 }}
               >

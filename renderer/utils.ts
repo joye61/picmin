@@ -1,5 +1,7 @@
 import fileSize from "filesize";
-import { existSets } from "./state";
+import { toJS } from "mobx";
+import { workers } from "./ipc";
+import { existSets, getCompressOption, state, __g } from "./state";
 
 const { ipcRenderer } = require("electron");
 const fs = require("fs-extra");
@@ -32,4 +34,74 @@ export async function handleFilesDrop(event: React.DragEvent<HTMLDivElement>) {
   }
   // 读取图片
   ipcRenderer.send("ReadImages", files, existSets);
+}
+
+/**
+ * 重新压缩所有图片
+ */
+export async function reCompress() {
+  const sendList: Omit<ImageItem, "preview">[] = [];
+  state.list.forEach((item) => {
+    item.status = 0;
+    item.fail = false;
+    item.newSize = undefined;
+    item.newWidth = undefined;
+    item.newSize = undefined;
+
+    const tempItem = toJS(item);
+    // 防止preview在worker间传递
+    delete tempItem.preview;
+    sendList.push(tempItem);
+  });
+
+  // 重新压缩之前首先要重置缓存目录
+  resetCache();
+
+  // 发送给压缩worker处理
+  workers.wc?.postMessage({
+    list: sendList,
+    option: getCompressOption(),
+    g: __g
+  });
+}
+
+// 确保系统路径获取只在初始化的时候执行一次
+export async function getSysPath(name = "app") {
+  ipcRenderer.send("GetSysPath", name);
+  return await new Promise<string>((resolve) => {
+    ipcRenderer.once("GetSysPathResult", (_, result) => {
+      resolve(result);
+    });
+  });
+}
+
+/**
+ * 获取app是否已打包
+ * @returns 
+ */
+export async function getAppIsPacked() {
+  ipcRenderer.send("IsPacked");
+  return await new Promise<boolean>((resolve) => {
+    ipcRenderer.once("IsPackedResult", (_, result) => {
+      resolve(result);
+    });
+  });
+}
+
+/**
+ * 获取缓存路径
+ * @returns 
+ */
+export async function getCachePath() {
+  return getSysPath("txxcache");
+}
+
+/**
+ * 1、清空缓存目录
+ * 2、确保缓存目录存在
+ */
+export function resetCache(){
+  if(__g.cachePath) {
+    fs.emptyDirSync(__g.cachePath);
+  }
 }

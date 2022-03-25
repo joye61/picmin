@@ -1,13 +1,13 @@
 /// <reference path="../types.d.ts" />
 
-import { AllowTypes, TempDirName } from "./const";
+import { AllowTypes, CacheDirName } from "./const";
 import fs from "fs-extra";
 import path from "path";
 import readdirp from "readdirp";
 import sizeOf from "probe-image-size";
 import { UID } from "./utils";
 import { IpcMainEvent } from "electron";
-import { getTempDir } from "./resolve";
+import { getCachePath } from "./temp";
 
 /**
  * 根据路径等待中创建图片对象
@@ -58,7 +58,7 @@ export async function createWaitingImageItem(
   item.oldHeight = height;
 
   // 获取目标将要生成的临时文件路径
-  const outputDir = path.join(getTempDir(), TempDirName);
+  const outputDir = getCachePath();
 
   // 临时文件名字：名字.id.后缀
   const tempId = UID.value;

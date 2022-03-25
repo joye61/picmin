@@ -92,6 +92,22 @@ export const state = observable<State>({
 // 已经存在的图片路径映射
 export const existSets: Set<string> = new Set();
 
+// 全局通用数据
+export interface GData {
+  // app路径
+  appPath?: string;
+  // 图片临时缓存目录
+  cachePath?: string;
+  // app是否已打包
+  isPacked?: boolean;
+}
+export const __g: GData = {
+  appPath: undefined,
+  cachePath: undefined,
+  isPacked: undefined
+}
+
+
 autorun(() => {
   const sum: SumType = {
     cnum: 0,
@@ -105,7 +121,7 @@ autorun(() => {
     sum.oldTotalSize += item.oldSize;
     if (item.status === 1) {
       sum.cnum += 1;
-      sum.newTotalSize == item.newSize;
+      sum.newTotalSize += item.newSize!;
     } else {
       sum.newTotalSize += item.oldSize;
     }
@@ -113,24 +129,7 @@ autorun(() => {
     existSets.add(item.path);
   });
 
-  state.sum = state.list.reduce((prev: typeof sum, item) => {
-    let cnum = prev.cnum;
-    let oldTotalSize = prev.oldTotalSize;
-    let newTotalSize = prev.newTotalSize;
-    const itemSize = item.oldSize!;
-    oldTotalSize += itemSize;
-    if (item.status === 1) {
-      cnum += 1;
-      newTotalSize += item.newSize!;
-    } else {
-      newTotalSize += itemSize;
-    }
-    return {
-      cnum,
-      oldTotalSize,
-      newTotalSize,
-    };
-  }, sum);
+  state.sum = sum;
 });
 
 /**

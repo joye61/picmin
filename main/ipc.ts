@@ -8,6 +8,7 @@ import {
 } from "electron";
 import { AllowTypes, IPCEvents } from "./const";
 import { readImageListFromFiles } from "./reader";
+import { getCachePath } from "./temp";
 import { isMac } from "./utils";
 
 /**
@@ -83,18 +84,22 @@ export function bindIPC(mainWindow: BrowserWindow) {
   );
 
   // 获取系统相关的路径
-  ipcMain.on(
-    IPCEvents.GetSysPath,
-    (event, pathname: "app" | Parameters<typeof app.getPath>[any]) => {
-      let result: string;
-      if (pathname === "app") {
-        result = app.getAppPath();
-      } else {
-        result = app.getPath(pathname);
-      }
-      event.reply(IPCEvents.GetSysPathResult, result);
+  ipcMain.on("GetSysPath", (event, pathname: string) => {
+    let result: string;
+    if (pathname === "txxcache") {
+      result = getCachePath();
+    } else if (pathname === "app") {
+      result = app.getAppPath();
+    } else {
+      result = app.getPath(pathname as any);
     }
-  );
+    event.reply("GetSysPathResult", result);
+  });
+
+  // 获取app是否已经打包
+  ipcMain.on("IsPacked", (event) => {
+    event.reply("IsPackedResult", app.isPackaged);
+  });
 }
 
 export function unbindIPC() {

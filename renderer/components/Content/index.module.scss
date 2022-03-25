@@ -32,7 +32,7 @@
     cursor: progress;
     > div {
       pointer-events: none;
-      opacity: 0.2;
+      opacity: 0.3;
     }
   }
   &:last-child {
@@ -61,7 +61,7 @@ $statusWidth: 50px;
 $oldSizeWidth: 120px;
 $newSizeWidth: 120px;
 $rateWidth: 85px;
-$actionWidth: 100px;
+$actionWidth: 80px;
 $nameWidth: calc(
   100vw - $statusWidth - $oldSizeWidth - $newSizeWidth - $rateWidth -
     $actionWidth
@@ -90,9 +90,11 @@ $nameWidth: calc(
 }
 
 .status {
-  .statusDone {
-    font-size: 14px;
-    color: $mainColor;
+  svg {
+    width: 18px;
+    path {
+      fill: $mainColor;
+    }
   }
 }
 
@@ -144,29 +146,19 @@ $nameWidth: calc(
 
 .action {
   height: 100%;
-  span {
+  .actionRemove {
     cursor: pointer;
     font-size: 0;
     color: #999;
+    margin-right: 5px;
     svg {
       width: 18px;
     }
-    &.actionHandle {
-      &:hover {
-        color: $mainColor;
-      }
-      &:active {
-        color: darken($mainColor, 10);
-      }
+    &:hover {
+      color: $warningColor;
     }
-    &.actionRemove {
-      margin-left: 10px;
-      &:hover {
-        color: $warningColor;
-      }
-      &:active {
-        color: darken($warningColor, 10);
-      }
+    &:active {
+      color: darken($warningColor, 10);
     }
   }
 }

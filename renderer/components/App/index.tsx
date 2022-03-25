@@ -6,7 +6,7 @@ import { Button } from "../Button";
 import { Setting } from "../Setting";
 import { Icon } from "../Icon";
 import clsx from "clsx";
-import { fsize } from "@/utils";
+import { fsize, reCompress, resetCache } from "@/utils";
 import { Rate } from "../Rate";
 import { Select } from "../Select";
 import logo from "@/assets/logo.svg";
@@ -84,9 +84,11 @@ export const App = observer(() => {
           <RowStart className={style.helpInfo}>
             共<span className={style.yellow}>{state.list.length}</span>
             张图片，压缩前
-            <span className={style.green}>{fsize(state.sum.oldTotalSize)}</span>
+            <span className={style.yellow}>
+              {fsize(state.sum.oldTotalSize)}
+            </span>
             ，压缩后
-            <span className={style.green}>{fsize(state.sum.oldTotalSize)}</span>
+            <span className={style.green}>{fsize(state.sum.newTotalSize)}</span>
             ，总体积
             <Rate
               oldSize={state.sum.oldTotalSize}
@@ -99,6 +101,10 @@ export const App = observer(() => {
               icon="clear"
               className={style.noDrag}
               type="outline"
+              onClick={() => {
+                state.list = [];
+                resetCache();
+              }}
             >
               清空列表
             </Button>
@@ -121,6 +127,7 @@ export const App = observer(() => {
               disabled={actionDisable}
               icon="redo"
               className={style.noDrag}
+              onClick={reCompress}
             ></Button>
           </RowEnd>
         </RowBetween>

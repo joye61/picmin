@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell } from "electron";
 import { bindIPC, unbindIPC } from "./ipc";
 import { createMenu } from "./menu";
 import { getAssetsPath, getEntryUrl } from "./resolve";
-import { resetTemp } from "./temp";
+import { resetCache } from "./temp";
 
 // 当前主窗口的引用
 let mainWindow: BrowserWindow | null = null;
@@ -86,7 +86,7 @@ async function createWindow() {
   // 应用被激活时触发
   app.on("activate", () => {
     if (mainWindow === null) {
-      resetTemp();
+      resetCache();
       createWindow();
     }
   });

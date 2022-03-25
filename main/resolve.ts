@@ -24,11 +24,3 @@ export function getEntryUrl() {
   }
   return "http://127.0.0.1:4000";
 }
-
-/**
- * 获取临时目录路径
- * @returns
- */
-export function getTempDir() {
-  return app.getPath("temp");
-}

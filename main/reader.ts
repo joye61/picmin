@@ -42,6 +42,8 @@ export async function createWaitingImageItem(
     extension,
     // 文件后缀大写
     upperExtension,
+    // 默认压缩成功
+    fail: false
   };
 
   // 获取文件的名字

@@ -143,6 +143,6 @@ export function getCompressOption(): CompressOption {
     percent: state.percent,
     width: state.width,
     height: state.height,
-    quality: state.quality,
+    quality: Math.ceil(state.quality),
   };
 }

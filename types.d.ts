@@ -36,6 +36,8 @@ interface ImageItem {
   newHeight?: number;
   // 预览二进制
   preview?: Blob;
+  // 是否压缩失败
+  fail: boolean;
 }
 
 // 压缩选项

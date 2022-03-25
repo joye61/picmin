@@ -54,13 +54,17 @@ export function useWorker() {
       }
     };
 
+    workers.wc.onmessage = (event) => {
+      console.log(event.data);
+    };
+
     return () => {
       if (workers.wp instanceof WorkerP) {
         workers.wp.terminate();
       }
-      // if (workers.wc instanceof WorkerC) {
-      //   workers.wc.terminate();
-      // }
+      if (workers.wc instanceof WorkerC) {
+        workers.wc.terminate();
+      }
     };
   }, []);
 }

@@ -311,17 +311,17 @@ async function compressList(
   for (let item of list) {
     // SVG文件通过svgo来压缩
     if (item.upperExtension === "SVG") {
-      compressSVG(item);
+      await compressSVG(item);
       continue;
     }
 
     // GIF文件通过gifsicle压缩
     if (item.upperExtension === "GIF") {
-      compressGif(item, option, g);
+      await compressGif(item, option, g);
       continue;
     }
 
     // 其余类型通过sharp压缩
-    compressWithSharp(item, option);
+    await compressWithSharp(item, option);
   }
 }

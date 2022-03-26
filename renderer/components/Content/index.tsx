@@ -12,12 +12,13 @@ import { fsize, handleFilesDrop } from "@/utils";
 import { Rate } from "../Rate";
 
 const { ipcRenderer } = require("electron");
+const fs = require("fs-extra");
 
 interface ColType {
   key: string;
   title: string;
   className?: string;
-  render?: (item: ImageItem) => ReactNode;
+  render?: (item: ImageItem, index: number) => ReactNode;
 }
 
 const columns: ColType[] = [
@@ -87,10 +88,17 @@ const columns: ColType[] = [
     key: "action",
     title: "操作",
     className: style._action,
-    render(row) {
+    render(row, index) {
       return (
         <RowEnd className={style.action}>
-          <div className={style.actionRemove}>
+          <div
+            className={style.actionRemove}
+            onClick={() => {
+              // 删除缓存文件
+              fs.removeSync(row.tempPath);
+              state.list.splice(index, 1);
+            }}
+          >
             <Icon type="remove" />
           </div>
         </RowEnd>
@@ -127,11 +135,11 @@ export const Content = observer(() => {
             handleFilesDrop(event);
           }}
         >
-          {state.list.map((row) => {
+          {state.list.map((row, index) => {
             const cols = columns.map((col) => {
               return (
                 <div key={col.key} className={col.className}>
-                  {col.render?.(row)}
+                  {col.render?.(row, index)}
                 </div>
               );
             });

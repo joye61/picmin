@@ -5,7 +5,7 @@ import { Input } from "../Input";
 import { Slider } from "../Slider";
 import { Tab } from "../Tab";
 import { type ModeType, scaleMenus, state } from "@/state";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../Button";
 import { observer } from "mobx-react-lite";
 import { reCompress } from "@/utils";
@@ -20,6 +20,13 @@ type Cstate = {
 
 export const Setting = observer(() => {
   const boxRef = useRef<HTMLDivElement | null>(null);
+  const [animation, setAnimation] = useState<"show" | "hide">("show");
+
+  useEffect(() => {
+    if (!state.showSetting) {
+      setAnimation("show");
+    }
+  }, [state.showSetting]);
 
   const [cstate, setCstate] = useState<Cstate>({
     mode: "percent",
@@ -28,6 +35,16 @@ export const Setting = observer(() => {
     height: undefined,
     quality: 70,
   });
+
+  let containerClass = style.container;
+  let boxClass = style.box;
+  if (animation === "show") {
+    containerClass += ` ${style.containerShow}`;
+    boxClass += ` ${style.boxShow}`;
+  } else if (animation === "hide") {
+    containerClass += ` ${style.containerHide}`;
+    boxClass += ` ${style.boxHide}`;
+  }
 
   const showModeItem = () => {
     if (cstate.mode === "percent") {
@@ -101,19 +118,29 @@ export const Setting = observer(() => {
     state.height = cstate.height ? Number(cstate.height) : undefined;
     state.quality = cstate.quality;
     // 关闭弹框
-    state.showSetting = false;
+    setAnimation("hide");
     // 应用更新
     reCompress();
   };
 
   if (state.showSetting) {
     return (
-      <div className={style.container}>
-        <div className={style.box} ref={boxRef}>
+      <div className={containerClass}>
+        <div
+          className={boxClass}
+          ref={boxRef}
+          onAnimationEnd={(event) => {
+            if (event.animationName === style.BoxHide) {
+              state.showSetting = false;
+            }
+          }}
+        >
           {/* 关闭按钮 */}
           <div
             className={style.close}
-            onClick={() => (state.showSetting = false)}
+            onClick={() => {
+              setAnimation("hide");
+            }}
           >
             <Icon type="close" />
           </div>

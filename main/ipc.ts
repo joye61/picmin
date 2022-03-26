@@ -6,7 +6,7 @@ import {
   OpenDialogSyncOptions,
   shell,
 } from "electron";
-import { AllowTypes, IPCEvents } from "./const";
+import { AllowTypes } from "./const";
 import { readImageListFromFiles } from "./reader";
 import { getCachePath } from "./temp";
 import { isMac } from "./utils";
@@ -69,7 +69,7 @@ export function bindIPC(mainWindow: BrowserWindow) {
 
   // 打包保存
   ipcMain.on(
-    IPCEvents.SaveBundle,
+    "SaveBundle",
     (event, list: ImageItem[], bundleName: string) => {
       // TODO
       const savePath = dialog.showSaveDialogSync(mainWindow, {
@@ -77,7 +77,7 @@ export function bindIPC(mainWindow: BrowserWindow) {
         title: "打包另存",
       });
       if (!savePath) {
-        event.reply(IPCEvents.SaveBundleOver, { ok: false });
+        event.reply("SaveBundleOver", { ok: false });
         return;
       }
     }

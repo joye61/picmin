@@ -276,6 +276,12 @@ async function compressWithSharp(item: ImageItem, option: CompressOption) {
       case "AVIF":
         pdata = pdata.avif({ quality: option.quality });
         break;
+      case "TIF":
+        pdata = pdata.tiff({ quality: option.quality });
+        break;
+      case "TIFF":
+        pdata = pdata.tiff({ quality: option.quality });
+        break;
       default:
         hasCompress = false;
         break;
@@ -283,26 +289,14 @@ async function compressWithSharp(item: ImageItem, option: CompressOption) {
 
     // 将结果写入文件
     if (hasCompress) {
-      const { size, width, height } = await pdata.toFile(item.tempPath);
-      item.newSize = size;
-      item.newWidth = width;
-      item.newHeight = height;
+      await pdata.toFile(item.tempPath);
     }
   } catch (error) {
     console.log(error);
   }
 
-  // 检测是否有输出，如果没有，则认为失败，用旧值赋予新值
-  if (!fs.existsSync(item.tempPath)) {
-    item.newSize = item.oldSize;
-    item.newWidth = item.oldWidth;
-    item.newHeight = item.oldHeight;
-    item.fail = true;
-  }
-
-  // 响应给主线程
-  delete item.preview;
-  self.postMessage(item);
+  // 检查输出
+  await recheckOutput(item);
 }
 
 /**
@@ -314,24 +308,20 @@ async function compressList(
   option: CompressOption,
   g: GData
 ) {
-  const all: Array<Promise<void> | void> = [];
-
   for (let item of list) {
     // SVG文件通过svgo来压缩
     if (item.upperExtension === "SVG") {
-      all.push(compressSVG(item));
+      compressSVG(item);
       continue;
     }
 
     // GIF文件通过gifsicle压缩
     if (item.upperExtension === "GIF") {
-      all.push(compressGif(item, option, g));
+      compressGif(item, option, g);
       continue;
     }
 
     // 其余类型通过sharp压缩
-    all.push(compressWithSharp(item, option));
+    compressWithSharp(item, option);
   }
-
-  await Promise.all(all);
 }

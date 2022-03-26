@@ -7,7 +7,6 @@ export type State = {
   saveType: SaveType;
   list: ImageItem[];
   showSetting: boolean;
-  showSetEngin: boolean;
 
   // 批量压缩配置选项
   mode: ModeType;
@@ -77,7 +76,6 @@ export const state = observable<State>({
   isReadList: false,
   readTotal: 0,
   readCurrent: 0,
-  showSetEngin: false,
   list: [],
   sum: {
     cnum: 0,

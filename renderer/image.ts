@@ -4,14 +4,16 @@ export enum AllowTypes {
   PNG = "image/png",
   WEBP = "image/webp",
   GIF = "image/gif",
-  AVIF = "image/avif",
   SVG = "image/svg+xml",
+  AVIF = "image/avif",
+  TIF = "image/tiff",
+  TIFF = "image/tiff",
 }
 
 /**
  * 获取应用程序支持的所有后缀
  * @returns
  */
- export function getSupportExtensionsAsString() {
+export function getSupportExtensionsAsString() {
   return Object.keys(AllowTypes).join("/");
 }

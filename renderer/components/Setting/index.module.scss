@@ -1,5 +1,39 @@
 @import "@/var";
 
+@keyframes ContainerShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ContainerHide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes BoxShow {
+  from {
+    transform: scale(.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes BoxHide {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(.9);
+  }
+}
+
+
 .container {
   z-index: 2;
   position: fixed;
@@ -11,6 +45,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  &.containerShow {
+    animation: ContainerShow 200ms forwards;
+  }
+  &.containerHide {
+    animation: ContainerHide 200ms forwards;
+  }
 }
 
 .box {
@@ -19,6 +59,12 @@
   border: 1px solid $mainColor;
   position: absolute;
   padding: 36px 20px 20px;
+  &.boxShow {
+    animation: BoxShow 200ms forwards;
+  }
+  &.boxHide {
+    animation: BoxHide 200ms forwards;
+  }
 }
 
 .close {

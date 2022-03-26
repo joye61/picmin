@@ -28,11 +28,17 @@ async function createPreviewForList(list: ImageItem[]) {
     if (["GIF", "WebP", "AVIF"].includes(item.upperExtension)) {
       options.animated = true;
     }
-    const pdata: Sharp = sharp(item.path, options).resize({
+    let pdata: Sharp = sharp(item.path, options).resize({
       width: 50,
       height: 50,
       fit: "cover",
     });
+
+    // 由于TIFF格式不被支持，需要将TIFF转换为其他格式预览
+    if (["TIF", "TIFF"].includes(item.upperExtension)) {
+      pdata = pdata.jpeg();
+    }
+
     pdata.toBuffer().then((buf) => {
       const preview = new Blob([new Uint8Array(buf)], { type: item.type });
       self.postMessage({

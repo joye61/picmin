@@ -3,7 +3,6 @@ import { saveMenus, type SaveType, state, existSets } from "@/state";
 import { RowBetween, RowStart, RowEnd, RowCenter } from "../Flex";
 import { Indicator } from "../Indicator";
 import { Button } from "../Button";
-import { Setting } from "../Setting";
 import { Icon } from "../Icon";
 import clsx from "clsx";
 import { fsize, reCompress, resetCache } from "@/utils";
@@ -13,6 +12,8 @@ import logo from "@/assets/logo.svg";
 import { observer } from "mobx-react-lite";
 import { useIpc, useWorker } from "@/ipc";
 import { Content } from "../Content";
+import { showDialog } from "../Dialog";
+import { Setting } from "../Setting";
 
 const { ipcRenderer } = require("electron");
 
@@ -29,6 +30,7 @@ export const App = observer(() => {
 
   const smenu = saveMenus.find((item) => item.key === state.saveType);
   const saveName = smenu?.value;
+
   return (
     <>
       <div className={style.container}>
@@ -59,7 +61,34 @@ export const App = observer(() => {
               icon="setting"
               className={style.noDrag}
               type="link"
-              onClick={() => (state.showSetting = true)}
+              onClick={async () => {
+                const stop = await showDialog(
+                  <Setting
+                    onClose={() => stop()}
+                    onApply={async (cstate) => {
+                      // 关闭弹框
+                      await stop();
+                      // 更新状态
+                      state.mode = cstate.mode;
+                      state.percent = cstate.percent;
+                      state.width = cstate.width
+                        ? Number(cstate.width)
+                        : undefined;
+                      state.height = cstate.height
+                        ? Number(cstate.height)
+                        : undefined;
+                      state.quality = cstate.quality;
+                      // 应用更新
+                      reCompress();
+                    }}
+                    mode={state.mode}
+                    percent={state.percent}
+                    quality={state.quality}
+                    width={state.width ? String(state.width) : undefined}
+                    height={state.height ? String(state.height) : undefined}
+                  />
+                );
+              }}
             >
               压缩选项
             </Button>
@@ -132,8 +161,6 @@ export const App = observer(() => {
           </RowEnd>
         </RowBetween>
       </div>
-      {/* 设置弹框 */}
-      <Setting />
     </>
   );
 });

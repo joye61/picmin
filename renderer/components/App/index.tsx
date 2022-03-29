@@ -5,7 +5,7 @@ import { Indicator } from "../Indicator";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
 import clsx from "clsx";
-import { fsize, reCompress, resetCache } from "@/utils";
+import { fsize, reCompress, resetCache, saveResult } from "@/utils";
 import { Rate } from "../Rate";
 import { Select } from "../Select";
 import logo from "@/assets/logo.svg";
@@ -150,7 +150,9 @@ export const App = observer(() => {
               >
                 <Button disabled={actionDisable} icon="save" />
               </Select>
-              <Button disabled={actionDisable}>{saveName}</Button>
+              <Button disabled={actionDisable} onClick={saveResult}>
+                {saveName}
+              </Button>
             </RowStart>
             <Button
               disabled={actionDisable}

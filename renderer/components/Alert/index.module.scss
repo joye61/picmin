@@ -1,0 +1,19 @@
+@import "@/var";
+
+.container {
+  background-color: #fff;
+  border: 1px solid $mainColor;
+  padding: 30px 30px 20px;
+  min-width: 300px;
+}
+
+.msg {
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.btns {
+  > div {
+    margin-left: 10px;
+  }
+}

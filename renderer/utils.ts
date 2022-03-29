@@ -1,5 +1,6 @@
 import fileSize from "filesize";
 import { toJS } from "mobx";
+import { showAlert } from "./components/Alert";
 import { workers } from "./ipc";
 import { existSets, getCompressOption, state, __g } from "./state";
 
@@ -61,7 +62,7 @@ export async function reCompress() {
   workers.wc?.postMessage({
     list: sendList,
     option: getCompressOption(),
-    g: __g
+    g: __g,
   });
 }
 
@@ -77,7 +78,7 @@ export async function getSysPath(name = "app") {
 
 /**
  * 获取app是否已打包
- * @returns 
+ * @returns
  */
 export async function getAppIsPacked() {
   ipcRenderer.send("IsPacked");
@@ -90,7 +91,7 @@ export async function getAppIsPacked() {
 
 /**
  * 获取缓存路径
- * @returns 
+ * @returns
  */
 export async function getCachePath() {
   return getSysPath("txxcache");
@@ -100,8 +101,33 @@ export async function getCachePath() {
  * 1、清空缓存目录
  * 2、确保缓存目录存在
  */
-export function resetCache(){
-  if(__g.cachePath) {
+export function resetCache() {
+  if (__g.cachePath) {
     fs.emptyDirSync(__g.cachePath);
   }
+}
+
+/**
+ * 保存压缩结果
+ */
+export async function saveResult() {
+  state.isSaving = true;
+  if (state.saveType === "cover") {
+    await new Promise<void>((resolve) => {
+      showAlert("覆盖保存会丢失原始文件，是否确认操作？", () => {
+        for (let item of state.list) {
+          if (!item.fail) {
+            try {
+              fs.copySync(item.tempPath, item.path);
+            } catch (error) {}
+            resolve();
+          }
+        }
+      });
+    });
+  } else if (state.saveType === "alias") {
+  } else if (state.saveType === "bundle") {
+  }
+
+  state.isSaving = false;
 }

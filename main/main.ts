@@ -75,6 +75,7 @@ async function createWindow() {
   // 当所有窗口都关闭时，退出app
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
+      resetCache();
       app.quit();
     }
   });

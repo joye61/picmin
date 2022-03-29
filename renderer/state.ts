@@ -65,7 +65,7 @@ export const scaleMenus: ScaleMenuItem[] = [
 ];
 
 export const state = observable<State>({
-  saveType: "alias",
+  saveType: "cover",
   showSetting: false,
   mode: "percent",
   percent: 100,

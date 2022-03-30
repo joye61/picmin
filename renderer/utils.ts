@@ -111,10 +111,10 @@ export function resetCache() {
  * 保存压缩结果
  */
 export async function saveResult() {
-  state.isSaving = true;
   if (state.saveType === "cover") {
     await new Promise<void>((resolve) => {
       showAlert("覆盖保存会丢失原始文件，是否确认操作？", () => {
+        state.isSaving = true;
         for (let item of state.list) {
           if (!item.fail) {
             try {
@@ -123,11 +123,10 @@ export async function saveResult() {
             resolve();
           }
         }
+        state.isSaving = false;
       });
     });
   } else if (state.saveType === "alias") {
   } else if (state.saveType === "bundle") {
   }
-
-  state.isSaving = false;
 }

@@ -136,10 +136,12 @@ export async function spawnNewProcess(msg: SpawnMsg) {
     );
     exec.on("exit", (event) => {
       console.log(`${msg.execPath} exited: `, event);
+      exec.kill();
       resolve();
     });
     exec.on("error", (event) => {
       console.error(`${msg.execPath} error: `, event);
+      exec.kill();
       reject();
     });
   });
@@ -291,6 +293,7 @@ async function compressWithSharp(item: ImageItem, option: CompressOption) {
     if (hasCompress) {
       await pdata.toFile(item.tempPath);
     }
+    pdata.destroy();
   } catch (error) {
     console.log(error);
   }

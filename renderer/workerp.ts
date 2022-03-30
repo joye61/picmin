@@ -12,14 +12,12 @@ async function createPreviewForList(list: ImageItem[]) {
   for (let item of list) {
     // SVG文件直接生成Blob
     if (item.upperExtension === "SVG") {
-      fetch(`file://${item.path}`)
-        .then((resp) => resp.blob())
-        .then((preview) => {
-          self.postMessage({
-            path: item.path,
-            preview,
-          });
-        });
+      const resp = await fetch(`file://${item.path}`);
+      const preview = await resp.blob();
+      self.postMessage({
+        path: item.path,
+        preview,
+      });
       continue;
     }
 
@@ -38,13 +36,12 @@ async function createPreviewForList(list: ImageItem[]) {
     if (["TIF", "TIFF"].includes(item.upperExtension)) {
       pdata = pdata.jpeg();
     }
-
-    pdata.toBuffer().then((buf) => {
-      const preview = new Blob([new Uint8Array(buf)], { type: item.type });
-      self.postMessage({
-        path: item.path,
-        preview,
-      });
+    const buf = await pdata.toBuffer();
+    const preview = new Blob([new Uint8Array(buf)], { type: item.type });
+    self.postMessage({
+      path: item.path,
+      preview,
     });
+    pdata.destroy();
   }
 }

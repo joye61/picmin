@@ -14,7 +14,7 @@ export function Loading() {
       } else if (state.saveType === "cover") {
         return "正在以覆盖源文件形式保存压缩图片...";
       } else if (state.saveType === "bundle") {
-        return "正在生成压缩图打包...";
+        return "正在生成压缩包...";
       }
     }
     return message;

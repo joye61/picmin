@@ -88,9 +88,9 @@ export function getBinPath(binName: string, g: GData) {
   const isPacked = g.isPacked!;
   let basePath: string;
   if (isPacked) {
-    basePath = process.resourcesPath;
+    basePath = path.join(process.resourcesPath, "app/bin");
   } else {
-    basePath = path.join(g.appPath!, "resources");
+    basePath = path.join(g.appPath!, "bin");
   }
 
   if (isMac) {

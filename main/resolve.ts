@@ -19,8 +19,8 @@ export function getAssetsPath(...paths: string[]) {
  * @returns
  */
 export function getEntryUrl() {
-  if (process.env.NODE_ENV === "production") {
-    return "file://" + path.resolve(__dirname, "../renderer/index.html");
+  if (app.isPackaged) {
+    return "file://" + path.resolve(process.resourcesPath, "./app/dist/renderer/index.html");
   }
   return "http://127.0.0.1:4000";
 }

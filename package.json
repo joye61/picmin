@@ -13,12 +13,13 @@
     "build:renderer": "tsc -p ./renderer/tsconfig.json && vite build",
     "build": "npm run build:main && npm run build:renderer",
     "package": "npm run build && electron-builder -c ./builder.json",
-    "postinstall": "electron-rebuild && electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "clsx": "^1.1.1",
     "filesize": "^8.0.7",
     "fs-extra": "^10.0.1",
+    "jszip": "^3.8.0",
     "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",
     "normalize.css": "^8.0.1",
@@ -42,7 +43,6 @@
     "cross-env": "^7.0.3",
     "electron": "^17.2.0",
     "electron-builder": "^22.14.13",
-    "electron-rebuild": "^3.2.7",
     "sass": "^1.49.9",
     "typescript": "^4.5.4",
     "vite": "^2.8.0",

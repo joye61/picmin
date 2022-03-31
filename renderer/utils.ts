@@ -3,9 +3,11 @@ import { toJS } from "mobx";
 import { showAlert } from "./components/Alert";
 import { workers } from "./ipc";
 import { existSets, getCompressOption, state, __g } from "./state";
+import JSZip from "jszip";
 
 const { ipcRenderer } = require("electron");
 const fs = require("fs-extra");
+const path = require("path");
 
 /**
  * 获取一个格式化之后的大小
@@ -127,6 +129,42 @@ export async function saveResult() {
       });
     });
   } else if (state.saveType === "alias") {
+    state.isSaving = true;
+    for (let item of state.list) {
+      if (!item.fail) {
+        try {
+          const newName = `../${item.nameWithoutExt}.txx.${item.extension}`;
+          const newPath = path.resolve(item.path, newName);
+          fs.copySync(item.tempPath, newPath);
+        } catch (error) {}
+      }
+    }
+    state.isSaving = false;
   } else if (state.saveType === "bundle") {
+    state.isSaving = true;
+    const zip = new JSZip();
+    for (let item of state.list) {
+      if (!item.fail) {
+        try {
+          const zipName = path.basename(item.tempPath);
+          zip.file(zipName, fs.createReadStream(item.tempPath));
+        } catch (error) {}
+      }
+    }
+    const data = await zip.generateAsync({
+      type: "blob",
+      compression: "DEFLATE",
+      compressionOptions: {
+        level: 6,
+      },
+    });
+
+    const link = document.createElement("a");
+    link.download = "txx.zip";
+    link.href = URL.createObjectURL(data);
+    link.click();
+    link.remove();
+
+    state.isSaving = false;
   }
 }

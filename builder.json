@@ -1,11 +1,33 @@
 {
   "productName": "图小小",
   "appId": "com.tuxiaoxiao.picmin",
-  "copyright": "Copyright © 2022 ${author}",
-  "asar": false,
   "directories": {
     "output": "release",
     "buildResources": "buildResources"
   },
-  "files": ["dist/**", "bin/**"]
+  "asar": false,
+  "files": ["dist/**", "bin/**"],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
+      {
+        "target": "portable",
+        "arch": [
+          "x64"
+        ]
+      }
+    ]
+  },
+  "mac": {
+    "category": "public.app-category.graphics-design",
+    "target": {
+      "target": "dmg",
+      "arch": ["x64", "arm64"]
+    }
+  }
 }
